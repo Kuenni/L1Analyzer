@@ -3,16 +3,16 @@
 // Package:    L1Analyzer
 // Class:      L1Analyzer
 // 
-/**\class L1Analyzer L1Analyzer.cc L1Analysis/L1Analyzer/src/L1Analyzer.cc
+/**\class L1Analyzer L1Analyzer.cc L1Analysis/L1Analyzer/plugins/L1Analyzer.cc
 
  Description: [one line class summary]
 
  Implementation:
      [Notes on implementation]
-*/
+ */
 //
 // Original Author:  Andreas Künsken
-//         Created:  Wed Oct  2 13:51:22 CEST 2013
+//         Created:  Mon, 04 Nov 2013 15:57:54 GMT
 // $Id$
 //
 //
@@ -30,6 +30,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+//Own includes
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 
@@ -56,29 +57,27 @@
 //
 
 class L1Analyzer : public edm::EDAnalyzer {
-   public:
-      explicit L1Analyzer(const edm::ParameterSet&);
-      ~L1Analyzer();
+public:
+	explicit L1Analyzer(const edm::ParameterSet&);
+	~L1Analyzer();
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+	static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 
-   private:
-      virtual void beginJob() ;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&);
-      virtual void endJob() ;
+private:
+	virtual void beginJob() override;
+	virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+	virtual void endJob() override;
 
-      virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-      virtual void endRun(edm::Run const&, edm::EventSetup const&);
-      virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-      virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+	//virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+	//virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+	//virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+	//virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
-      // ----------member data ---------------------------
-	TH1D* histRecoMuPt;
-	TH1D* histRecoMuPerEvt;
-	TH1D* histSimMuPt;
-	TH1D* histSimMuPerEvt;
-	TH1D* histSimMuBxId;
+	// ----------member data ---------------------------
+
+	std::map<std::string, TH1*> histoMap;
+
 	TTree* treeEvent;
 	TTree* treeEvtIdsMultiGenMatch;
 
@@ -90,6 +89,8 @@ class L1Analyzer : public edm::EDAnalyzer {
 	int runnumber;
 	double recoToGenMatchRatio;
 	double genMatchToGenRatio;
+
+	double etaCut;
 
 	int runNr;
 	int eventNr;
@@ -110,16 +111,16 @@ class L1Analyzer : public edm::EDAnalyzer {
 L1Analyzer::L1Analyzer(const edm::ParameterSet& iConfig)
 
 {
-   //now do what ever initialization is needed
+	//now do what ever initialization is needed
 
 }
 
 
 L1Analyzer::~L1Analyzer()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
+
+	// do anything here that needs to be done at desctruction time
+	// (e.g. close files, deallocate resources etc.)
 
 }
 
@@ -153,7 +154,6 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	iEvent.getByLabel("muonsFromCosmics",cosmicMuonHandle);
 	nCosmicMuons = cosmicMuonHandle->size(); //Fill in for TTree
 
-
 	//Get association with genParticle matches
 	edm::Handle< reco::GenParticleMatch > genParticleMatchHandle;
 	iEvent.getByLabel("muonMatch",genParticleMatchHandle);
@@ -162,14 +162,9 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	reco::MuonCollection::const_iterator iterMuonCollection;
 	//Loop over all general muons in collection
 	for(iterMuonCollection = muonHandle->begin();iterMuonCollection!=muonHandle->end();++iterMuonCollection){
-		histRecoMuPt->Fill(iterMuonCollection->pt());
+		histoMap["histRecoMuPt"]->Fill(iterMuonCollection->pt());
 	}
-	histRecoMuPerEvt->Fill(muonHandle->size());
-
-	//Get the trigger event and the refs to the accepted algorithms
-	edm::Handle<pat::TriggerEvent> triggerHandle;
-	iEvent.getByLabel("patTriggerEvent",triggerHandle);
-	const pat::helper::TriggerMatchHelper matchHelper;
+	histoMap["histRecoMuPerEvt"]->Fill(muonHandle->size());
 
 
 	//Loop over all Generator level particles in collection
@@ -178,12 +173,12 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	for(iterGenParticleCollection = genParticleHandle->begin(); iterGenParticleCollection != genParticleHandle->end() ; ++iterGenParticleCollection){
 		if( isMuon(*iterGenParticleCollection) ){ //Check whether gen particle is a muon
 			genParticleCounter++;
-			histSimMuBxId->Fill(iterGenParticleCollection->collisionId());
-			histSimMuPt->Fill(iterGenParticleCollection->pt());
+			histoMap["histSimMuBxId"]->Fill(iterGenParticleCollection->collisionId());
+			histoMap["histSimMuPt"]->Fill(iterGenParticleCollection->pt());
 		}
 	}
 	nGenMuons = genParticleCounter; //Fill for TTree
-	histSimMuPerEvt->Fill(genParticleCounter);
+	histoMap["histSimMuPerEvt"]->Fill(genParticleCounter);
 
 	/**
 	 * Calculate ratio of # reco muons to # of matches with gen muons
@@ -199,14 +194,14 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	genMatchToGenRatio	= nGenMatches/( (double) nGenMuons );
 
 
-//	if(genMatchToGenRatio > 1){
-//		pat::MuonCollection::const_iterator patMuonIterator;
-//		for( patMuonIterator = patMuonHandle->begin() ; patMuonIterator != patMuonHandle->end() ; ++patMuonIterator ){
-//			edm::RefToBase<pat::Muon> mu = cosmicMuonHandle->refAt(i);
-		/*	patMuonIterator == cosmicMuon */
-//			const reco::GenParticle* gen = patMuonIterator->genLepton();
-//		}
-//	}
+	//	if(genMatchToGenRatio > 1){
+	//		pat::MuonCollection::const_iterator patMuonIterator;
+	//		for( patMuonIterator = patMuonHandle->begin() ; patMuonIterator != patMuonHandle->end() ; ++patMuonIterator ){
+	//			edm::RefToBase<pat::Muon> mu = cosmicMuonHandle->refAt(i);
+	/*	patMuonIterator == cosmicMuon */
+	//			const reco::GenParticle* gen = patMuonIterator->genLepton();
+	//		}
+	//	}
 
 	//If the ratio is not 1, there were no cosmics in the event and we do have reco muons we might have found a ghost
 	if(  genMatchToGenRatio > 1 || recoToGenMatchRatio != 1 ){
@@ -219,29 +214,30 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	}
 	treeEvent->Fill(); //finally fill data to TTree
 
+
+
 }
-
-
 
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
 L1Analyzer::beginJob()
 {
+
 	std::cout << "Beginning L1Analyzer job." << std::endl;
 
 	edm::Service<TFileService> fs;
 
-	histRecoMuPt 		= fs->make<TH1D>("histRecoMuPt","P_{T} of reconstructed muons;P_{T} / GeV;# Entries",101,-1,100);
-	histRecoMuPerEvt 	= fs->make<TH1D>("histRecoMuPerEvt","# reconstructed muons per event;# muons;# Entries",101,-1,100);
-	histSimMuPt 		= fs->make<TH1D>("histSimMuPt","P_{T} of simulated muons;P_{T} / GeV;# Entries",101,-1,100);
-	histSimMuPerEvt 	= fs->make<TH1D>("histSimMuPerEvt","# simulated muons per event;# muons;# Entries",101,-1,100);
-	histSimMuBxId		= fs->make<TH1D>("histSimMuBxId","BX ID for simulated muons",40,-20,20);
-	histSimMuPt->SetLineColor(kRed);
-	histSimMuPerEvt->SetLineColor(kRed);
-	histSimMuBxId->SetLineColor(kRed);
+	histoMap["histRecoMuPt"] 		= fs->make<TH1D>("histRecoMuPt","P_{T} of reconstructed muons;P_{T} / GeV;# Entries",101,-1,100);
+	histoMap["histRecoMuPerEvt"] 	= fs->make<TH1D>("histRecoMuPerEvt","# reconstructed muons per event;# muons;# Entries",101,-1,100);
+	histoMap["histSimMuPt"] 		= fs->make<TH1D>("histSimMuPt","P_{T} of simulated muons;P_{T} / GeV;# Entries",101,-1,100);
+	histoMap["histSimMuPerEvt"] 	= fs->make<TH1D>("histSimMuPerEvt","# simulated muons per event;# muons;# Entries",101,-1,100);
+	histoMap["histSimMuBxId"]		= fs->make<TH1D>("histSimMuBxId","BX ID for simulated muons",40,-20,20);
+	histoMap["histSimMuPt"]->SetLineColor(kRed);
+	histoMap["histSimMuPerEvt"]->SetLineColor(kRed);
+	histoMap["histSimMuBxId"]->SetLineColor(kRed);
 
-	treeEvent			= fs->make<TTree>("treeEvent","Tree containing event by event info");
+	treeEvent = fs->make<TTree>("treeEvent","Tree containing event by event info");
 	treeEvent->Branch("nRecoMuons",&nRecoMuons);
 	treeEvent->Branch("nGenMuons",&nGenMuons);
 	treeEvent->Branch("nPatMuons",&nPatMuons);
@@ -257,47 +253,56 @@ L1Analyzer::beginJob()
 	treeEvtIdsMultiGenMatch->Branch("lumiBlock",&lumiBlock);
 	treeEvtIdsMultiGenMatch->Branch("recoToGenMatchRatio",&recoToGenMatchRatio);
 	treeEvtIdsMultiGenMatch->Branch("genMatchToGenRatio",&genMatchToGenRatio);
+
+	etaCut = 9999.;
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 L1Analyzer::endJob() 
 {
-	std::cout << "End of L1Analyzer job." << std::endl;
 }
 
 // ------------ method called when starting to processes a run  ------------
+/*
 void 
 L1Analyzer::beginRun(edm::Run const&, edm::EventSetup const&)
 {
 }
+ */
 
 // ------------ method called when ending the processing of a run  ------------
+/*
 void 
 L1Analyzer::endRun(edm::Run const&, edm::EventSetup const&)
 {
 }
+ */
 
 // ------------ method called when starting to processes a luminosity block  ------------
+/*
 void 
 L1Analyzer::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
+ */
 
 // ------------ method called when ending the processing of a luminosity block  ------------
+/*
 void 
 L1Analyzer::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
 {
 }
+ */
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
 L1Analyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
-  //The following says we do not know what parameters are allowed so do no validation
-  // Please change this to state exactly what you do use, even if it is no parameters
-  edm::ParameterSetDescription desc;
-  desc.setUnknown();
-  descriptions.addDefault(desc);
+	//The following says we do not know what parameters are allowed so do no validation
+	// Please change this to state exactly what you do use, even if it is no parameters
+	edm::ParameterSetDescription desc;
+	desc.setUnknown();
+	descriptions.addDefault(desc);
 }
 
 //define this as a plug-in
