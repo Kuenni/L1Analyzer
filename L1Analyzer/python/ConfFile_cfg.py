@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("L1Analyzer")
+process = cms.Process("L1DataAggregator")
 
 
 #Loading standard packages from L1TriggerDPG package 
@@ -15,8 +15,18 @@ process.load('Configuration/StandardSequences/EndOfProcess_cff')
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.load('Configuration/EventContent/EventContent_cff')
 
+#Loading L1TriggerDPG configs
+process.load('L1TriggerDPG.L1Ntuples.l1NtupleProducer_cfi')
+process.l1NtupleProducer.verbose = cms.untracked.bool(True)
+process.l1NtupleProducer.hltSource = cms.InputTag("none")
+
+process.load("L1TriggerDPG.L1Ntuples.l1ExtraTreeProducer_cfi")
+
+#process.load("L1TriggerDPG.L1Ntuples.l1RecoTreeProducer_cfi")
+
+
 # global tag FIXME
-#process.GlobalTag.globaltag = 'START38_V13::All'
+process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 # output file
 process.TFileService = cms.Service("TFileService",
@@ -24,10 +34,9 @@ process.TFileService = cms.Service("TFileService",
 )
 
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 process.source = cms.Source("PoolSource",
-    # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         'file:0E84878D-1522-E311-B1DB-003048678FB8.root'
     )
@@ -36,5 +45,25 @@ process.source = cms.Source("PoolSource",
 process.demo = cms.EDAnalyzer('L1Analyzer'
 )
 
+process.out = cms.OutputModule(
+        "PoolOutputModule",
+        outputCommands = cms.untracked.vstring(
+			'keep *'
+                ),
+        fileName = cms.untracked.string('Collections.root')
+        )
 
-process.p = cms.Path(process.demo)
+
+process.p = cms.Path(
+			process.RawToDigi*
+			process.gtDigis* 		#Generate digis from sim
+			process.gtEvmDigis*		#for L1 muon system information
+			process.gctDigis*
+    			process.dttfDigis*
+    			process.csctfDigis*
+			process.l1NtupleProducer*	#Run the nTuple producer from L1TriggerDPG
+			process.l1extraParticles*
+			process.l1ExtraTreeProducer
+			)
+
+process.outpath = cms.EndPath(process.out)

@@ -116,8 +116,7 @@ L1Analyzer::L1Analyzer(const edm::ParameterSet& iConfig)
 }
 
 
-L1Analyzer::~L1Analyzer()
-{
+L1Analyzer::~L1Analyzer(){
 
 	// do anything here that needs to be done at desctruction time
 	// (e.g. close files, deallocate resources etc.)
@@ -136,35 +135,9 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	//Get run number from event
 	runnumber = iEvent.run();
 
-	//get reco muon collection
-	edm::Handle< reco::MuonCollection > muonHandle;
-	iEvent.getByLabel("muons",muonHandle);
-	nRecoMuons = muonHandle->size(); //Fill in for TTree
-
-	edm::Handle< pat::MuonCollection > patMuonHandle;
-	iEvent.getByLabel("patMuons",patMuonHandle);
-	nPatMuons = patMuonHandle->size();
-
 	//get gen particle collection
 	edm::Handle< reco::GenParticleCollection > genParticleHandle;
 	iEvent.getByLabel("genParticles",genParticleHandle);
-
-	//get cosmic muon collection
-	edm::Handle< edm::View<reco::Muon> > cosmicMuonHandle;
-	iEvent.getByLabel("muonsFromCosmics",cosmicMuonHandle);
-	nCosmicMuons = cosmicMuonHandle->size(); //Fill in for TTree
-
-	//Get association with genParticle matches
-	edm::Handle< reco::GenParticleMatch > genParticleMatchHandle;
-	iEvent.getByLabel("muonMatch",genParticleMatchHandle);
-	nGenMatches = genParticleMatchHandle->size(); //Fill for TTree
-
-	reco::MuonCollection::const_iterator iterMuonCollection;
-	//Loop over all general muons in collection
-	for(iterMuonCollection = muonHandle->begin();iterMuonCollection!=muonHandle->end();++iterMuonCollection){
-		histoMap["histRecoMuPt"]->Fill(iterMuonCollection->pt());
-	}
-	histoMap["histRecoMuPerEvt"]->Fill(muonHandle->size());
 
 
 	//Loop over all Generator level particles in collection
@@ -180,40 +153,8 @@ L1Analyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	nGenMuons = genParticleCounter; //Fill for TTree
 	histoMap["histSimMuPerEvt"]->Fill(genParticleCounter);
 
-	/**
-	 * Calculate ratio of # reco muons to # of matches with gen muons
-	 * and ratio of #  of matches with gen muons to # of gen muons
-	 *
-	 * recoToGenMatchRatio < 1:
-	 * 	not all reco muons could be mapped to a gen muon
-	 *
-	 * genMatchtoGenRatio > 1:
-	 * 	reco muons were matched several times to (different) gen muons
-	 */
-	recoToGenMatchRatio = nRecoMuons/( (double) nGenMatches );
-	genMatchToGenRatio	= nGenMatches/( (double) nGenMuons );
 
-
-	//	if(genMatchToGenRatio > 1){
-	//		pat::MuonCollection::const_iterator patMuonIterator;
-	//		for( patMuonIterator = patMuonHandle->begin() ; patMuonIterator != patMuonHandle->end() ; ++patMuonIterator ){
-	//			edm::RefToBase<pat::Muon> mu = cosmicMuonHandle->refAt(i);
-	/*	patMuonIterator == cosmicMuon */
-	//			const reco::GenParticle* gen = patMuonIterator->genLepton();
-	//		}
-	//	}
-
-	//If the ratio is not 1, there were no cosmics in the event and we do have reco muons we might have found a ghost
-	if(  genMatchToGenRatio > 1 || recoToGenMatchRatio != 1 ){
-		if( nCosmicMuons == 0 && nRecoMuons != 0 ) {
-			runNr 		= iEvent.id().run();
-			eventNr 	= iEvent.id().event();
-			lumiBlock 	= iEvent.id().luminosityBlock();
-			treeEvtIdsMultiGenMatch->Fill();
-		}
-	}
 	treeEvent->Fill(); //finally fill data to TTree
-
 
 
 }
