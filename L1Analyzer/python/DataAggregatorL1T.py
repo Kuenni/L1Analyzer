@@ -15,6 +15,10 @@ process.load('Configuration/StandardSequences/EndOfProcess_cff')
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.load('Configuration/EventContent/EventContent_cff')
 
+#JEC necessary for getting jet collections
+process.load("JetMETCorrections.Configuration.DefaultJEC_cff")
+
+
 #Loading L1TriggerDPG configs
 process.load('L1TriggerDPG.L1Ntuples.l1NtupleProducer_cfi')
 process.l1NtupleProducer.verbose = cms.untracked.bool(True)
@@ -22,8 +26,12 @@ process.l1NtupleProducer.hltSource = cms.InputTag("none")
 
 process.load("L1TriggerDPG.L1Ntuples.l1ExtraTreeProducer_cfi")
 
-#process.load("L1TriggerDPG.L1Ntuples.l1RecoTreeProducer_cfi")
+process.load("L1TriggerDPG.L1Ntuples.l1MenuTreeProducer_cfi")
+process.load("EventFilter.L1GlobalTriggerRawToDigi.l1GtTriggerMenuLite_cfi")
 
+process.load("L1TriggerDPG.L1Ntuples.l1RecoTreeProducer_cfi")
+
+process.load("L1TriggerDPG.L1Ntuples.l1MuonRecoTreeProducer_cfi")
 
 # global tag FIXME
 process.GlobalTag.globaltag = 'DES17_62_V7::All'
@@ -63,7 +71,11 @@ process.p = cms.Path(
     			process.csctfDigis*
 			process.l1NtupleProducer*	#Run the nTuple producer from L1TriggerDPG
 			process.l1extraParticles*
-			process.l1ExtraTreeProducer
+			process.l1ExtraTreeProducer*
+			process.l1GtTriggerMenuLite*
+			process.l1MenuTreeProducer*
+			process.l1RecoTreeProducer*
+			process.l1MuonRecoTreeProducer
 			)
 
 process.outpath = cms.EndPath(process.out)
