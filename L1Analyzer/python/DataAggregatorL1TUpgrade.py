@@ -18,6 +18,9 @@ process.load('L1TriggerDPGUpgrade.L1TMuon.L1DTTFTrackConverter_cfi')
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1RPCTFTrackConverter_cfi')
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonSimpleDeltaEtaHitMatcher_cfi')
 
+#Load own plugins
+process.load('L1Analyzer.L1Analyzer.BXAnalyzer_cfi')
+
 # Originally included
 # 
 #from Configuration.AlCa.GlobalTag import GlobalTag
@@ -28,6 +31,12 @@ process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 infile = []
 infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
+
+
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string('Analysed.root')
+)
+
 
 #
 # Originally included source files
@@ -40,16 +49,19 @@ infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
 #infile.append('file:SingleMuFlatPt_plusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 #infile.append('file:SingleMuFlatPt_minusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+
 process.source = cms.Source(
     'PoolSource',
     fileNames = cms.untracked.vstring(infile)
     )
 
-process.L1TMuonSeq = cms.Sequence( process.L1TMuonTriggerPrimitives +
-                                   process.L1CSCTFTrackConverter    +
-                                   process.L1DTTFTrackConverter     +
-                                   process.L1RPCTFTrackConverters   +
-                                   process.L1TMuonSimpleDeltaEtaHitMatcher
+process.L1TMuonSeq = cms.Sequence( 	process.L1TMuonTriggerPrimitives +
+                                   	process.L1CSCTFTrackConverter    +
+                                   	process.L1DTTFTrackConverter     +
+                                   	process.L1RPCTFTrackConverters   +
+                                   	process.L1TMuonSimpleDeltaEtaHitMatcher+
+					process.BXAnalyzer
 				)
 
 process.L1TMuonPath = cms.Path(process.L1TMuonSeq)
