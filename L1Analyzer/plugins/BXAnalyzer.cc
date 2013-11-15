@@ -30,18 +30,29 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-/// DT input
+//Gen particles
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+
+///DT input
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambPhContainer.h"
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambPhDigi.h"
-// #include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambThContainer.h"
-// #include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambThDigi.h"
+#include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambThContainer.h"
+#include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambThDigi.h"
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackContainer.h"
+
+#include "CommonTools/CandUtils/interface/pdgIdUtils.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
+//Root
 #include <TH1D.h>
+#include <TH2D.h>
 
+//L1TriggerDPGUpgrade input
+#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
+#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
 
 //
 // class declaration
@@ -61,11 +72,12 @@ class BXAnalyzer : public edm::EDAnalyzer {
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
 
-	edm::InputTag dtTrackSrc, phiContainterSrc;
+	edm::InputTag dtTrackSrc, phiContainterSrc,thetaContainerSrc;
 
 	int bxMin, bxMax;
 	bool verbose;
 	std::map<std::string, TH1*> histoMap;
+	std::map<std::string, TH2*> histo2DMap;
 
 
 
@@ -90,9 +102,10 @@ class BXAnalyzer : public edm::EDAnalyzer {
 //
 BXAnalyzer::BXAnalyzer(const edm::ParameterSet& iConfig){
 	//Get the edm Input tags for the source collections
-	dtTrackSrc 		= iConfig.getParameter<edm::InputTag>("dtTrackSrc");
+	dtTrackSrc 			= iConfig.getParameter<edm::InputTag>("dtTrackSrc");
 
-	phiContainterSrc= iConfig.getParameter<edm::InputTag>("chambPhiContSrc");
+	phiContainterSrc	= iConfig.getParameter<edm::InputTag>("chambPhiContSrc");
+	thetaContainerSrc	= iConfig.getParameter<edm::InputTag>("chambThetaContSrc");
 
 	//Get other numerical parameters
 	bxMin = iConfig.getParameter<int>("bxMin");
@@ -125,16 +138,25 @@ BXAnalyzer::~BXAnalyzer()
 void
 BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 
+	edm::Handle<reco::GenParticleCollection> genParticles;
+	iEvent.getByLabel("genParticles",genParticles);
+
+	edm::Handle<L1TMuon::TriggerPrimitiveCollection> dtTriggerPrimitives;
+	iEvent.getByLabel("L1TMuonTriggerPrimitives","DT",dtTriggerPrimitives);
+
 	edm::Handle<L1MuDTTrackContainer> dtTracks;
 	iEvent.getByLabel(dtTrackSrc,dtTracks);
 
 	edm::Handle<L1MuDTChambPhContainer> chambPhiContainer;
-		iEvent.getByLabel(phiContainterSrc,chambPhiContainer);
+	iEvent.getByLabel(phiContainterSrc,chambPhiContainer);
 
+	edm::Handle<L1MuDTChambThContainer> chambThetaContainer;
+	iEvent.getByLabel(thetaContainerSrc,chambThetaContainer);
 
 	L1MuDTTrackContainer::TrackContainer::const_iterator track		= dtTracks->getContainer()->begin();
 	L1MuDTTrackContainer::TrackContainer::const_iterator trackEnd	= dtTracks->getContainer()->end();
 
+	//Fill Histogram for Track based BX ID
 	for ( ; track != trackEnd; ++track ) {
 		histoMap["histDttfTrackBx"]->Fill(track->bx());
 	}
@@ -142,9 +164,73 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 	L1MuDTChambPhContainer::Phi_Container::const_iterator phiSeg	= chambPhiContainer->getContainer()->begin();
 	L1MuDTChambPhContainer::Phi_Container::const_iterator phiSegEnd	= chambPhiContainer->getContainer()->end();
 
+	//Fill histogram for phi SL based BX ID
 	for ( ; phiSeg != phiSegEnd; ++phiSeg ) {
-		histoMap["histPhiSegBx"]->Fill(phiSeg->bxNum());
+		if(phiSeg->stNum() == 1){
+			histoMap["histPhiSegBxSt1"]->Fill(phiSeg->bxNum());
+		} else if(phiSeg->stNum() == 2){
+			histoMap["histPhiSegBxSt2"]->Fill(phiSeg->bxNum());
+		} else if(phiSeg->stNum() == 3){
+			histoMap["histPhiSegBxSt3"]->Fill(phiSeg->bxNum());
+		} else if(phiSeg->stNum() == 4){
+			histoMap["histPhiSegBxSt4"]->Fill(phiSeg->bxNum());
+		} else {
+			std::cout << "Phi segment with invalid station number " << phiSeg->stNum() << std::endl;
+		}
+
+		if(phiSeg->bxNum() != 0){
+			histoMap["histPhiSegBxPhi"]->Fill(phiSeg->phi());
+		}
+		histoMap["histDtPhiDistr"]->Fill(phiSeg->phi());
 	}
+
+	//Fill histogram for theta SL based BX ID
+	L1MuDTChambThContainer::The_Container::const_iterator thetaSeg		= chambThetaContainer->getContainer()->begin();
+	L1MuDTChambThContainer::The_Container::const_iterator thetaSegEnd	= chambThetaContainer->getContainer()->end();
+
+	for ( ; thetaSeg != thetaSegEnd; ++thetaSeg ) {
+		if(thetaSeg->stNum() == 1){
+			histoMap["histThetaSegBxSt1"]->Fill(thetaSeg->bxNum());
+		} else if(thetaSeg->stNum() == 2){
+			histoMap["histThetaSegBxSt2"]->Fill(thetaSeg->bxNum());
+		} else if(thetaSeg->stNum() == 3){
+			histoMap["histThetaSegBxSt3"]->Fill(thetaSeg->bxNum());
+		} else {
+			//No check for theta SL statiopn 4 since it does not exist
+			std::cout << "Theta segment with invalid station number " << phiSeg->stNum() << std::endl;
+		}
+
+		//TODO:
+		//# out of time bx over theta information
+		if(verbose){
+			std::cout << "Theta digi info" << std::endl;
+			std::cout << "Wheel: " << thetaSeg->whNum() << ", Sector: " << thetaSeg->scNum()
+						  << ", Station: " << thetaSeg->stNum() << ", BX: " << thetaSeg->bxNum() << "." << std::endl;
+			std::cout << "Theta pos: ";
+
+			for(int i = 0 ; i < 7 ; i++){
+				std::cout << thetaSeg->position(i);
+			}
+			std::cout << std::endl;
+			std::cout << "Theta qua: ";
+			for(int i = 0 ; i < 7 ; i++){
+				std::cout << thetaSeg->quality(i);
+			}
+			std::cout << std::endl;
+			std::cout << std::endl;
+		}
+	}
+
+
+	//Fill the correlation histogram for TP counter and gen particle counter
+	int genMuonCounter = 0;
+		reco::GenParticleCollection::const_iterator iterGenParticleCollection;
+		for(iterGenParticleCollection = genParticles->begin(); iterGenParticleCollection != genParticles->end() ; ++iterGenParticleCollection){
+			if( isMuon(*iterGenParticleCollection) ){ //Check whether gen particle is a muon
+				genMuonCounter++;
+			}
+		}
+	histo2DMap["hist2dGenPartTrigPrimCount"]->Fill(genMuonCounter,dtTriggerPrimitives->size());
 
 }
 
@@ -155,7 +241,28 @@ BXAnalyzer::beginJob()
 {
 	edm::Service<TFileService> fs;
 	histoMap["histDttfTrackBx"]	= fs->make<TH1D>("histDttfTrackBx","BX ID of DTTF Tracks;BX-ID;# Entries",20,-10,10);
-	histoMap["histPhiSegBx"]	= fs->make<TH1D>("histPhiSegBx","BX ID of DTTF Tracks;BX-ID;# Entries",20,-10,10);
+
+	//Phi SL Digis
+	histoMap["histPhiSegBxSt1"]	= fs->make<TH1D>("histPhiSegBxSt1","BX ID of Phi SL Digis Station 1;BX-ID;# Entries",20,-10,10);
+	histoMap["histPhiSegBxSt2"]	= fs->make<TH1D>("histPhiSegBxSt2","BX ID of Phi SL Digis Station 2;BX-ID;# Entries",20,-10,10);
+	histoMap["histPhiSegBxSt3"]	= fs->make<TH1D>("histPhiSegBxSt3","BX ID of Phi SL Digis Station 3;BX-ID;# Entries",20,-10,10);
+	histoMap["histPhiSegBxSt4"]	= fs->make<TH1D>("histPhiSegBxSt4","BX ID of Phi SL Digis Station 4;BX-ID;# Entries",20,-10,10);
+
+	histoMap["histPhiSegBxPhi"]	= fs->make<TH1D>("histPhiSegBxPhi","BX ID of Phi SL Digis over Phi;BX-ID;# Entries",20,-10,10);
+
+	//Theta SL Digis
+	histoMap["histThetaSegBxSt1"]	= fs->make<TH1D>("histThetaSegBxSt1","BX ID of Theta SL Digis Station 1;BX-ID;# Entries",20,-10,10);
+	histoMap["histThetaSegBxSt2"]	= fs->make<TH1D>("histThetaSegBxSt2","BX ID of Theta SL Digis Station 2;BX-ID;# Entries",20,-10,10);
+	histoMap["histThetaSegBxSt3"]	= fs->make<TH1D>("histThetaSegBxSt3","BX ID of Theta SL Digis Station 3;BX-ID;# Entries",20,-10,10);
+	histoMap["histThetaSegBxSt4"]	= fs->make<TH1D>("histThetaSegBxSt4","BX ID of Theta SL Digis Station 4;BX-ID;# Entries",20,-10,10);
+
+	histoMap["histDtPhiDistr"]		= fs->make<TH1D>("histDtPhiDistr","Distribution of Phi Digis;BX-ID;# Entries",20,-5,5);
+	histoMap["histDtThetaDistr"]	= fs->make<TH1D>("histDtThetaDistr","Distribution of Theta Digis;BX-ID;# Entries",20,-10,10);
+
+	//Correlation between n genParticles and n TriggerPrimitives
+	histo2DMap["hist2dGenPartTrigPrimCount"]
+	           = fs->make<TH2D>("hist2dGenPartTrigPrimCount","Correlation between Number of Trigger Primitives and genParticles;# gen Particles;# TP",
+	        		   100,0,100,100,0,100);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
