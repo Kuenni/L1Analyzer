@@ -24,6 +24,7 @@
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -78,6 +79,7 @@ class BXAnalyzer : public edm::EDAnalyzer {
 	bool verbose;
 	std::map<std::string, TH1*> histoMap;
 	std::map<std::string, TH2*> histo2DMap;
+	double etaMax;
 
 
 
@@ -178,10 +180,13 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 			std::cout << "Phi segment with invalid station number " << phiSeg->stNum() << std::endl;
 		}
 
+		//Make a Distribution of phi values for out of time BX IDs
 		if(phiSeg->bxNum() != 0){
-			histoMap["histPhiSegBxPhi"]->Fill(phiSeg->phi());
+			histoMap["histPhiDigiPhiDistrOOT"]->Fill(phiSeg->phi());
 		}
-		histoMap["histDtPhiDistr"]->Fill(phiSeg->phi());
+		histoMap["histPhiDigiPhiDistr"]->Fill(phiSeg->phi()%360);
+		if(verbose && ( phiSeg->phi()>360 || phiSeg->phi()<-360 ) )
+			std::cout << "Phi: " << phiSeg->phi() << std::endl;
 	}
 
 	//Fill histogram for theta SL based BX ID
@@ -231,6 +236,7 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 			}
 		}
 	histo2DMap["hist2dGenPartTrigPrimCount"]->Fill(genMuonCounter,dtTriggerPrimitives->size());
+	edm::LogInfo("Number of GenMuons in Event") << genMuonCounter;
 
 }
 
@@ -248,16 +254,18 @@ BXAnalyzer::beginJob()
 	histoMap["histPhiSegBxSt3"]	= fs->make<TH1D>("histPhiSegBxSt3","BX ID of Phi SL Digis Station 3;BX-ID;# Entries",20,-10,10);
 	histoMap["histPhiSegBxSt4"]	= fs->make<TH1D>("histPhiSegBxSt4","BX ID of Phi SL Digis Station 4;BX-ID;# Entries",20,-10,10);
 
-	histoMap["histPhiSegBxPhi"]	= fs->make<TH1D>("histPhiSegBxPhi","BX ID of Phi SL Digis over Phi;BX-ID;# Entries",20,-10,10);
+	histoMap["histPhiDigiPhiDistrOOT"]	= fs->make<TH1D>("histPhiDigiPhiDistrOOT","Phi of Phi Digis for Out Of Time BXs;BX-ID;# Entries",740,-370,370);
+
+	histoMap["histPhiDigiPhiDistr"]	= fs->make<TH1D>("histPhiDigiPhiDistr","Distribution of Phi in Phi Digis;BX-ID;# Entries",740,-370,370);
+
 
 	//Theta SL Digis
 	histoMap["histThetaSegBxSt1"]	= fs->make<TH1D>("histThetaSegBxSt1","BX ID of Theta SL Digis Station 1;BX-ID;# Entries",20,-10,10);
 	histoMap["histThetaSegBxSt2"]	= fs->make<TH1D>("histThetaSegBxSt2","BX ID of Theta SL Digis Station 2;BX-ID;# Entries",20,-10,10);
 	histoMap["histThetaSegBxSt3"]	= fs->make<TH1D>("histThetaSegBxSt3","BX ID of Theta SL Digis Station 3;BX-ID;# Entries",20,-10,10);
-	histoMap["histThetaSegBxSt4"]	= fs->make<TH1D>("histThetaSegBxSt4","BX ID of Theta SL Digis Station 4;BX-ID;# Entries",20,-10,10);
 
-	histoMap["histDtPhiDistr"]		= fs->make<TH1D>("histDtPhiDistr","Distribution of Phi Digis;BX-ID;# Entries",20,-5,5);
-	histoMap["histDtThetaDistr"]	= fs->make<TH1D>("histDtThetaDistr","Distribution of Theta Digis;BX-ID;# Entries",20,-10,10);
+	histoMap["histThDigiThDistrOOT"]	= fs->make<TH1D>("histThDigiThDistrOOT","Theta of Th Digis for Out Of Time BXs;BX-ID;# Entries",20,-10,10);
+
 
 	//Correlation between n genParticles and n TriggerPrimitives
 	histo2DMap["hist2dGenPartTrigPrimCount"]
