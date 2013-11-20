@@ -236,6 +236,7 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 			}
 		}
 	histo2DMap["hist2dGenPartTrigPrimCount"]->Fill(genMuonCounter,dtTriggerPrimitives->size());
+	histoMap["histNGenMuons"]->Fill(genMuonCounter);
 	edm::LogInfo("Number of GenMuons in Event") << genMuonCounter;
 
 }
@@ -268,6 +269,7 @@ BXAnalyzer::beginJob()
 
 
 	//Correlation between n genParticles and n TriggerPrimitives
+	histoMap["histNGenMuons"]	= fs->make<TH1D>("histNGenMuons","BX ID of Theta SL Digis Station 1;BX-ID;",100,0,100);
 	histo2DMap["hist2dGenPartTrigPrimCount"]
 	           = fs->make<TH2D>("hist2dGenPartTrigPrimCount","Correlation between Number of Trigger Primitives and genParticles;# gen Particles;# TP",
 	        		   100,0,100,100,0,100);
