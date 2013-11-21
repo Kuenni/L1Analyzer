@@ -21,6 +21,13 @@ process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonSimpleDeltaEtaHitMatcher_cfi')
 #Load own plugins
 process.load('L1Analyzer.L1Analyzer.BXAnalyzer_cfi')
 
+#From LXR. Makes dttriganalyzer run because it needs a DT config record 
+process.load("L1TriggerConfig.DTTPGConfigProducers.L1DTTPGConfig_cff")
+
+
+process.load('L1Analyzer.L1Analyzer.dttrigtest_cfi')
+process.dttriganalyzer.debug = cms.untracked.bool(True)
+#
 # Originally included
 # 
 #from Configuration.AlCa.GlobalTag import GlobalTag
@@ -30,16 +37,16 @@ process.load('L1Analyzer.L1Analyzer.BXAnalyzer_cfi')
 process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 infile = []
-#infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
-infile.append('file:DIMUGUN140PU_RECO.root')
+infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
+#infile.append('file:DIMUGUN140PU_RECO.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed_Yusuf.root')
 )
 
-process.MessageLogger = cms.Service("MessageLogger",
-        destinations = cms.untracked.vstring("Log")
-)
+#process.MessageLogger = cms.Service("MessageLogger",
+ #       destinations = cms.untracked.vstring("Log")
+#)
 
 #
 # Originally included source files
@@ -59,12 +66,13 @@ process.source = cms.Source(
     fileNames = cms.untracked.vstring(infile)
     )
 
-process.L1TMuonSeq = cms.Sequence( 	process.L1TMuonTriggerPrimitives +
-                                   	process.L1CSCTFTrackConverter    +
-                                   	process.L1DTTFTrackConverter     +
-                                   	process.L1RPCTFTrackConverters   +
-                                   	process.L1TMuonSimpleDeltaEtaHitMatcher+
-					process.BXAnalyzer
+process.L1TMuonSeq = cms.Sequence( 	process.L1TMuonTriggerPrimitives *
+                                   	process.L1CSCTFTrackConverter    *
+                                   	process.L1DTTFTrackConverter     *
+                                   	process.L1RPCTFTrackConverters   *
+                                   	process.L1TMuonSimpleDeltaEtaHitMatcher*
+					process.BXAnalyzer*
+					process.dttriganalyzer
 				)
 
 process.L1TMuonPath = cms.Path(process.L1TMuonSeq)
