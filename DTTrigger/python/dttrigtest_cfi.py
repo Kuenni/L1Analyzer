@@ -11,7 +11,7 @@ dttriganalyzer = cms.EDAnalyzer("DTTrigTest",
         tTrig = cms.double(500.0)
     ),
     # DT digis input tag
-    digiTag = cms.InputTag("muonDTDigis"),
+    digiTag = cms.InputTag("simMuonDTDigis"),
     # Synchronizer related stuff
     tTrigMode = cms.string('DTTTrigSyncTOFCorr'),
     # Output filename
