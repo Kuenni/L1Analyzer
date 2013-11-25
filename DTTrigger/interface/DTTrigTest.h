@@ -80,17 +80,22 @@ private:
 
   //GEANT block
   int             ngen;
-  float           pxgen[10];
-  float           pygen[10];
-  float           pzgen[10];
-  float           ptgen[10];
-  float           etagen[10];
-  float           phigen[10];
-  int             chagen[10];
-  float           vxgen[10];
-  float           vygen[10];
-  float           vzgen[10];
+  float           pxgen[20];
+  float           pygen[20];
+  float           pzgen[20];
+  float           ptgen[20];
+  float           etagen[20];
+  float           phigen[20];
+  int             chagen[20];
+  float           vxgen[20];
+  float           vygen[20];
+  float           vzgen[20];
   
+  //GenParticle Information
+  int 		nGenParticles;
+  double	etaGenParticles[20];
+  double 	phiGenParticles[20];
+
   // BTI
   int nbti;
   int bwh[100];

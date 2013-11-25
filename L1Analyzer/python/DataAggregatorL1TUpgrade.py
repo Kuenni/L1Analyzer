@@ -26,7 +26,7 @@ process.load("L1TriggerConfig.DTTPGConfigProducers.L1DTTPGConfig_cff")
 
 
 process.load('L1Analyzer.DTTrigger.dttrigtest_cfi')
-process.dttriganalyzer.debug = cms.untracked.bool(True)
+process.dttriganalyzer.debug = cms.untracked.bool(False)
 #
 # Originally included
 # 

@@ -5,7 +5,7 @@ from L1TriggerConfig.DTTPGConfigProducers.L1DTTPGConfigFromDB_cff import *
 dtTriggerPrimitiveDigis = cms.EDProducer("DTTrigProd",
     debug = cms.untracked.bool(False),
     # DT digis input tag
-    digiTag = cms.InputTag("muonDTDigis"),
+    digiTag = cms.InputTag("simMuonDTDigis"),
     # Convert output into DTTF sector numbering: 
     # false means [1-12] (useful for debug)
     # true is [0-11] useful as input for the DTTF emulator
