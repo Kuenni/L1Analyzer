@@ -8,5 +8,5 @@ BXAnalyzer = cms.EDAnalyzer('BXAnalyzer',
 	chambThetaContSrc	= cms.InputTag("simDtTriggerPrimitiveDigis"),
 	bxMin = cms.int32(-10),
 	bxMax = cms.int32(10),
-	verbose = cms.bool(True)
+	verbose = cms.bool(False)
 )

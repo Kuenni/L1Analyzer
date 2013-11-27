@@ -27,6 +27,7 @@
 // Trigger related headers
 #include "L1Analyzer/DTTrigger/interface/DTTrig.h"
 
+
 // Root headers
 #include "TTree.h"
 #include "TFile.h"
@@ -79,106 +80,106 @@ private:
   float           weight;
 
   //GEANT block
-  int             ngen;
-  float           pxgen[20];
-  float           pygen[20];
-  float           pzgen[20];
-  float           ptgen[20];
-  float           etagen[20];
-  float           phigen[20];
-  int             chagen[20];
-  float           vxgen[20];
-  float           vygen[20];
-  float           vzgen[20];
+  int             		ngen;
+  std::vector<float>	pxgen;
+  std::vector<float>	pygen;
+  std::vector<float> 	pzgen;
+  std::vector<float> 	ptgen;
+  std::vector<float> 	etagen;
+  std::vector<float> 	phigen;
+  std::vector<int>     	chagen;
+  std::vector<float> 	vxgen;
+  std::vector<float>  	vygen;
+  std::vector<float> 	vzgen;
   
   //GenParticle Information
   int 		nGenParticles;
-  double	etaGenParticles[20];
-  double 	phiGenParticles[20];
+  std::vector<double>	etaGenParticles;
+  std::vector<double> 	phiGenParticles;
 
   // BTI
   int nbti;
-  int bwh[100];
-  int bstat[100];
-  int bsect[100];
-  int bsl[100];
-  int bnum[100];
-  int bbx[100];
-  int bcod[100];
-  int bk[100];
-  int bx[100];
-  float bposx[100];
-  float bposy[100];
-  float bposz[100];
-  float bdirx[100];
-  float bdiry[100];
-  float bdirz[100];
+  std::vector<int> bwh;
+  std::vector<int> bstat;
+  std::vector<int> bsect;
+  std::vector<int> bsl;
+  std::vector<int> bnum;
+  std::vector<int> bbx;
+  std::vector<int> bcod;
+  std::vector<int> bk;
+  std::vector<int> bx;
+  std::vector<float> bposx;
+  std::vector<float> bposy;
+  std::vector<float> bposz;
+  std::vector<float> bdirx;
+  std::vector<float> bdiry;
+  std::vector<float> bdirz;
   
   // TRACO
   int ntraco;
-  int twh[80];
-  int tstat[80];
-  int tsect[80];
-  int tnum[80];
-  int tbx[80];
-  int tcod[80];
-  int tk[80];
-  int tx[80];
-  float tposx[100];
-  float tposy[100];
-  float tposz[100];
-  float tdirx[100];
-  float tdiry[100];
-  float tdirz[100];
+  std::vector<int> twh;
+  std::vector<int> tstat;
+  std::vector<int> tsect;
+  std::vector<int> tnum;
+  std::vector<int> tbx;
+  std::vector<int> tcod;
+  std::vector<int> tk;
+  std::vector<int> tx;
+  std::vector<float> tposx;
+  std::vector<float> tposy;
+  std::vector<float> tposz;
+  std::vector<float> tdirx;
+  std::vector<float> tdiry;
+  std::vector<float> tdirz;
   
   // TSPHI
   int ntsphi;
-  int swh[40];
-  int sstat[40]; 
-  int ssect[40];
-  int sbx[40];
-  int scod[40];
-  int sphi[40];
-  int sphib[40];
-  float sposx[100];
-  float sposy[100];
-  float sposz[100];
-  float sdirx[100];
-  float sdiry[100];
-  float sdirz[100]; 
+  std::vector<int> swh;
+  std::vector<int> sstat; 
+  std::vector<int> ssect;
+  std::vector<int> sbx;
+  std::vector<int> scod;
+  std::vector<int> sphi;
+  std::vector<int> sphib;
+  std::vector<float> sposx;
+  std::vector<float> sposy;
+  std::vector<float> sposz;
+  std::vector<float> sdirx;
+  std::vector<float> sdiry;
+  std::vector<float> sdirz;
 
   // TSTHETA
   int ntstheta;
-  int thwh[40];
-  int thstat[40]; 
-  int thsect[40];
-  int thbx[40];
+  std::vector<int> thwh;
+  std::vector<int> thstat; 
+  std::vector<int> thsect;
+  std::vector<int> thbx;
   int thcode[40][7];
   int thpos[40][7];
   int thqual[40][7];
 
   // SECTOR COLLECTOR (PHI VIEW)
   int nscphi;
-  int scphwh[40];
-  int scphstat[40]; 
-  int scphsect[40];
-  int scphbx[40];
-  int scphcod[40];
-  int scphphi[40];
-  int scphphib[40];
-  float scphposx[100];
-  float scphposy[100];
-  float scphposz[100];
-  float scphdirx[100];
-  float scphdiry[100];
-  float scphdirz[100]; 
+  std::vector<int> scphwh;
+  std::vector<int> scphstat; 
+  std::vector<int> scphsect;
+  std::vector<int> scphbx;
+  std::vector<int> scphcod;
+  std::vector<int> scphphi;
+  std::vector<int> scphphib;
+  std::vector<float> scphposx;
+  std::vector<float> scphposy;
+  std::vector<float> scphposz;
+  std::vector<float> scphdirx;
+  std::vector<float> scphdiry;
+  std::vector<float> scphdirz;
 
   // SECTOR COLLECTOR (THETA VIEW)
   int nsctheta;
-  int scthwh[40];
-  int scthstat[40]; 
-  int scthsect[40];
-  int scthbx[40];
+  std::vector<int> scthwh;
+  std::vector<int> scthstat; 
+  std::vector<int> scthsect;
+  std::vector<int> scthbx;
   int scthcode[40][7];
   int scthpos[40][7];
   int scthqual[40][7];
