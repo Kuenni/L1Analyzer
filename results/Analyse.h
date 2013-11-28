@@ -16,7 +16,7 @@
 class Analyse : TrigTestTreeData {
 	public:
 		Analyse(TTree*,bool debug = false);
-		TH1D* analyseBtiTriggers();
+		TH1D* plotBtiTriggers();
 		TH1D* plotNGenMuons();
 	private:
 		bool debug;
