@@ -130,7 +130,7 @@ void DTTrigTest::beginJob(){
 	my_tree->Branch("Vzgen",&vzgen);
 
 	//GenParticle information
-	my_tree->Branch("nGenParticles",nGenParticles,"nGenParticles/I");
+	my_tree->Branch("nGenParticles",&nGenParticles,"nGenParticles/I");
 	my_tree->Branch("etaGenParticles",&etaGenParticles);
 	my_tree->Branch("phiGenParticles",&phiGenParticles);
 
@@ -253,10 +253,16 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	reco::GenParticleCollection::const_iterator iterGenParticleCollection;
 	for(iterGenParticleCollection = genParticles->begin(); iterGenParticleCollection != genParticles->end() ; ++iterGenParticleCollection){
 		if( isMuon(*iterGenParticleCollection) ){ //Check whether gen particle is a muon
-
+			etaGenParticles.push_back( iterGenParticleCollection->eta() );
+			double phi = iterGenParticleCollection->phi();
+			if ( phi < 0 )
+				phi += 2*M_PI;
+			phiGenParticles.push_back( phi );
 			genMuonCounter++;
 		}
 	}
+	if(my_debug)
+		cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
 	nGenParticles = genMuonCounter;
 
 	// GEANT Block

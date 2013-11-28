@@ -93,7 +93,7 @@ private:
   std::vector<float> 	vzgen;
   
   //GenParticle Information
-  int 		nGenParticles;
+  int nGenParticles;
   std::vector<double>	etaGenParticles;
   std::vector<double> 	phiGenParticles;
 
