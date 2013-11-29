@@ -10,16 +10,18 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <string>
 
 #include "TH1.h"
 
 class Analyse : TrigTestTreeData {
 	public:
-		Analyse(TTree*,bool debug = false);
+		Analyse(TTree*,std::string,bool debug = false);
 		TH1D* plotBtiTriggers();
 		TH1D* plotNGenMuons();
 	private:
 		bool debug;
+		std::string sampleName;
 };
 
 #endif

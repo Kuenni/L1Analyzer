@@ -1,13 +1,16 @@
 #include "Analyse.h"
+#include "TString.h"
 
-Analyse::Analyse(TTree* tree, bool debug) : TrigTestTreeData(tree),debug(debug){
-	std::cout << "[Analyse] Loading Tree: " << LoadTree(0) << std::endl;
+Analyse::Analyse(TTree* tree,std::string sampleName, bool debug) : TrigTestTreeData(tree),sampleName(sampleName),debug(debug){
+	std::cout << "[Analyse " << sampleName << "] Loading Tree: " << LoadTree(0) << std::endl;
 }
 
 TH1D* Analyse::plotBtiTriggers(){
 	if(debug)
-		std::cout << "[Analyse] plotBtiTriggers called" << std::endl;
-	TH1D* hist = new TH1D("histNBtiTriggers","",200,-0.5,199.5);
+		std::cout << "[Analyse " << sampleName << "] plotBtiTriggers called" << std::endl;
+	TString histName("histNBtiTrg");
+	histName += sampleName;
+	TH1D* hist = new TH1D(histName,"",200,-0.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		hist->Fill(Nbti);
@@ -20,7 +23,7 @@ TH1D* Analyse::plotBtiTriggers(){
 
 TH1D* Analyse::plotNGenMuons(){
 	if(debug)
-		std::cout << "[Analyse] plotGenMuons called" << std::endl;
+		std::cout << "[Analyse " << sampleName << "] plotGenMuons called" << std::endl;
 	TH1D* hist = new TH1D("histNGenMuons","",200,-0.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
