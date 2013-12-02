@@ -13,7 +13,7 @@ TH1D* Analyse::plotBtiTriggers(){
 		std::cout << "[Analyse " << sampleName << "] plotBtiTriggers called" << std::endl;
 	TString histName("histNBtiTrg");
 	histName += sampleName;
-	TH1D* hist = new TH1D(histName,"",200,-0.5,199.5);
+	TH1D* hist = new TH1D(histName,"",201,-1.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		hist->Fill(Nbti);
@@ -35,11 +35,12 @@ TH1D* Analyse::plotBtiTriggersPerStation(int stationNr){
 	histName += sampleName;
 	histName += "St";
 	histName += stationNr;
-	TH1D* hist = new TH1D(histName,"",200,-0.5,199.5);
+	TH1D* hist = new TH1D(histName,"",201,-1.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		int stationCounter = 0;
 		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
+			//Filter for the requested station
 			if( bstat->at(j) == stationNr ){
 				stationCounter++;
 			}
@@ -63,7 +64,7 @@ TH1D* Analyse::plotTracoTriggers(){
 		std::cout << "[Analyse " << sampleName << "] plotTracoTriggers called" << std::endl;
 	TString histName("histNTracoTrg");
 	histName += sampleName;
-	TH1D* hist = new TH1D(histName,"",40,-0.5,39.5);
+	TH1D* hist = new TH1D(histName,"",41,-1.5,39.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		hist->Fill(Ntraco);
@@ -81,7 +82,9 @@ TH1D* Analyse::plotTracoTriggers(){
 TH1D* Analyse::plotNGenMuons(){
 	if(debug)
 		std::cout << "[Analyse " << sampleName << "] plotGenMuons called" << std::endl;
-	TH1D* hist = new TH1D("histNGenMuons","",50,-0.5,49.5);
+	TString histName("histNGenMuons");
+	histName += sampleName;
+	TH1D* hist = new TH1D(histName.Data(),"",50,-0.5,49.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		hist->Fill(nGenParticles);
@@ -97,20 +100,22 @@ TH1D* Analyse::plotNGenMuons(){
  * Plot gen particle distribution
  */
 
-//TH1D* Analyse::plotGenParticles(){
-//	if(debug)
-//		std::cout << "[Analyse " << sampleName << "] plotGenParticles called" << std::endl;
-//	TString histName("histNGenMuons");
-//	histName += sampleName;
-//	TH1D* hist = new TH1D(histName.Data(),"",50,-0.5,49.5);
-//	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
-//		GetEntry(n);
-//		hist->Fill(nGenParticles);
-//	}
-//	hist->SetTitle("Distribution of the number of gen muons per Event");
-//	hist->GetXaxis()->SetTitle("# N gen muons per evt");
-//	hist->GetYaxis()->SetTitle("# Entries");
-//	hist->SetLineWidth(2);
-//	return hist;
-//}
+TH1D* Analyse::plotGenParticles(){
+	if(debug)
+		std::cout << "[Analyse " << sampleName << "] plotGenParticles called" << std::endl;
+	TString histName("histGenParticles");
+	histName += sampleName;
+	TH1D* hist = new TH1D(histName.Data(),"",201,-100.5,100.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( unsigned int j = 0 ; j < genParticleId->size() ; j++ ){
+			hist->Fill(genParticleId->at(j));
+		}
+	}
+	hist->SetTitle("Distribution of gen particle ID");
+	hist->GetXaxis()->SetTitle("gen particle ID");
+	hist->GetYaxis()->SetTitle("# Entries");
+	hist->SetLineWidth(2);
+	return hist;
+}
 

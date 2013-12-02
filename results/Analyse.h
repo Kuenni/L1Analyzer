@@ -21,6 +21,7 @@ class Analyse : TrigTestTreeData {
 		TH1D* plotNGenMuons();
 		TH1D* plotTracoTriggers();
 		TH1D* plotBtiTriggersPerStation(int);
+		TH1D* plotGenParticles();
 	private:
 		bool debug;
 		std::string sampleName;

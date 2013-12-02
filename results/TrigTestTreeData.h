@@ -40,6 +40,7 @@ public :
    Int_t           nGenParticles;
    std::vector<double>  *etaGenParticles;
    std::vector<double>  *phiGenParticles;
+   std::vector<int>     *genParticleId;
    Int_t           Nbti;
    std::vector<int>     *bwh;
    std::vector<int>     *bstat;
@@ -134,6 +135,7 @@ public :
    TBranch        *b_nGenParticles;   //!
    TBranch        *b_etaGenParticles;   //!
    TBranch        *b_phiGenParticles;   //!
+   TBranch        *b_genParticleId;   //!
    TBranch        *b_Nbti;   //!
    TBranch        *b_bwh;   //!
    TBranch        *b_bstat;   //!

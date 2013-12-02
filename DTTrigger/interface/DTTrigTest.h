@@ -185,6 +185,7 @@ private:
   int scthpos[40][7];
   int scthqual[40][7];
 
+  void clearVectors();
 };
  
 #endif

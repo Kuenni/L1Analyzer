@@ -38,14 +38,14 @@ int main(int argc, char** argv){
 	std::cout << "Creating Analyse object with mu gun tree" << std::endl;
 	Analyse muGunAnalyse(muGunTree,"muGun",true);
 
-	std::cout << "Getting Tree for PU140 14TeV sample" << std::endl;
-	TTree* pu140Tree = (TTree*)(new TFile("UPG2017-v2_studies/DTTrigTest.root"))->Get("h1");
-	if(!pu140Tree){
-		std::cout << "Error! PU 140 14 TeV tree is null pointer!" << std::endl;
+	std::cout << "Getting Tree for DES17 14TeV sample" << std::endl;
+	TTree* des17Tree = (TTree*)(new TFile("UPG2017-v2_studies/DTTrigTest.root"))->Get("h1");
+	if(!des17Tree){
+		std::cout << "Error! Des 17 14 TeV tree is null pointer!" << std::endl;
 		return -1;
 	}
-	std::cout << "Creating Analyse object with PU 140 14TeV" << std::endl;
-	Analyse pu140Analyse(pu140Tree,"pu140",true);
+	std::cout << "Creating Analyse object with Des 17 14TeV" << std::endl;
+	Analyse des17Analyse(des17Tree,"des17",true);
 
 	//#######################
 	//# N Gen Muons
@@ -53,23 +53,41 @@ int main(int argc, char** argv){
 
 	std::cout << "Making N gen muons plots" << std::endl;
 	TCanvas* cGenMuons = new TCanvas( "nGen" , "Gen Muon distribution" , 1600 , 1200 );
-	//Pu 140 sample
-	TH1D* genMuonsPu140 = pu140Analyse.plotNGenMuons();
-	genMuonsPu140->SetLineWidth(2);
-	genMuonsPu140->Draw();
+	//Des 17 sample
+	TH1D* genMuonsDes17 = des17Analyse.plotNGenMuons();
+	genMuonsDes17->Draw();
 
 	//Mu gun sample
 	TH1D* genMuonsMuGun = muGunAnalyse.plotNGenMuons();
-	genMuonsMuGun->SetLineWidth(2);
 	genMuonsMuGun->SetLineColor(TColor::GetColorBright(1));
 	genMuonsMuGun->Draw("same");
 
 	cGenMuons->SetLogy();
 
 	TLegend* leg = new TLegend(0.3,0.7,0.68,0.9);
-	leg->AddEntry(genMuonsPu140,"PU 140","l");
+	leg->AddEntry(genMuonsDes17,"Des 17","l");
 	leg->AddEntry(genMuonsMuGun,"Mu Gun","l");
 	leg->Draw();
+
+	//#######################
+	//# Gen particle ID
+	//#######################
+
+	std::cout << "Making gen particles ID plots" << std::endl;
+	TCanvas* cGenParticles = new TCanvas( "genParticles" , "Gen particle ID distribution" , 1600 , 1200 );
+	//Des 17 sample
+	TH1D* genParticlesDes17 = des17Analyse.plotGenParticles();
+	genParticlesDes17->Draw();
+
+	//Mu gun sample
+	TH1D* genParticlesMuGun = muGunAnalyse.plotGenParticles();
+	genParticlesMuGun->SetLineColor(TColor::GetColorBright(1));
+	genParticlesMuGun->Draw("same");
+
+	TLegend* leg2 = new TLegend(0.3,0.7,0.68,0.9);
+	leg2->AddEntry(genParticlesDes17,"Des 17","l");
+	leg2->AddEntry(genParticlesMuGun,"Mu Gun","l");
+	leg2->Draw();
 
 	//#######################
 	//# BTI Triggers
@@ -79,7 +97,7 @@ int main(int argc, char** argv){
 	std::vector<TH1D*> btiVector;
 
 	btiVector.push_back(muGunAnalyse.plotBtiTriggers());
-	btiVector.push_back(pu140Analyse.plotBtiTriggers());
+	btiVector.push_back(des17Analyse.plotBtiTriggers());
 
 	TCanvas* cBtiTriggers = analyseBtiTriggers(btiVector);
 
@@ -94,12 +112,12 @@ int main(int argc, char** argv){
 	}
 	TCanvas* cBtiPerStMuGun = analyseBtiTriggersPerStation(btiPerStationMuGun,"muGun");
 
-	//PU 140 sample
-	std::vector<TH1D*> btiPerStationPu140;
+	//Des 17 sample
+	std::vector<TH1D*> btiPerStationDes17;
 	for( int i = 0 ; i < 4 ; i++){
-		btiPerStationPu140.push_back(pu140Analyse.plotBtiTriggersPerStation( i+1 ));
+		btiPerStationDes17.push_back(des17Analyse.plotBtiTriggersPerStation( i+1 ));
 	}
-	TCanvas* cBtiPerStPu140 = analyseBtiTriggersPerStation(btiPerStationPu140,"pu140");
+	TCanvas* cBtiPerStDes17 = analyseBtiTriggersPerStation(btiPerStationDes17,"des17");
 
 	//#######################
 	//# TRACO Triggers
@@ -109,19 +127,32 @@ int main(int argc, char** argv){
 	std::vector<TH1D*> tracoVector;
 
 	tracoVector.push_back(muGunAnalyse.plotTracoTriggers());
-	tracoVector.push_back(pu140Analyse.plotTracoTriggers());
+	tracoVector.push_back(des17Analyse.plotTracoTriggers());
 
 	TCanvas* cTracoTriggers = analyseTracoTriggers(tracoVector);
 
 	//All done. Save canvases and run root app
 
 	gSystem->MakeDirectory("./plots");
+	gSystem->MakeDirectory("./plots/png");
+	gSystem->MakeDirectory("./plots/pdf");
 
-	cTracoTriggers->SaveAs("plots/tracoTriggers.png");
-	cBtiPerStPu140->SaveAs("plots/btiTriggersPerStationPu140.png");
-	cBtiPerStMuGun->SaveAs("plots/btiTriggersPerStationMuGun.png");
-	cBtiTriggers->SaveAs("plots/btiTriggers.png");
-	cGenMuons->SaveAs("plots/genMuons.png");
+	//Make png files
+	cTracoTriggers->SaveAs("plots/png/tracoTriggers.png");
+	cBtiPerStDes17->SaveAs("plots/png/btiTriggersPerStationDes17.png");
+	cBtiPerStMuGun->SaveAs("plots/png/btiTriggersPerStationMuGun.png");
+	cBtiTriggers->SaveAs("plots/png/btiTriggers.png");
+	cGenMuons->SaveAs("plots/png/genMuons.png");
+	cGenParticles->SaveAs("plots/png/genParticles.png");
+
+	//Make pdf files
+	cTracoTriggers->SaveAs("plots/pdf/tracoTriggers.pdf");
+	cBtiPerStDes17->SaveAs("plots/pdf/btiTriggersPerStationDes17.pdf");
+	cBtiPerStMuGun->SaveAs("plots/pdf/btiTriggersPerStationMuGun.pdf");
+	cBtiTriggers->SaveAs("plots/pdf/btiTriggers.pdf");
+	cGenMuons->SaveAs("plots/pdf/genMuons.pdf");
+	cGenParticles->SaveAs("plots/pdf/genParticles.pdf");
+
 
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
 	app->Run();

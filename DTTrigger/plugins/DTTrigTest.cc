@@ -241,6 +241,9 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	if (my_debug)
 		cout << "[DTTrigTest] Trigger algorithm executed for run " << iEvent.id().run() <<" event " << iEvent.id().event() << endl;
 
+	//Clear all vector Data from last event
+	clearVectors();
+
 	// GENERAL Block
 	runn   = iEvent.id().run();
 	eventn = iEvent.id().event();
@@ -489,4 +492,88 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	//Fill the tree
 	my_tree->Fill();
 
+}
+
+/**
+ * Clear vector data.
+ *
+ * Used to remove data in analyze() from previous event
+ */
+void DTTrigTest::clearVectors(){
+	pxgen.clear();
+	pygen.clear();
+	pzgen.clear();
+	ptgen.clear();
+	etagen.clear();
+	phigen.clear();
+	chagen.clear();
+	vxgen.clear();
+	vygen.clear();
+	vzgen.clear();
+	etaGenParticles.clear();
+	phiGenParticles.clear();
+	genParticleId.clear();
+	bwh.clear();
+	bstat.clear();
+	bsect.clear();
+	bsl.clear();
+	bnum.clear();
+	bbx.clear();
+	bcod.clear();
+	bk.clear();
+	bx.clear();
+	bposx.clear();
+	bposy.clear();
+	bposz.clear();
+	bdirx.clear();
+	bdiry.clear();
+	bdirz.clear();
+	twh.clear();
+	tstat.clear();
+	tsect.clear();
+	tnum.clear();
+	tbx.clear();
+	tcod.clear();
+	tk.clear();
+	tx.clear();
+	tposx.clear();
+	tposy.clear();
+	tposz.clear();
+	tdirx.clear();
+	tdiry.clear();
+	tdirz.clear();
+	swh.clear();
+	sstat.clear();
+	ssect.clear();
+	sbx.clear();
+	scod.clear();
+	sphi.clear();
+	sphib.clear();
+	sposx.clear();
+	sposy.clear();
+	sposz.clear();
+	sdirx.clear();
+	sdiry.clear();
+	sdirz.clear();
+	thwh.clear();
+	thstat.clear();
+	thsect.clear();
+	thbx.clear();
+	scphwh.clear();
+	scphstat.clear();
+	scphsect.clear();
+	scphbx.clear();
+	scphcod.clear();
+	scphphi.clear();
+	scphphib.clear();
+	scphposx.clear();
+	scphposy.clear();
+	scphposz.clear();
+	scphdirx.clear();
+	scphdiry.clear();
+	scphdirz.clear();
+	scthwh.clear();
+	scthstat.clear();
+	scthsect.clear();
+	scthbx.clear();
 }

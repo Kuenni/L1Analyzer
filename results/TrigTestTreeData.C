@@ -100,6 +100,7 @@ void TrigTestTreeData::Init(TTree *tree)
    Vzgen = 0;
    etaGenParticles = 0;
    phiGenParticles = 0;
+   genParticleId = 0;
    bwh = 0;
    bstat = 0;
    bsect = 0;
@@ -186,6 +187,7 @@ void TrigTestTreeData::Init(TTree *tree)
    fChain->SetBranchAddress("nGenParticles", &nGenParticles, &b_nGenParticles);
    fChain->SetBranchAddress("etaGenParticles", &etaGenParticles, &b_etaGenParticles);
    fChain->SetBranchAddress("phiGenParticles", &phiGenParticles, &b_phiGenParticles);
+   fChain->SetBranchAddress("genParticleId", &genParticleId, &b_genParticleId);
    fChain->SetBranchAddress("Nbti", &Nbti, &b_Nbti);
    fChain->SetBranchAddress("bwh", &bwh, &b_bwh);
    fChain->SetBranchAddress("bstat", &bstat, &b_bstat);
