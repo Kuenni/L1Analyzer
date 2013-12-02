@@ -96,6 +96,7 @@ private:
   int nGenParticles;
   std::vector<double>	etaGenParticles;
   std::vector<double> 	phiGenParticles;
+  std::vector<int>		genParticleId;
 
   // BTI
   int nbti;

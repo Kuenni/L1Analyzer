@@ -93,4 +93,24 @@ TH1D* Analyse::plotNGenMuons(){
 	return hist;
 }
 
+/**
+ * Plot gen particle distribution
+ */
+
+//TH1D* Analyse::plotGenParticles(){
+//	if(debug)
+//		std::cout << "[Analyse " << sampleName << "] plotGenParticles called" << std::endl;
+//	TString histName("histNGenMuons");
+//	histName += sampleName;
+//	TH1D* hist = new TH1D(histName.Data(),"",50,-0.5,49.5);
+//	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+//		GetEntry(n);
+//		hist->Fill(nGenParticles);
+//	}
+//	hist->SetTitle("Distribution of the number of gen muons per Event");
+//	hist->GetXaxis()->SetTitle("# N gen muons per evt");
+//	hist->GetYaxis()->SetTitle("# Entries");
+//	hist->SetLineWidth(2);
+//	return hist;
+//}
 

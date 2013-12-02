@@ -133,6 +133,7 @@ void DTTrigTest::beginJob(){
 	my_tree->Branch("nGenParticles",&nGenParticles,"nGenParticles/I");
 	my_tree->Branch("etaGenParticles",&etaGenParticles);
 	my_tree->Branch("phiGenParticles",&phiGenParticles);
+	my_tree->Branch("genParticleId",&genParticleId);
 
 
 	// L1MuDTBtiChipS block
@@ -260,6 +261,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 			phiGenParticles.push_back( phi );
 			genMuonCounter++;
 		}
+		genParticleId.push_back(iterGenParticleCollection->pdgId());
 	}
 	if(my_debug)
 		cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;

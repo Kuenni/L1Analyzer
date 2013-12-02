@@ -37,8 +37,8 @@ process.dttriganalyzer.debug = cms.untracked.bool(False)
 process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 infile = []
-#infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
-infile.append('file:DIMUGUN140PU_RECO.root')
+infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
+#infile.append('file:DIMUGUN140PU_RECO.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
