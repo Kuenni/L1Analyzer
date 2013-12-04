@@ -57,6 +57,7 @@ public :
    std::vector<float>   *bdirx;
    std::vector<float>   *bdiry;
    std::vector<float>   *bdirz;
+   std::vector<float>   *beta;
    Int_t           Ntraco;
    std::vector<int>     *twh;
    std::vector<int>     *tstat;
@@ -152,6 +153,7 @@ public :
    TBranch        *b_bdirx;   //!
    TBranch        *b_bdiry;   //!
    TBranch        *b_bdirz;   //!
+   TBranch        *b_beta;   //!
    TBranch        *b_Ntraco;   //!
    TBranch        *b_twh;   //!
    TBranch        *b_tstat;   //!

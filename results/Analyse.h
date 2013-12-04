@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "TH1.h"
 
@@ -22,6 +23,7 @@ class Analyse : TrigTestTreeData {
 		TH1D* plotTracoTriggers();
 		TH1D* plotBtiTriggersPerStation(int);
 		TH1D* plotGenParticles();
+		TH1D* plotBtiTriggersPerEta(int);
 	private:
 		bool debug;
 		std::string sampleName;

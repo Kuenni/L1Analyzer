@@ -20,6 +20,7 @@
 TCanvas* analyseBtiTriggers(std::vector<TH1D*>);
 TCanvas* analyseTracoTriggers(std::vector<TH1D*>);
 TCanvas* analyseBtiTriggersPerStation(std::vector<TH1D*>,std::string);
+TCanvas* analyseBtiTriggersPerEta(std::vector<TH1D*> input);
 
 int main(int argc, char** argv){
 	std::cout << "Starting application" << std::endl;
@@ -105,6 +106,7 @@ int main(int argc, char** argv){
 	//# BTI Triggers per station
 	//#######################
 
+	std::cout << "Making BTI triggers per station plots" << std::endl;
 	//Mu Gun sample
 	std::vector<TH1D*> btiPerStationMuGun;
 	for( int i = 0 ; i < 4 ; i++){
@@ -118,6 +120,20 @@ int main(int argc, char** argv){
 		btiPerStationDes17.push_back(des17Analyse.plotBtiTriggersPerStation( i+1 ));
 	}
 	TCanvas* cBtiPerStDes17 = analyseBtiTriggersPerStation(btiPerStationDes17,"des17");
+
+	//#######################
+	//# BTI Triggers per eta
+	//#######################
+
+	std::cout << "Making BTI triggers per eta plots" << std::endl;
+
+	std::vector<TH1D*> btiPerEta;
+
+	btiPerEta.push_back(muGunAnalyse.plotBtiTriggersPerEta(31));
+	btiPerEta.push_back(des17Analyse.plotBtiTriggersPerEta(31));
+
+	TCanvas* cBtiPerEta = analyseBtiTriggersPerEta(btiPerEta);
+
 
 	//#######################
 	//# TRACO Triggers
@@ -144,7 +160,7 @@ int main(int argc, char** argv){
 	cBtiTriggers->SaveAs("plots/png/btiTriggers.png");
 	cGenMuons->SaveAs("plots/png/genMuons.png");
 	cGenParticles->SaveAs("plots/png/genParticles.png");
-
+	cBtiPerEta->SaveAs("plots/png/btiTriggersPerEta.png");
 	//Make pdf files
 	cTracoTriggers->SaveAs("plots/pdf/tracoTriggers.pdf");
 	cBtiPerStDes17->SaveAs("plots/pdf/btiTriggersPerStationDes17.pdf");
@@ -152,10 +168,42 @@ int main(int argc, char** argv){
 	cBtiTriggers->SaveAs("plots/pdf/btiTriggers.pdf");
 	cGenMuons->SaveAs("plots/pdf/genMuons.pdf");
 	cGenParticles->SaveAs("plots/pdf/genParticles.pdf");
-
+	cBtiPerEta->SaveAs("plots/png/btiTriggersPerEta.pdf");
 
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
 	app->Run();
+}
+
+/**
+ * Plot BTI triggers per eta
+ */
+TCanvas* analyseBtiTriggersPerEta(std::vector<TH1D*> input){
+	if( !( &input ) ){
+		std::cout << "[main] Null pointer for BTI trigger per eta hist vector.\nReturning." << std::endl;
+		return NULL;
+	} else if ( input.size() == 0 ){
+		std::cout << "[main] Empty BTI trigger per eta hist vector.\nReturning." << std::endl;
+		return NULL;
+	}
+	TString name("btiTriggersPerEta");
+
+	TString title("BTI Triggers per eta ");
+
+	TCanvas* canvas = new TCanvas( name.Data() , title.Data() , 1600 , 1200);
+	int nHistos = input.size();
+	int rowsX,rowsY;
+	rowsX = ceil( sqrt(nHistos) );
+	rowsY = ceil( sqrt(nHistos) );
+	canvas->Divide( rowsX , rowsY );
+
+	canvas->cd(1);
+	input[0]->Draw();
+	for( int i = 1 ; i < nHistos ; i++ ){
+		canvas->cd(i+1);
+		input[i]->SetLineColor( TColor::GetColorBright(i) );
+		input[i]->Draw();
+	}
+	return canvas;
 }
 
 /**

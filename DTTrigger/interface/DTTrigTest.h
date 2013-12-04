@@ -115,6 +115,7 @@ private:
   std::vector<float> bdirx;
   std::vector<float> bdiry;
   std::vector<float> bdirz;
+  std::vector<float> beta;
   
   // TRACO
   int ntraco;

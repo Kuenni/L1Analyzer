@@ -37,8 +37,8 @@ process.dttriganalyzer.debug = cms.untracked.bool(False)
 process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 infile = []
-#infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
-infile.append('file:DIMUGUN140PU_RECO.root')
+infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
+#infile.append('file:DIMUGUN140PU_RECO.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
@@ -59,7 +59,7 @@ process.TFileService = cms.Service("TFileService",
 #infile.append('file:SingleMuFlatPt_plusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 #infile.append('file:SingleMuFlatPt_minusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source(
     'PoolSource',

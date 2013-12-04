@@ -153,6 +153,7 @@ void DTTrigTest::beginJob(){
 	my_tree->Branch("bdirx",&bdirx);
 	my_tree->Branch("bdiry",&bdiry);
 	my_tree->Branch("bdirz",&bdirz);
+	my_tree->Branch("beta",&beta);
 	// L1MuDTTracoChipS block
 	my_tree->Branch("Ntraco",&ntraco,"Ntraco/I");
 	my_tree->Branch("twh",&twh);
@@ -343,6 +344,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		bdirx.push_back( dir.x() );
 		bdiry.push_back( dir.y() );
 		bdirz.push_back( dir.z() );
+		beta.push_back( pos.eta() );
 		ibti++;
 		//    }
 	}
@@ -528,6 +530,7 @@ void DTTrigTest::clearVectors(){
 	bdirx.clear();
 	bdiry.clear();
 	bdirz.clear();
+	beta.clear();
 	twh.clear();
 	tstat.clear();
 	tsect.clear();

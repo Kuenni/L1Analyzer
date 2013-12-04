@@ -26,6 +26,36 @@ TH1D* Analyse::plotBtiTriggers(){
 }
 
 /**
+ * Plot number of BTI triggers per eta segment
+ */
+TH1D* Analyse::plotBtiTriggersPerEta(int nBins){
+	if(debug)
+			std::cout << "[Analyse " << sampleName << "] plotBtiTriggersPerEta called" << std::endl;
+
+	TString histName("histNBtiTrgPerEta");
+	histName += sampleName;
+	TH1D* hist = new TH1D(histName,"", nBins+1 , -1.55 , 1.55 ); //-0.5 to center bins around value, +/- 1 to have a frame
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for ( unsigned int j = 0 ; j < beta->size() ; j++ ){
+			hist->Fill(beta->at(j));
+		}
+	}
+	TString histTitle("Distribution of number of BTI triggers per #eta");
+	hist->SetTitle(histTitle.Data());
+	hist->GetXaxis()->SetTitle("#eta of BTI Trigger Data");
+	double binWidth = 3.1 / (nBins + 1.);
+	binWidth = (int) (binWidth*100 + 0.5);
+	binWidth /= 100.;
+	TString yAxisTitle("# Entries / ");
+	yAxisTitle += binWidth;
+	yAxisTitle += " #eta";
+	hist->GetYaxis()->SetTitle( yAxisTitle.Data() );
+	hist->SetLineWidth(2);
+	return hist;
+}
+
+/**
  * Make the plots for number of hit BTIs per station
  */
 TH1D* Analyse::plotBtiTriggersPerStation(int stationNr){

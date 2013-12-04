@@ -116,6 +116,7 @@ void TrigTestTreeData::Init(TTree *tree)
    bdirx = 0;
    bdiry = 0;
    bdirz = 0;
+   beta = 0;
    twh = 0;
    tstat = 0;
    tsect = 0;
@@ -204,6 +205,7 @@ void TrigTestTreeData::Init(TTree *tree)
    fChain->SetBranchAddress("bdirx", &bdirx, &b_bdirx);
    fChain->SetBranchAddress("bdiry", &bdiry, &b_bdiry);
    fChain->SetBranchAddress("bdirz", &bdirz, &b_bdirz);
+   fChain->SetBranchAddress("beta", &beta, &b_beta);
    fChain->SetBranchAddress("Ntraco", &Ntraco, &b_Ntraco);
    fChain->SetBranchAddress("twh", &twh, &b_twh);
    fChain->SetBranchAddress("tstat", &tstat, &b_tstat);
