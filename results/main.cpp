@@ -21,6 +21,7 @@ TCanvas* analyseBtiTriggers(std::vector<TH1D*>);
 TCanvas* analyseTracoTriggers(std::vector<TH1D*>);
 TCanvas* analyseBtiTriggersPerStation(std::vector<TH1D*>,std::string);
 TCanvas* analyseBtiTriggersPerEta(std::vector<TH1D*> input);
+TCanvas* plotDividedCanvas(std::vector<TH1D*> input, int nY = 0);
 
 int main(int argc, char** argv){
 	std::cout << "Starting application" << std::endl;
@@ -189,20 +190,9 @@ TCanvas* analyseBtiTriggersPerEta(std::vector<TH1D*> input){
 
 	TString title("BTI Triggers per eta ");
 
-	TCanvas* canvas = new TCanvas( name.Data() , title.Data() , 1600 , 1200);
-	int nHistos = input.size();
-	int rowsX,rowsY;
-	rowsX = ceil( sqrt(nHistos) );
-	rowsY = ceil( sqrt(nHistos) );
-	canvas->Divide( rowsX , rowsY );
-
-	canvas->cd(1);
-	input[0]->Draw();
-	for( int i = 1 ; i < nHistos ; i++ ){
-		canvas->cd(i+1);
-		input[i]->SetLineColor( TColor::GetColorBright(i) );
-		input[i]->Draw();
-	}
+	TCanvas* canvas = plotDividedCanvas(input);
+	canvas->SetName( name.Data() );
+	canvas->SetTitle( title.Data() );
 	return canvas;
 }
 
@@ -223,20 +213,9 @@ TCanvas* analyseBtiTriggersPerStation(std::vector<TH1D*> input , std::string sam
 	TString title("BTI Triggers per Station ");
 	title += sampleInfo;
 
-	TCanvas* canvas = new TCanvas( name.Data() , title.Data() , 1600 , 1200);
-	int nHistos = input.size();
-	int rowsX,rowsY;
-	rowsX = ceil( sqrt(nHistos) );
-	rowsY = ceil( sqrt(nHistos) );
-	canvas->Divide( rowsX , rowsY );
-
-	canvas->cd(1);
-	input[0]->Draw();
-	for( int i = 1 ; i < nHistos ; i++ ){
-		canvas->cd(i+1);
-		input[i]->SetLineColor( TColor::GetColorBright(i) );
-		input[i]->Draw();
-	}
+	TCanvas* canvas = plotDividedCanvas(input);
+	canvas->SetName( name.Data() );
+	canvas->SetTitle( title.Data() );
 	return canvas;
 }
 
@@ -251,20 +230,9 @@ TCanvas* analyseBtiTriggers(std::vector<TH1D*> input){
 		std::cout << "[main] Empty BTI trigger hist vector.\nReturning." << std::endl;
 		return NULL;
 	}
-	TCanvas* canvas = new TCanvas("btiTriggersCanvas","BTI Triggers",1600,1200);
-	int nHistos = input.size();
-	int rowsX,rowsY;
-	rowsX = ceil(sqrt(nHistos));
-	rowsY = ceil(sqrt(nHistos));
-	canvas->Divide(rowsX,rowsY);
-
-	canvas->cd(1);
-	input[0]->Draw();
-	for( int i = 1 ; i < nHistos ; i++ ){
-		canvas->cd(i+1);
-		input[i]->SetLineColor( TColor::GetColorBright(i) );
-		input[i]->Draw("Same");
-	}
+	TCanvas* canvas = plotDividedCanvas(input);
+	canvas->SetName("btiTriggersCanvas");
+	canvas->SetTitle("BTI Triggers");
 	return canvas;
 }
 
@@ -279,20 +247,36 @@ TCanvas* analyseTracoTriggers(std::vector<TH1D*> input){
 		std::cout << "[main] Empty TRACO trigger hist vector.\nReturning." << std::endl;
 		return NULL;
 	}
-	TCanvas* canvas = new TCanvas("tracoTriggersCanvas","TRACO Triggers",1600,1200);
-	int nHistos = input.size();
-	int rowsX,rowsY;
-	rowsX = ceil(sqrt(nHistos));
-	rowsY = ceil(sqrt(nHistos));
-	canvas->Divide(rowsX,rowsY);
+	TCanvas* canvas = plotDividedCanvas(input);
+	canvas->SetTitle("TRACO Triggers");
+	canvas->SetName("tracoTriggersCanvas");
+	return canvas;
 
+}
+
+/**
+ * Helper function to create divided canvases
+ * If nY is 0, a canvas with n^2 pads is created, otherwise the canvas is
+ * divided as nX times nY pads
+ * The function automatically plots the TH1D given in the input vector
+ */
+TCanvas* plotDividedCanvas(std::vector<TH1D*> input, int nY){
+	TCanvas* canvas = new TCanvas("c","",1600,1200);
+	int nX = ceil( sqrt( input.size() ) );
+	if( nY <= 0 ){
+		if(nY < 0)
+			std::cout << "[main] Warning! Ignoring invalid canvas row count " << nY << std::endl;
+		canvas->Divide(nX,nX);
+	} else {
+		canvas->Divide(nX,nY);
+	}
+	std::cout << "[main] Created canvas with " << nX << " pads." << std::endl;
 	canvas->cd(1);
 	input[0]->Draw();
-	for( int i = 1 ; i < nHistos ; i++ ){
+	for( int i = 1 ; i < input.size() ; i++ ){
 		canvas->cd(i+1);
 		input[i]->SetLineColor( TColor::GetColorBright(i) );
 		input[i]->Draw("Same");
 	}
 	return canvas;
-
 }
