@@ -1,5 +1,7 @@
 #include "Analyse.h"
 
+#include "PlotStyle.h"
+
 #include "TTree.h"
 #include "TH1.h"
 #include "TFile.h"
@@ -22,10 +24,15 @@ TCanvas* analyseTracoTriggers(std::vector<TH1D*>);
 TCanvas* analyseBtiTriggersPerStation(std::vector<TH1D*>,std::string);
 TCanvas* analyseBtiTriggersPerEta(std::vector<TH1D*> input);
 TCanvas* plotDividedCanvas(std::vector<TH1D*> input, int nY = 0);
+TCanvas* getDividedCanvas(int nX, int nY = 0);
+void storePlots(TCanvas*,std::string);
 
 int main(int argc, char** argv){
 	std::cout << "Starting application" << std::endl;
 	TApplication* app = new TApplication("Analyse",&argc,argv);
+
+	//Set plot style for own root design
+	PlotStyle* s = new PlotStyle();
 
 	//#######################
 	//# Creating Trees and Analyse objects
@@ -86,11 +93,41 @@ int main(int argc, char** argv){
 	genParticlesMuGun->SetLineColor(TColor::GetColorBright(1));
 	genParticlesMuGun->Draw("same");
 
-	TLegend* leg2 = new TLegend(0.3,0.7,0.68,0.9);
+	TLegend* leg2 = new TLegend(0.1,0.7,0.48,0.9);
 	leg2->AddEntry(genParticlesDes17,"Des 17","l");
 	leg2->AddEntry(genParticlesMuGun,"Mu Gun","l");
 	leg2->Draw();
 
+	//#######################
+	//# Gen particle eta with no bti trigger in event
+	//#######################
+	TCanvas* cGenParticlesEta = new TCanvas( "genParticlesEta" , "Gen particle #eta distribution" , 1600 , 1200 );
+	TH1D* genParticlesEta = des17Analyse.plotEtaNoBtiTriggers();
+	genParticlesEta->Draw();
+
+	//#######################
+	//# BTI triggers over BX ID
+	//#######################
+	TCanvas* cBtiVsBx = new TCanvas( "cBtiVsBx" , "BX ID distribution" , 1600 , 1200 );
+	des17Analyse.plotBtiTrgVsBx()->Draw();
+
+	//#######################
+	//# BTI triggers with no Theta information
+	//#######################
+	TCanvas* cBtiNoTheta = getDividedCanvas(2,3);
+	cBtiNoTheta->SetName("cBtiNoTheta");
+	cBtiNoTheta->SetTitle("Distribution of BTI triggers with no theta info");
+	for( int i = 0 ; i < 3 ; i++ ){
+		cBtiNoTheta->cd( 2*i + 1 );
+		TH2D* h = des17Analyse.plotNoBtiTheta( i+1 );
+		h->Draw("Colz");
+		h->SetStats(false);
+		cBtiNoTheta->cd(2*(i+1));
+		TH2D* h2 = muGunAnalyse.plotNoBtiTheta( i+1 );
+		h2->Draw("Colz");
+		h2->SetStats(false);
+
+	}
 	//#######################
 	//# BTI Triggers
 	//#######################
@@ -149,27 +186,24 @@ int main(int argc, char** argv){
 	TCanvas* cTracoTriggers = analyseTracoTriggers(tracoVector);
 
 	//All done. Save canvases and run root app
+	storePlots(cTracoTriggers,"tracoTriggers");
+	storePlots(cBtiPerStDes17,"btiTriggersPerStationDes17");
+	storePlots(cBtiPerStMuGun,"btiTriggersPerStationMuGun");
+	storePlots(cBtiTriggers,"btiTriggersPerStationMuGun");
+	storePlots(cGenMuons,"genMuons");
+	storePlots(cGenParticles,"genParticles");
+	storePlots(cBtiPerEta,"btiTriggersPerEta");
+	storePlots(cBtiVsBx,"btiVsBx");
+	storePlots(cBtiNoTheta,"btiNoTheta");
 
-	gSystem->MakeDirectory("./plots");
-	gSystem->MakeDirectory("./plots/png");
-	gSystem->MakeDirectory("./plots/pdf");
-
-	//Make png files
-	cTracoTriggers->SaveAs("plots/png/tracoTriggers.png");
-	cBtiPerStDes17->SaveAs("plots/png/btiTriggersPerStationDes17.png");
-	cBtiPerStMuGun->SaveAs("plots/png/btiTriggersPerStationMuGun.png");
-	cBtiTriggers->SaveAs("plots/png/btiTriggers.png");
-	cGenMuons->SaveAs("plots/png/genMuons.png");
-	cGenParticles->SaveAs("plots/png/genParticles.png");
-	cBtiPerEta->SaveAs("plots/png/btiTriggersPerEta.png");
-	//Make pdf files
-	cTracoTriggers->SaveAs("plots/pdf/tracoTriggers.pdf");
-	cBtiPerStDes17->SaveAs("plots/pdf/btiTriggersPerStationDes17.pdf");
-	cBtiPerStMuGun->SaveAs("plots/pdf/btiTriggersPerStationMuGun.pdf");
-	cBtiTriggers->SaveAs("plots/pdf/btiTriggers.pdf");
-	cGenMuons->SaveAs("plots/pdf/genMuons.pdf");
-	cGenParticles->SaveAs("plots/pdf/genParticles.pdf");
-	cBtiPerEta->SaveAs("plots/png/btiTriggersPerEta.pdf");
+	cTracoTriggers->Close();
+	cBtiPerStDes17->Close();
+	cBtiPerStMuGun->Close();
+	cBtiTriggers->Close();
+	cGenParticles->Close();
+	cGenMuons->Close();
+	cBtiPerEta->Close();
+	cBtiVsBx->Close();
 
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
 	app->Run();
@@ -208,7 +242,8 @@ TCanvas* analyseBtiTriggersPerStation(std::vector<TH1D*> input , std::string sam
 		return NULL;
 	}
 	TString name("btiTriggersPerSt");
-	name += sampleInfo;
+	name += sampleInfo;	new TCanvas( "" , "Distribution of BTI triggers with no theta info" , 1600 , 1200 );
+
 
 	TString title("BTI Triggers per Station ");
 	title += sampleInfo;
@@ -261,8 +296,11 @@ TCanvas* analyseTracoTriggers(std::vector<TH1D*> input){
  * The function automatically plots the TH1D given in the input vector
  */
 TCanvas* plotDividedCanvas(std::vector<TH1D*> input, int nY){
-	TCanvas* canvas = new TCanvas("c","",1600,1200);
 	int nX = ceil( sqrt( input.size() ) );
+	TCanvas* canvas = getDividedCanvas( nX , nY );
+	/*
+			new TCanvas("c","",1600,1200);
+
 	if( nY <= 0 ){
 		if(nY < 0)
 			std::cout << "[main] Warning! Ignoring invalid canvas row count " << nY << std::endl;
@@ -271,12 +309,40 @@ TCanvas* plotDividedCanvas(std::vector<TH1D*> input, int nY){
 		canvas->Divide(nX,nY);
 	}
 	std::cout << "[main] Created canvas with " << nX << " pads." << std::endl;
+	*/
 	canvas->cd(1);
 	input[0]->Draw();
 	for( int i = 1 ; i < input.size() ; i++ ){
 		canvas->cd(i+1);
 		input[i]->SetLineColor( TColor::GetColorBright(i) );
-		input[i]->Draw("Same");
+		input[i]->Draw();
 	}
 	return canvas;
+}
+
+TCanvas* getDividedCanvas(int nX , int nY){
+	TCanvas* canvas = new TCanvas("c","",1600,1200);
+	if( nY <= 0 ){
+		if(nY < 0)
+			std::cout << "[main] Warning! Ignoring invalid canvas row count " << nY << std::endl;
+		canvas->Divide(nX,nX);
+	}else {
+		canvas->Divide(nX,nY);
+	}
+	std::cout << "[main] Created canvas with " << nX << " pads." << std::endl;
+	return canvas;
+}
+/**
+ * Helper function plotting the given canvases with the given file name
+ * both as pdf and png
+ */
+void storePlots(TCanvas* canvas, std::string nameTrunk){
+	gSystem->MakeDirectory("./plots");
+	gSystem->MakeDirectory("./plots/png");
+	gSystem->MakeDirectory("./plots/pdf");
+
+	canvas->SaveAs(("plots/pdf/" + nameTrunk + ".pdf").c_str());
+	canvas->SaveAs(("plots/png/" + nameTrunk + ".png").c_str());
+
+
 }

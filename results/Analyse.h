@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "TH1.h"
+#include "TH2.h"
 
 class Analyse : TrigTestTreeData {
 	public:
@@ -24,6 +25,9 @@ class Analyse : TrigTestTreeData {
 		TH1D* plotBtiTriggersPerStation(int);
 		TH1D* plotGenParticles();
 		TH1D* plotBtiTriggersPerEta(int);
+		TH1D* plotEtaNoBtiTriggers();
+		TH1D* plotBtiTrgVsBx();
+		TH2D* plotNoBtiTheta(int station);
 	private:
 		bool debug;
 		std::string sampleName;
