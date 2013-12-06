@@ -135,7 +135,6 @@ void DTTrigTest::beginJob(){
 	my_tree->Branch("phiGenParticles",&phiGenParticles);
 	my_tree->Branch("genParticleId",&genParticleId);
 
-
 	// L1MuDTBtiChipS block
 	my_tree->Branch("Nbti",&nbti,"Nbti/I");
 	my_tree->Branch("bwh",&bwh);
@@ -229,7 +228,6 @@ void DTTrigTest::beginRun(const edm::Run& iRun, const edm::EventSetup& iEventSet
 		if (my_debug)
 			cout << "[DTTrigTest] TU's Created" << endl;
 	}
-
 }
 
 
@@ -238,6 +236,10 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	const int MAXGEN  = 20;
 	const float ptcut  = 1.0;
 	const float etacut = 2.4;
+
+	edm::Handle<DTDigiCollection> dtDigis;
+	iEvent.getByLabel("simMuonDTDigis", dtDigis);
+
 	my_trig->triggerReco(iEvent,iEventSetup);
 	if (my_debug)
 		cout << "[DTTrigTest] Trigger algorithm executed for run " << iEvent.id().run() <<" event " << iEvent.id().event() << endl;
@@ -265,7 +267,8 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 			phiGenParticles.push_back( phi );
 			genMuonCounter++;
 		}
-		genParticleId.push_back(iterGenParticleCollection->pdgId());
+		if( iterGenParticleCollection->status() == 1 )
+			genParticleId.push_back(iterGenParticleCollection->pdgId());
 	}
 	if(my_debug)
 		cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
@@ -321,6 +324,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	// BTI
 	vector<DTBtiTrigData> btitrigs = my_trig->BtiTrigs();
 	vector<DTBtiTrigData>::const_iterator pbti;
+
 	int ibti = 0;
 	if (my_debug)
 		cout << "[DTTrigTest] " << btitrigs.size() << " BTI triggers found" << endl;

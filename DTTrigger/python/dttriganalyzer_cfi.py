@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 dttriganalyzer = cms.EDAnalyzer("DTTrigTest",
     debug = cms.untracked.bool(False),
     tTrigModeConfig = cms.PSet(
-        debug = cms.untracked.bool(False),
+        debug = cms.untracked.bool(True),
         kFactor = cms.double(-2.0), ##retuned in CMSSW15X
 
         vPropWire = cms.double(24.4),

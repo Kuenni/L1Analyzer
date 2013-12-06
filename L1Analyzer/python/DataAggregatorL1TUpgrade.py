@@ -24,9 +24,13 @@ process.load('L1Analyzer.L1Analyzer.BXAnalyzer_cfi')
 #From LXR. Makes dttriganalyzer run because it needs a DT config record 
 process.load("L1TriggerConfig.DTTPGConfigProducers.L1DTTPGConfig_cff")
 
-
+#Load the DTTrigTest config
 process.load('L1Analyzer.DTTrigger.dttrigtest_cfi')
 process.dttriganalyzer.debug = cms.untracked.bool(False)
+
+#Load the gen muon filter
+process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
+
 #
 # Originally included
 # 
@@ -59,14 +63,19 @@ process.TFileService = cms.Service("TFileService",
 #infile.append('file:SingleMuFlatPt_plusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 #infile.append('file:SingleMuFlatPt_minusEta_1GeVto200GeV_GEN_SIM_DIGI_L1_2.root')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+
+##
+# MAX EVENT NUMBER
+##
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source(
     'PoolSource',
     fileNames = cms.untracked.vstring(infile)
     )
 
-process.L1TMuonSeq = cms.Sequence( 	process.L1TMuonTriggerPrimitives *
+process.L1TMuonSeq = cms.Sequence( 	process.mugenfilter*
+					process.L1TMuonTriggerPrimitives *
                                    	process.L1CSCTFTrackConverter    *
                                    	process.L1DTTFTrackConverter     *
                                    	process.L1RPCTFTrackConverters   *

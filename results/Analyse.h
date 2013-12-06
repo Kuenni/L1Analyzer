@@ -16,20 +16,24 @@
 #include "TH1.h"
 #include "TH2.h"
 
-class Analyse : TrigTestTreeData {
+class Analyse : public TrigTestTreeData {
 	public:
-		Analyse(TTree*,std::string,bool debug = false);
-		TH1D* plotBtiTriggers();
+		Analyse(TTree*,std::string,double,bool debug = false);
+//		TH1D* plotBtiTriggers();
 		TH1D* plotNGenMuons();
 		TH1D* plotTracoTriggers();
-		TH1D* plotBtiTriggersPerStation(int);
+//		TH1D* plotBtiTriggersPerStation(int);
 		TH1D* plotGenParticles();
-		TH1D* plotBtiTriggersPerEta(int);
-		TH1D* plotEtaNoBtiTriggers();
-		TH1D* plotBtiTrgVsBx();
-		TH2D* plotNoBtiTheta(int station);
+//		TH1D* plotBtiTriggersPerEta(int);
+//		TH1D* plotEtaNoBtiTriggers();
+//		TH1D* plotBtiTrgVsBx();
+//		TH2D* plotNoBtiTheta(int station);
+		bool getDebug(){ return debug; };
+		double getPtCut(){ return ptCut; };
+		std::string getSampleName(){ return sampleName; };
 	private:
 		bool debug;
+		double ptCut;
 		std::string sampleName;
 };
 

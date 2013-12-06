@@ -1,18 +1,13 @@
-#include "Analyse.h"
-#include "TString.h"
-
-Analyse::Analyse(TTree* tree,std::string sampleName, double ptCut, bool debug) : TrigTestTreeData(tree),sampleName(sampleName),ptCut(ptCut),debug(debug){
-	std::cout << "[Analyse " << sampleName << "] Loading Tree: " << LoadTree(0) << std::endl;
-}
+#include "BTIAnalysis.h"
 
 /**
  * Make the plots for number of hit BTIs
  */
-/*TH1D* Analyse::plotBtiTriggers(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotBtiTriggers called" << std::endl;
+TH1D* BTIAnalysis::plotBtiTriggers(){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggers called" << std::endl;
 	TString histName("histNBtiTrg");
-	histName += sampleName;
+	histName += getSampleName();
 	TH1D* hist = new TH1D(histName,"Distribution of number of BTI triggers per event;# BTI triggers per evt;# Entries",201,-1.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
@@ -23,15 +18,15 @@ Analyse::Analyse(TTree* tree,std::string sampleName, double ptCut, bool debug) :
 	hist->SetLineWidth(2);
 	return hist;
 }
-*/
+
 /**
  * Plot the number of BTI triggers vs Bx
  */
-/*TH1D* Analyse::plotBtiTrgVsBx(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotBtiTrgVsBx called" << std::endl;
+TH1D* BTIAnalysis::plotBtiTrgVsBx(){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrgVsBx called" << std::endl;
 	TString histName("histBtiTrgVsBx");
-	histName += sampleName;
+	histName += getSampleName();
 	TH1D* hist = new TH1D(histName,"Distribution of BTI triggers over BX ID;BX ID;# Entries",31,-0.5,30.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
@@ -41,22 +36,22 @@ Analyse::Analyse(TTree* tree,std::string sampleName, double ptCut, bool debug) :
 	}
 	hist->SetLineWidth(2);
 	return hist;
-}*/
+}
 
 /**
  * Plot the number of BTI triggers vs Bx
  */
-/*TH2D* Analyse::plotNoBtiTheta(int station){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotNoBtiTheta called" << std::endl;
+TH2D* BTIAnalysis::plotNoBtiTheta(int station){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotNoBtiTheta called" << std::endl;
 	TString histName("histNoBtiTheta");
-	histName += sampleName;
+	histName += getSampleName();
 	histName += "St";
 	histName += station;
 
 	TString histTitle("Distribution of no BTI theta information Station ");
 	histTitle += station;
-	histTitle += " " + sampleName;
+	histTitle += " " + getSampleName();
 	histTitle += ";Wheel;Sector";
 
 	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 14 , -1.5 , 13.5 );
@@ -96,18 +91,18 @@ Analyse::Analyse(TTree* tree,std::string sampleName, double ptCut, bool debug) :
 		}
 	}
 	return hist;
-}*/
+}
 
 /**
  * Plot number of BTI triggers per eta segment
- *//*
-TH1D* Analyse::plotBtiTriggersPerEta(int nBins){
-	if(debug)
-			std::cout << "[Analyse " << sampleName << "] plotBtiTriggersPerEta called" << std::endl;
+ */
+TH1D* BTIAnalysis::plotBtiTriggersPerEta(int nBins){
+	if(getDebug())
+			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerEta called" << std::endl;
 
 	//Build histogram name
 	TString histName("histNBtiTrgPerEta");
-	histName += sampleName;
+	histName += getSampleName();
 
 	//Build Histogram title
 	TString histTitle("Distribution of number of BTI triggers per #eta");
@@ -132,17 +127,17 @@ TH1D* Analyse::plotBtiTriggersPerEta(int nBins){
 	}
 	hist->SetLineWidth(2);
 	return hist;
-}*/
+}
 
 /**
  * Make the plots for number of hit BTIs per station
-
-TH1D* Analyse::plotBtiTriggersPerStation(int stationNr){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotBtiTriggersPerStation called" << std::endl;
+ */
+TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerStation called" << std::endl;
 	//Build histogram name
 	TString histName("histNBtiTrg");
-	histName += sampleName;
+	histName += getSampleName();
 	histName += "St";
 	histName += stationNr;
 	//Build histogram title
@@ -164,73 +159,17 @@ TH1D* Analyse::plotBtiTriggersPerStation(int stationNr){
 	}
 	hist->SetLineWidth(2);
 	return hist;
-}*/
-
-/**
- * Make the plots for number of hit TRACOs
- */
-TH1D* Analyse::plotTracoTriggers(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotTracoTriggers called" << std::endl;
-	TString histName("histNTracoTrg");
-	histName += sampleName;
-	TH1D* hist = new TH1D(histName,"Distribution of number of TRACO triggers per event;# TRACO triggers per evt;# Entries",41,-1.5,39.5);
-	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
-		GetEntry(n);
-		if( Ntraco == 0 )
-			continue;
-		hist->Fill(Ntraco);
-	}
-	hist->SetLineWidth(2);
-	return hist;
-}
-
-/**
- * Plot the number of gen muon distribution
- */
-TH1D* Analyse::plotNGenMuons(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotGenMuons called" << std::endl;
-	TString histName("histNGenMuons");
-	histName += sampleName;
-	TH1D* hist = new TH1D(histName.Data(),"Distribution of the number of gen muons per Event;# N gen muons per evt;# Entries",50,-0.5,49.5);
-	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
-		GetEntry(n);
-		hist->Fill(nGenParticles);
-	}
-	hist->SetLineWidth(2);
-	return hist;
-}
-
-/**
- * Plot gen particle distribution
- */
-TH1D* Analyse::plotGenParticles(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotGenParticles called" << std::endl;
-	TString histName("histGenParticles");
-	histName += sampleName;
-	TH1D* hist = new TH1D(histName.Data(),"Distribution of gen particle ID;gen particle ID;# Entries",63,-31.5,31.5);
-	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
-		GetEntry(n);
-		for( unsigned int j = 0 ; j < genParticleId->size() ; j++ ){
-			hist->Fill(genParticleId->at(j));
-		}
-	}
-	hist->SetLineWidth(2);
-	hist->SetStats(false);
-	return hist;
 }
 
 /**
  * Plot eta of gen particles in an event which does not have
  * BTI trigger events
-
-TH1D* Analyse::plotEtaNoBtiTriggers(){
-	if(debug)
-		std::cout << "[Analyse " << sampleName << "] plotEtaNiBtiTriggers called" << std::endl;
+ */
+TH1D* BTIAnalysis::plotEtaNoBtiTriggers(){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotEtaNiBtiTriggers called" << std::endl;
 	TString histName("histEtanoBti");
-	histName += sampleName;
+	histName += getSampleName();
 	TH1D* hist = new TH1D(histName.Data(),"Distribution of gen particle eta with no BTI events in event;gen particle #eta;# Entries",101,-5.05,5.05);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
@@ -242,4 +181,4 @@ TH1D* Analyse::plotEtaNoBtiTriggers(){
 	}
 	hist->SetLineWidth(2);
 	return hist;
-}*/
+}

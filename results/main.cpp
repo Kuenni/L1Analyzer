@@ -1,6 +1,8 @@
 #include "Analyse.h"
 
 #include "PlotStyle.h"
+#include "CanvasManager.h"
+#include "AnalysisWrapper.h"
 
 #include "TTree.h"
 #include "TH1.h"
@@ -34,9 +36,13 @@ int main(int argc, char** argv){
 	//Set plot style for own root design
 	PlotStyle* s = new PlotStyle();
 
+	CanvasManager cManager;
+
 	//#######################
 	//# Creating Trees and Analyse objects
 	//#######################
+
+
 
 	std::cout << "Getting Tree for mu gun sample" << std::endl;
 	TTree* muGunTree = (TTree*)(new TFile("DIMUGUN_studies/DTTrigTest.root"))->Get("h1");
@@ -48,13 +54,17 @@ int main(int argc, char** argv){
 	Analyse muGunAnalyse(muGunTree,"muGun",true);
 
 	std::cout << "Getting Tree for DES17 14TeV sample" << std::endl;
-	TTree* des17Tree = (TTree*)(new TFile("UPG2017-v2_studies/DTTrigTest.root"))->Get("h1");
+	TTree* des17Tree = (TTree*)(new TFile("UPG2017-v2_studies/DTTrigTest_Pt10.root"))->Get("h1");
 	if(!des17Tree){
 		std::cout << "Error! Des 17 14 TeV tree is null pointer!" << std::endl;
 		return -1;
 	}
 	std::cout << "Creating Analyse object with Des 17 14TeV" << std::endl;
 	Analyse des17Analyse(des17Tree,"des17",true);
+
+	AnalysisWrapper muGunPt10Wrapper(muGunTree,"muGun",10.,true);
+	muGunPt10Wrapper.analyseBti();
+	muGunPt10Wrapper.savePlots();
 
 	//#######################
 	//# N Gen Muons
@@ -92,7 +102,7 @@ int main(int argc, char** argv){
 	TH1D* genParticlesMuGun = muGunAnalyse.plotGenParticles();
 	genParticlesMuGun->SetLineColor(TColor::GetColorBright(1));
 	genParticlesMuGun->Draw("same");
-
+	cGenParticles->SetLogy();
 	TLegend* leg2 = new TLegend(0.1,0.7,0.48,0.9);
 	leg2->AddEntry(genParticlesDes17,"Des 17","l");
 	leg2->AddEntry(genParticlesMuGun,"Mu Gun","l");
@@ -101,19 +111,20 @@ int main(int argc, char** argv){
 	//#######################
 	//# Gen particle eta with no bti trigger in event
 	//#######################
-	TCanvas* cGenParticlesEta = new TCanvas( "genParticlesEta" , "Gen particle #eta distribution" , 1600 , 1200 );
-	TH1D* genParticlesEta = des17Analyse.plotEtaNoBtiTriggers();
-	genParticlesEta->Draw();
+//	TCanvas* cGenParticlesEta = new TCanvas( "genParticlesEta" , "Gen particle #eta distribution" , 1600 , 1200 );
+//	TH1D* genParticlesEta = des17Analyse.plotEtaNoBtiTriggers();
+//	genParticlesEta->Draw();
 
 	//#######################
 	//# BTI triggers over BX ID
 	//#######################
-	TCanvas* cBtiVsBx = new TCanvas( "cBtiVsBx" , "BX ID distribution" , 1600 , 1200 );
-	des17Analyse.plotBtiTrgVsBx()->Draw();
+/*	TCanvas* cBtiVsBx = new TCanvas( "cBtiVsBx" , "BX ID distribution" , 1600 , 1200 );
+	des17Analyse.plotBtiTrgVsBx()->Draw();*/
 
 	//#######################
 	//# BTI triggers with no Theta information
 	//#######################
+/*
 	TCanvas* cBtiNoTheta = getDividedCanvas(2,3);
 	cBtiNoTheta->SetName("cBtiNoTheta");
 	cBtiNoTheta->SetTitle("Distribution of BTI triggers with no theta info");
@@ -170,8 +181,10 @@ int main(int argc, char** argv){
 	btiPerEta.push_back(muGunAnalyse.plotBtiTriggersPerEta(31));
 	btiPerEta.push_back(des17Analyse.plotBtiTriggersPerEta(31));
 
-	TCanvas* cBtiPerEta = analyseBtiTriggersPerEta(btiPerEta);
-
+	TCanvas* cBtiPerEta = cManager.plotDividedCanvas(btiPerEta,"btiTriggersPerEta");
+	cBtiPerEta->SetName("btiTriggersCanvas");
+	cBtiPerEta->SetTitle("BTI Triggers");
+*/
 
 	//#######################
 	//# TRACO Triggers
@@ -184,29 +197,24 @@ int main(int argc, char** argv){
 	tracoVector.push_back(des17Analyse.plotTracoTriggers());
 
 	TCanvas* cTracoTriggers = analyseTracoTriggers(tracoVector);
+/*
 
 	//All done. Save canvases and run root app
 	storePlots(cTracoTriggers,"tracoTriggers");
 	storePlots(cBtiPerStDes17,"btiTriggersPerStationDes17");
 	storePlots(cBtiPerStMuGun,"btiTriggersPerStationMuGun");
-	storePlots(cBtiTriggers,"btiTriggersPerStationMuGun");
+	storePlots(cBtiTriggers,"btiTriggers");
 	storePlots(cGenMuons,"genMuons");
 	storePlots(cGenParticles,"genParticles");
-	storePlots(cBtiPerEta,"btiTriggersPerEta");
 	storePlots(cBtiVsBx,"btiVsBx");
 	storePlots(cBtiNoTheta,"btiNoTheta");
+	storePlots(cGenParticlesEta,"genParticlesEtaNoBti");
 
-	cTracoTriggers->Close();
-	cBtiPerStDes17->Close();
-	cBtiPerStMuGun->Close();
-	cBtiTriggers->Close();
-	cGenParticles->Close();
-	cGenMuons->Close();
-	cBtiPerEta->Close();
-	cBtiVsBx->Close();
+	cManager.storePlots();
+*/
 
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
-	app->Run();
+//	app->Run();
 }
 
 /**
