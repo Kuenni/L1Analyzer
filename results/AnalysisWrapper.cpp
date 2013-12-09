@@ -45,8 +45,8 @@ std::vector<TH1*> AnalysisWrapper::analyseBtiNoThetaPerWheel(){
 	return vect;
 }
 
+//Call all the subanalyzer functions
 void AnalysisWrapper::analyseBti(){
-	std::vector<TCanvas*> vect;
 	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseBtiBx(),"btiBx");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiTriggers(),"btiTriggers");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiTriggersPerStation(),"btiTrgPerStation");
@@ -62,4 +62,30 @@ std::vector<TH1*> AnalysisWrapper::analyseTracoTriggers(){
 	std::vector<TH1*> vect;
 	vect.push_back(tracoAna->plotTracoTriggers());
 	return vect;
+}
+
+void AnalysisWrapper::analyseTraco(){
+	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseTracoTriggers(),"tracoTriggers");
+}
+
+//#######################################
+// Analyse Gen particle stuff
+//#######################################
+
+std::vector<TH1*> AnalysisWrapper::analyseNGenMuons(){
+	std::vector<TH1*> vect;
+	vect.push_back(genAna->plotNGenMuons());
+	return vect;
+}
+
+std::vector<TH1*> AnalysisWrapper::analyseGenParticleIds(){
+	std::vector<TH1*> vect;
+	vect.push_back(genAna->plotGenParticleIds());
+	return vect;
+}
+
+void AnalysisWrapper::analyseGenParticles(){
+	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseGenParticleIds(),"getPartIds");
+	tempCanvas->SetLogy();
+	tempCanvas = cManager->plotDividedCanvas(analyseNGenMuons(),"nGenMuons");
 }

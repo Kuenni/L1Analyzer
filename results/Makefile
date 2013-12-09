@@ -1,6 +1,6 @@
 LDFLAGS=$(shell root-config --libs --glibs)
 CFLAGS=$(shell root-config --cflags)
-OBJECTS = main.o Analyse.o TrigTestTreeData.o PlotStyle.o CanvasManager.o AnalysisWrapper.o BTIAnalysis.o TracoAnalysis.o
+OBJECTS = main.o Analyse.o TrigTestTreeData.o PlotStyle.o CanvasManager.o AnalysisWrapper.o BTIAnalysis.o TracoAnalysis.o GenAnalysis.o
 EXECUTABLE=Analyse
 #       AnalysisWrapper.cpp
 #       AnalysisWrapper.h

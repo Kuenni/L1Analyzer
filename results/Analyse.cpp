@@ -1,7 +1,13 @@
 #include "Analyse.h"
 #include "TString.h"
+#include "TH1.h"
+#include <vector>
 
-Analyse::Analyse(TTree* tree,std::string sampleName, double ptCut, bool debug) : TrigTestTreeData(tree),sampleName(sampleName),ptCut(ptCut),debug(debug){
+Analyse::Analyse(std::string treeName,std::string sampleName, double ptCut, bool debug) :
+	TrigTestTreeData((TTree*)(new TFile(treeName.c_str()))->Get("h1"))
+	, sampleName(sampleName)
+	, ptCut(ptCut)
+	, debug(debug){
 	std::cout << "[Analyse " << sampleName << "] Loading Tree: " << LoadTree(0) << std::endl;
 }
 
@@ -189,7 +195,7 @@ TH1D* Analyse::plotTracoTriggers(){
 
 /**
  * Plot the number of gen muon distribution
- */
+
 TH1D* Analyse::plotNGenMuons(){
 	if(debug)
 		std::cout << "[Analyse " << sampleName << "] plotGenMuons called" << std::endl;
@@ -202,11 +208,11 @@ TH1D* Analyse::plotNGenMuons(){
 	}
 	hist->SetLineWidth(2);
 	return hist;
-}
+}*/
 
 /**
  * Plot gen particle distribution
- */
+
 TH1D* Analyse::plotGenParticles(){
 	if(debug)
 		std::cout << "[Analyse " << sampleName << "] plotGenParticles called" << std::endl;
@@ -219,10 +225,9 @@ TH1D* Analyse::plotGenParticles(){
 			hist->Fill(genParticleId->at(j));
 		}
 	}
-	hist->SetLineWidth(2);
 	hist->SetStats(false);
 	return hist;
-}
+}*/
 
 /**
  * Plot eta of gen particles in an event which does not have

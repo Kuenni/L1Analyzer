@@ -12,7 +12,7 @@
 
 class TracoAnalysis : public Analyse {
 public:
-	TracoAnalysis(TTree* tree, std::string sampleName,double ptCut, bool debug) : Analyse(tree,sampleName,ptCut,debug){};
+	TracoAnalysis(std::string treeName, std::string sampleName,double ptCut, bool debug) : Analyse(treeName,sampleName,ptCut,debug){};
 	TH1D* plotTracoTriggers();
 };
 

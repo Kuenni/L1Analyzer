@@ -42,7 +42,7 @@ int main(int argc, char** argv){
 	//# Creating Trees and Analyse objects
 	//#######################
 
-
+/*
 
 	std::cout << "Getting Tree for mu gun sample" << std::endl;
 	TTree* muGunTree = (TTree*)(new TFile("DIMUGUN_studies/DTTrigTest.root"))->Get("h1");
@@ -58,18 +58,24 @@ int main(int argc, char** argv){
 	if(!des17Tree){
 		std::cout << "Error! Des 17 14 TeV tree is null pointer!" << std::endl;
 		return -1;
-	}
+	}*/
+/*
 	std::cout << "Creating Analyse object with Des 17 14TeV" << std::endl;
 	Analyse des17Analyse(des17Tree,"des17",true);
-
-	AnalysisWrapper muGunPt10Wrapper(muGunTree,"muGun",10.,true);
+*/
+	AnalysisWrapper muGunPt10Wrapper("DIMUGUN_studies/DTTrigTest.root","muGun",10.,true);
 	muGunPt10Wrapper.analyseBti();
+	muGunPt10Wrapper.analyseTraco();
+	muGunPt10Wrapper.analyseGenParticles();
 	muGunPt10Wrapper.savePlots();
 
-	AnalysisWrapper Des17Pt10Wrapper(des17Tree,"des17",10.,true);
+	AnalysisWrapper Des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,true);
 	Des17Pt10Wrapper.analyseBti();
+	Des17Pt10Wrapper.analyseTraco();
+	Des17Pt10Wrapper.analyseGenParticles();
 	Des17Pt10Wrapper.savePlots();
 
+/*
 	//#######################
 	//# N Gen Muons
 	//#######################
@@ -111,6 +117,7 @@ int main(int argc, char** argv){
 	leg2->AddEntry(genParticlesDes17,"Des 17","l");
 	leg2->AddEntry(genParticlesMuGun,"Mu Gun","l");
 	leg2->Draw();
+*/
 
 	//#######################
 	//# Gen particle eta with no bti trigger in event

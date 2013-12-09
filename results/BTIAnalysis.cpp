@@ -2,6 +2,8 @@
 #include "TPad.h"
 #include "TPaveStats.h"
 #include "TCanvas.h"
+#include "TH1.h"
+#include <vector>
 /**
  * Make the plots for number of hit BTIs
  */
@@ -13,8 +15,6 @@ TH1D* BTIAnalysis::plotBtiTriggers(){
 	TH1D* hist = new TH1D(histName,"Distribution of number of BTI triggers per event;# BTI triggers per evt;# Entries",201,-1.5,199.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
-		//if(Nbti == 0)
-		//	continue;
 		hist->Fill(Nbti);
 	}
 	return hist;

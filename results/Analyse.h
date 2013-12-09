@@ -18,7 +18,7 @@
 
 class Analyse : public TrigTestTreeData {
 	public:
-		Analyse(TTree*,std::string,double,bool debug = false);
+		Analyse(std::string,std::string,double,bool debug = false);
 //		TH1D* plotBtiTriggers();
 		TH1D* plotNGenMuons();
 		TH1D* plotTracoTriggers();

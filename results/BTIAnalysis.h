@@ -12,7 +12,7 @@
 
 class BTIAnalysis : public Analyse{
 public:
-	BTIAnalysis(TTree* tree, std::string sampleName,double ptCut, bool debug) : Analyse(tree,sampleName,ptCut,debug){};
+	BTIAnalysis(std::string treeName, std::string sampleName , double ptCut, bool debug) : Analyse(treeName , sampleName , ptCut , debug){};
 	TH1D* plotBtiTriggers();
 	TH1D* plotBtiTriggersPerStation(int);
 	TH1D* plotBtiTriggersPerEta();
