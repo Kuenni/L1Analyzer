@@ -45,16 +45,19 @@ TCanvas* CanvasManager::getDividedCanvas(int nX , int nY){
  * both as pdf and png
  */
 void CanvasManager::storePlots(){
-	gSystem->MakeDirectory("./plots");
-	gSystem->MakeDirectory("./plots/png");
-	gSystem->MakeDirectory("./plots/pdf");
+	TString directory("./plots/");
+	gSystem->MakeDirectory(directory);
+	directory += sampleName;
+	gSystem->MakeDirectory(directory);
+	gSystem->MakeDirectory(directory + "/png");
+	gSystem->MakeDirectory(directory + "/pdf");
 
 	for (std::vector<std::pair<TCanvas*,std::string> >::iterator pairIterator = canvasContainer.begin();
 			pairIterator != canvasContainer.end();
 			pairIterator++ ){
 
-		pairIterator->first->SaveAs(("plots/pdf/" + pairIterator->second + ".pdf").c_str());
-		pairIterator->first->SaveAs(("plots/png/" + pairIterator->second + ".png").c_str());
+		pairIterator->first->SaveAs((directory + "/pdf/" + pairIterator->second + ".pdf"));
+		pairIterator->first->SaveAs((directory + "/png/" + pairIterator->second + ".png"));
 
 	}
 }

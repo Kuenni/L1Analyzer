@@ -10,4 +10,6 @@ PlotStyle::PlotStyle() : TStyle() {
 	gStyle->SetPalette(51);
 	gStyle->SetTitleBorderSize(0);
 	gStyle->SetHistLineColor(kBlue);
+	gStyle->SetOptStat("emr");
+	gStyle->SetHistLineWidth(2);
 }

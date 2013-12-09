@@ -1,5 +1,7 @@
 #include "BTIAnalysis.h"
-
+#include "TPad.h"
+#include "TPaveStats.h"
+#include "TCanvas.h"
 /**
  * Make the plots for number of hit BTIs
  */
@@ -15,7 +17,6 @@ TH1D* BTIAnalysis::plotBtiTriggers(){
 		//	continue;
 		hist->Fill(Nbti);
 	}
-	hist->SetLineWidth(2);
 	return hist;
 }
 
@@ -34,7 +35,6 @@ TH1D* BTIAnalysis::plotBtiTrgVsBx(){
 			hist->Fill( bbx->at(j) );
 		}
 	}
-	hist->SetLineWidth(2);
 	return hist;
 }
 
@@ -54,7 +54,7 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 	histTitle += " " + getSampleName();
 	histTitle += ";Wheel;Sector";
 
-	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 14 , -1.5 , 13.5 );
+	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 15 , -1.5 , 13.5 );
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		int counter = 0;
@@ -90,13 +90,26 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 				hist->Fill(wheel,sector);
 		}
 	}
+	hist->SetOption("colz");
+	TCanvas* localCanvas = new TCanvas();
+	hist->Draw();
+	gPad->Update();
+	TPaveStats *st = (TPaveStats*)hist->FindObject("stats");
+	st->SetOptStat(10);
+	st->SetX1NDC(0.75);
+	st->SetX2NDC(0.95);
+	st->SetY1NDC(0.9);
+	st->SetY2NDC(0.99);
+	delete localCanvas;
+	localCanvas = 0;
 	return hist;
 }
 
 /**
  * Plot number of BTI triggers per eta segment
  */
-TH1D* BTIAnalysis::plotBtiTriggersPerEta(int nBins){
+TH1D* BTIAnalysis::plotBtiTriggersPerEta(){
+	int nBins = 301;
 	if(getDebug())
 			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerEta called" << std::endl;
 
@@ -125,7 +138,6 @@ TH1D* BTIAnalysis::plotBtiTriggersPerEta(int nBins){
 			hist->Fill(beta->at(j));
 		}
 	}
-	hist->SetLineWidth(2);
 	return hist;
 }
 
@@ -157,7 +169,7 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
 		}
 		hist->Fill(stationCounter);
 	}
-	hist->SetLineWidth(2);
+	hist->SetStats(true);
 	return hist;
 }
 
@@ -167,7 +179,7 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
  */
 TH1D* BTIAnalysis::plotEtaNoBtiTriggers(){
 	if(getDebug())
-		std::cout << "[BTIAnalysis " << getSampleName() << "] plotEtaNiBtiTriggers called" << std::endl;
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotEtaNoBtiTriggers called" << std::endl;
 	TString histName("histEtanoBti");
 	histName += getSampleName();
 	TH1D* hist = new TH1D(histName.Data(),"Distribution of gen particle eta with no BTI events in event;gen particle #eta;# Entries",101,-5.05,5.05);
@@ -179,6 +191,35 @@ TH1D* BTIAnalysis::plotEtaNoBtiTriggers(){
 			}
 		}
 	}
-	hist->SetLineWidth(2);
+	return hist;
+}
+
+/**
+ * Make a histogram of number of events with no theta information with an average over the
+ * complete wheel
+ */
+TH1D* BTIAnalysis::plotNoBtiThetaPerWheel(TH2D* input, int station) {
+	if(getDebug())
+			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigsNoThetaPerWheel called" << std::endl;
+	TString histName("histNoBtiThetaPerWheel");
+	histName += getSampleName();
+	histName += "St";
+	histName += station;
+
+	TString histTitle("Distribution of no BTI theta information averaged per wheel, Station ");
+	histTitle += station;
+	histTitle += " " + getSampleName();
+	histTitle += ";Wheel;# Entries";
+
+	TH1D* hist = new TH1D( histName , histTitle , 7, -3.5 , 3.5 );
+
+	for (int i = 0 ; i < 5 ; i++ ){
+		double wheelSum = 0;
+		for( int j = 0 ; j < 12 ; j++) {
+			//Sum over the sectors. Bin positions given by BTIAnalysis::plotNoBtiTheta()
+			wheelSum += input->GetBinContent( i + 2 , j + 2 );
+		}
+		hist->SetBinContent( i+2 , wheelSum );
+	}
 	return hist;
 }

@@ -36,7 +36,7 @@ int main(int argc, char** argv){
 	//Set plot style for own root design
 	PlotStyle* s = new PlotStyle();
 
-	CanvasManager cManager;
+	CanvasManager cManager("test");
 
 	//#######################
 	//# Creating Trees and Analyse objects
@@ -65,6 +65,10 @@ int main(int argc, char** argv){
 	AnalysisWrapper muGunPt10Wrapper(muGunTree,"muGun",10.,true);
 	muGunPt10Wrapper.analyseBti();
 	muGunPt10Wrapper.savePlots();
+
+	AnalysisWrapper Des17Pt10Wrapper(des17Tree,"des17",10.,true);
+	Des17Pt10Wrapper.analyseBti();
+	Des17Pt10Wrapper.savePlots();
 
 	//#######################
 	//# N Gen Muons
@@ -185,7 +189,7 @@ int main(int argc, char** argv){
 	cBtiPerEta->SetName("btiTriggersCanvas");
 	cBtiPerEta->SetTitle("BTI Triggers");
 */
-
+/*
 	//#######################
 	//# TRACO Triggers
 	//#######################
@@ -197,7 +201,7 @@ int main(int argc, char** argv){
 	tracoVector.push_back(des17Analyse.plotTracoTriggers());
 
 	TCanvas* cTracoTriggers = analyseTracoTriggers(tracoVector);
-/*
+
 
 	//All done. Save canvases and run root app
 	storePlots(cTracoTriggers,"tracoTriggers");

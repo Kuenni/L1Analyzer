@@ -166,9 +166,10 @@ TH1D* Analyse::plotBtiTriggersPerStation(int stationNr){
 	return hist;
 }*/
 
-/**
+/*
+*
  * Make the plots for number of hit TRACOs
- */
+
 TH1D* Analyse::plotTracoTriggers(){
 	if(debug)
 		std::cout << "[Analyse " << sampleName << "] plotTracoTriggers called" << std::endl;
@@ -184,6 +185,7 @@ TH1D* Analyse::plotTracoTriggers(){
 	hist->SetLineWidth(2);
 	return hist;
 }
+*/
 
 /**
  * Plot the number of gen muon distribution
