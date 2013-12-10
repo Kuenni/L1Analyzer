@@ -42,3 +42,39 @@ TH1D* GenAnalysis::plotGenParticleIds(){
 	hist->SetStats(false);
 	return hist;
 }
+
+/**
+ * Plot the gen particle eta distribution
+ */
+TH1D* GenAnalysis::plotGenParticleEta(){
+	if(getDebug())
+		std::cout << "[GenAnalysis " << getSampleName() << "] plotGenParticleEta called" << std::endl;
+	TString histName("histGenPartEta");
+	histName += getSampleName();
+	TH1D* hist = new TH1D(histName.Data(),"Distribution of #eta of gen particles;#eta;# Entries / 0.01 #eta",403,-2.015,2.015);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( unsigned int j = 0 ; j < etaGenParticles->size() ; j++ ){
+			hist->Fill(etaGenParticles->at(j));
+		}
+	}
+	return hist;
+}
+
+/**
+ * Plot the gen particle phi distribution
+ */
+TH1D* GenAnalysis::plotGenParticlePhi(){
+	if(getDebug())
+		std::cout << "[GenAnalysis " << getSampleName() << "] plotGenParticlePhi called" << std::endl;
+	TString histName("histGenPartPhi");
+	histName += getSampleName();
+	TH1D* hist = new TH1D(histName.Data(),"Distribution of #phi of gen particles;#phi;# Entries / 0.1 #phi",67,-0.15,6.55);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( unsigned int j = 0 ; j < phiGenParticles->size() ; j++ ){
+			hist->Fill(phiGenParticles->at(j));
+		}
+	}
+	return hist;
+}

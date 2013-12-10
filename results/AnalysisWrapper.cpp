@@ -1,5 +1,9 @@
 #include "AnalysisWrapper.h"
 
+TCanvas* AnalysisWrapper::showPlot(std::string plotName){
+	return cManager->showCanvas(plotName);
+}
+
 //#######################################
 // Analyse BTI stuff
 //#######################################
@@ -84,8 +88,22 @@ std::vector<TH1*> AnalysisWrapper::analyseGenParticleIds(){
 	return vect;
 }
 
+std::vector<TH1*> AnalysisWrapper::analyseGenParticleEta(){
+	std::vector<TH1*> vect;
+	vect.push_back(genAna->plotGenParticleEta());
+	return vect;
+}
+
+std::vector<TH1*> AnalysisWrapper::analyseGenParticlePhi(){
+	std::vector<TH1*> vect;
+	vect.push_back(genAna->plotGenParticlePhi());
+	return vect;
+}
+
 void AnalysisWrapper::analyseGenParticles(){
 	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseGenParticleIds(),"getPartIds");
-	tempCanvas->SetLogy();
+	tempCanvas->SetLogy(1);
 	tempCanvas = cManager->plotDividedCanvas(analyseNGenMuons(),"nGenMuons");
+	tempCanvas = cManager->plotDividedCanvas(analyseGenParticleEta(),"genPartEta");
+	tempCanvas = cManager->plotDividedCanvas(analyseGenParticlePhi(),"genPartPhi");
 }

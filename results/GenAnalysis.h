@@ -15,6 +15,8 @@ public:
 	GenAnalysis(std::string treeName, std::string sampleName,double ptCut, bool debug) : Analyse(treeName,sampleName,ptCut,debug){};
 	TH1D* plotNGenMuons();
 	TH1D* plotGenParticleIds();
+	TH1D* plotGenParticleEta();
+	TH1D* plotGenParticlePhi();
 };
 
 

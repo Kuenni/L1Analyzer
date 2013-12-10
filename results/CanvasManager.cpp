@@ -3,6 +3,20 @@
 #include "TColor.h"
 #include <iostream>
 #include "TSystem.h"
+
+/**
+ * Searches for the canvas in the container and if found, shows it and returns a pointer to it
+ */
+TCanvas* CanvasManager::showCanvas(std::string canvasName){
+	TCanvas* c = canvasContainer[canvasName];
+	if(!c){
+		std::cout << "[CanvasManager] Show canvas error! Didn't find canvas with name " << canvasName << "." << std::endl;
+	} else {
+		c->Show();
+	}
+	return c;
+}
+
 /**
  * Helper function to create divided canvases
  * If nY is 0, a canvas with n^2 pads is created, otherwise the canvas is
@@ -20,7 +34,7 @@ TCanvas* CanvasManager::plotDividedCanvas(std::vector<TH1*> input, std::string n
 		input[i]->Draw();
 	}
 	canvas->SetName(name.c_str());
-	canvasContainer.push_back(std::make_pair(canvas,name));
+	canvasContainer[name] = canvas;
 	return canvas;
 }
 
@@ -52,12 +66,11 @@ void CanvasManager::storePlots(){
 	gSystem->MakeDirectory(directory + "/png");
 	gSystem->MakeDirectory(directory + "/pdf");
 
-	for (std::vector<std::pair<TCanvas*,std::string> >::iterator pairIterator = canvasContainer.begin();
-			pairIterator != canvasContainer.end();
-			pairIterator++ ){
-
-		pairIterator->first->SaveAs((directory + "/pdf/" + pairIterator->second + ".pdf"));
-		pairIterator->first->SaveAs((directory + "/png/" + pairIterator->second + ".png"));
+	for (std::map<std::string,TCanvas*>::iterator mapIterator = canvasContainer.begin();
+			mapIterator != canvasContainer.end();
+			mapIterator++ ){
+		mapIterator->second->SaveAs((directory + "/pdf/" + mapIterator->first + ".pdf"));
+		mapIterator->second->SaveAs((directory + "/png/" + mapIterator->first + ".png"));
 
 	}
 }

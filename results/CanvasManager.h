@@ -6,16 +6,18 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class CanvasManager{
 public:
 	CanvasManager(std::string sampleName) : sampleName(sampleName){};
 	TCanvas* plotDividedCanvas(std::vector<TH1*> input,std::string name ,int nY = 0);
 	TCanvas* getDividedCanvas(int nX, int nY = 0);
+	TCanvas* showCanvas(std::string);
 	void storePlots();
 private:
 	std::string sampleName;
-	std::vector< std::pair<TCanvas*,std::string> > canvasContainer;
+	std::map<std::string,TCanvas*> canvasContainer;
 };
 
 #endif

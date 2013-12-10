@@ -21,6 +21,8 @@ public:
 	//GenMuon analyzer functions
 	std::vector<TH1*> analyseNGenMuons();
 	std::vector<TH1*> analyseGenParticleIds();
+	std::vector<TH1*> analyseGenParticleEta();
+	std::vector<TH1*> analyseGenParticlePhi();
 
 	//BTI Analyser functions
 	std::vector<TH1*> analyseBtiBx();
@@ -45,6 +47,8 @@ public:
 	//Save the plots in the canvas manager
 	void savePlots(){ cManager->storePlots();};
 
+	//Show a certain plot from the canvas manager with the given name
+	TCanvas* showPlot(std::string);
 
 private:
 	bool debug;
