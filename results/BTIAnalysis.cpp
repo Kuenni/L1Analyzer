@@ -21,7 +21,7 @@ TH1D* BTIAnalysis::plotBtiTriggers(){
 }
 
 /**
- * Plot the number of BTI triggers vs Bx
+ * Plot the number of BTI triggers vs Bx Id
  */
 TH1D* BTIAnalysis::plotBtiTrgVsBx(){
 	if(getDebug())
@@ -39,7 +39,57 @@ TH1D* BTIAnalysis::plotBtiTrgVsBx(){
 }
 
 /**
- * Plot the number of BTI triggers vs Bx
+ * Plot the number of BTI triggers vs Bx ID per station in phi
+ */
+TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationPhi(int station){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrgVsBxPerStationPhi called" << std::endl;
+	TString histName("histBtiTrgVsBxPerPhiSt");
+	histName += station;
+	histName += getSampleName();
+
+	TString histTitle("Distribution of BTI triggers over BX ID in #phi, Station ");
+	histTitle += station;
+	histTitle += ";BX ID;# Entries";
+
+	TH1D* hist = new TH1D(histName,histTitle,31,-0.5,30.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( int j = 0 ; j < bbx->size() ; j++ ){
+			if( bstat->at(j) == station && (bsl->at(j) == 1 || bsl->at(j) == 3) )
+				hist->Fill( bbx->at(j) );
+		}
+	}
+	return hist;
+}
+
+/**
+ * Plot the number of BTI triggers vs Bx ID per station in theta
+ */
+TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationTheta(int station){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrgVsBxPerStationTheta called" << std::endl;
+	TString histName("histBtiTrgVsBxPerThetaSt");
+	histName += station;
+	histName += getSampleName();
+
+	TString histTitle("Distribution of BTI triggers over BX ID in #eta, Station ");
+	histTitle += station;
+	histTitle += ";BX ID;# Entries";
+
+	TH1D* hist = new TH1D(histName,histTitle,31,-0.5,30.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( int j = 0 ; j < bbx->size() ; j++ ){
+			if( bstat->at(j) == station && (bsl->at(j) == 2) )
+				hist->Fill( bbx->at(j) );
+		}
+	}
+	return hist;
+}
+
+/**
+ * Plot the number of BTI triggers with no theta information resolved for a certain station
  */
 TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 	if(getDebug())

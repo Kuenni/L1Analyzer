@@ -41,6 +41,22 @@ std::vector<TH1*> AnalysisWrapper::analyseBtiBx(){
 	return vect;
 }
 
+std::vector<TH1*> AnalysisWrapper::analyseBtiBxPerStationPhi(){
+	std::vector<TH1*> vect;
+	for (int var = 0; var < 4; ++var) {
+		vect.push_back(btiAna->plotBtiTrgVsBxPerStationPhi( var + 1 ));
+	}
+	return vect;
+}
+
+std::vector<TH1*> AnalysisWrapper::analyseBtiBxPerStationTheta(){
+	std::vector<TH1*> vect;
+	for (int var = 0; var < 3; ++var) {
+		vect.push_back(btiAna->plotBtiTrgVsBxPerStationTheta( var + 1 ));
+	}
+	return vect;
+}
+
 std::vector<TH1*> AnalysisWrapper::analyseBtiNoThetaPerWheel(){
 	std::vector<TH1*> vect;
 	for (int var = 0; var < 3; ++var) {
@@ -57,6 +73,8 @@ void AnalysisWrapper::analyseBti(){
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiTriggersPerEta(),"btiTrgPerEta");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiNoTheta(),"btiNoThetaTrg");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiNoThetaPerWheel(),"btiNoThetaTrgPerWheel");
+	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(),"btiBxPerStationPhi");
+	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationTheta(),"btiBxPerStationTheta");
 }
 
 //#######################################
