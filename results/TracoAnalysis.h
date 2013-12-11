@@ -14,6 +14,7 @@ class TracoAnalysis : public Analyse {
 public:
 	TracoAnalysis(std::string treeName, std::string sampleName,double ptCut, bool debug) : Analyse(treeName,sampleName,ptCut,debug){};
 	TH1D* plotTracoTriggers();
+	TH1D* plotTracoBx();
 };
 
 

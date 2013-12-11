@@ -41,22 +41,26 @@ TH1D* BTIAnalysis::plotBtiTrgVsBx(){
 /**
  * Plot the number of BTI triggers vs Bx ID per station in phi
  */
-TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationPhi(int station){
+TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationPhi(int station, int sl){
 	if(getDebug())
 		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrgVsBxPerStationPhi called" << std::endl;
 	TString histName("histBtiTrgVsBxPerPhiSt");
 	histName += station;
+	histName += "SL";
+	histName += sl;
 	histName += getSampleName();
 
 	TString histTitle("Distribution of BTI triggers over BX ID in #phi, Station ");
 	histTitle += station;
+	histTitle += " SL ";
+	histTitle += sl;
 	histTitle += ";BX ID;# Entries";
 
 	TH1D* hist = new TH1D(histName,histTitle,31,-0.5,30.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < bbx->size() ; j++ ){
-			if( bstat->at(j) == station && (bsl->at(j) == 1 || bsl->at(j) == 3) )
+			if( bstat->at(j) == station && (bsl->at(j) == sl) )
 				hist->Fill( bbx->at(j) );
 		}
 	}

@@ -31,11 +31,12 @@ public:
 	std::vector<TH1*> analyseBtiTriggersPerEta();
 	std::vector<TH1*> analyseBtiNoTheta();
 	std::vector<TH1*> analyseBtiNoThetaPerWheel();
-	std::vector<TH1*> analyseBtiBxPerStationPhi();
+	std::vector<TH1*> analyseBtiBxPerStationPhi(int);
 	std::vector<TH1*> analyseBtiBxPerStationTheta();
 
 	//Traco Analyzer functions
 	std::vector<TH1*> analyseTracoTriggers();
+	std::vector<TH1*> analyseTracoBx();
 
 	//Calls all bti analyzer functions
 	void analyseBti();

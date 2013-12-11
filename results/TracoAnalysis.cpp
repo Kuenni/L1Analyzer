@@ -23,4 +23,20 @@ TH1D* TracoAnalysis::plotTracoTriggers(){
 	return hist;
 }
 
-
+/**
+ * Make the plots for BX Id of TRACOs
+ */
+TH1D* TracoAnalysis::plotTracoBx(){
+	if(getDebug())
+		std::cout << "[TracoAnalyis " << getSampleName() << "] plotTracoBx called" << std::endl;
+	TString histName("histNTracoBx");
+	histName += getSampleName();
+	TH1D* hist = new TH1D(histName,"Distribution of BX ID for TRACO triggers;BX ID;# Entries",32,-1.5,30.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( int j = 0 ; j < tbx->size() ; j++ ){
+					hist->Fill( tbx->at(j) );
+		}
+	}
+	return hist;
+}
