@@ -5,12 +5,14 @@ process = cms.Process('DataAggregatorL1TUpgrade')
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')			#originally included
-#process.load('FWCore.MessageService.MessageLogger_cfi')
+process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 #process.load('Configuration.Geometry.GeometryIdeal_cff')			#originally included
 process.load('Configuration.Geometry.GeometryDB_cff')
-#process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+#global Tag for the given source File
+process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonTriggerPrimitiveProducer_cfi')
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1CSCTFTrackConverter_cfi')
@@ -31,15 +33,6 @@ process.dttriganalyzer.debug = cms.untracked.bool(False)
 #Load the gen muon filter
 process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
 
-#
-# Originally included
-# 
-#from Configuration.AlCa.GlobalTag import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'START53_V7A::All', '')
-
-#global Tag for the given source File
-process.GlobalTag.globaltag = 'DES17_62_V7::All'
-
 infile = []
 infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
 #infile.append('file:STEP2_RAW2DIGI_L1Reco_RECO_PU.root')
@@ -48,9 +41,9 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
 )
 
-#process.MessageLogger = cms.Service("MessageLogger",
+process.MessageLogger = cms.Service("MessageLogger",
  #       destinations = cms.untracked.vstring("Log")
-#)
+)
 
 #
 # Originally included source files
@@ -75,12 +68,12 @@ process.source = cms.Source(
     )
 
 process.L1TMuonSeq = cms.Sequence( 	process.mugenfilter*
-					process.L1TMuonTriggerPrimitives *
-                                   	process.L1CSCTFTrackConverter    *
-                                   	process.L1DTTFTrackConverter     *
-                                   	process.L1RPCTFTrackConverters   *
-                                   	process.L1TMuonSimpleDeltaEtaHitMatcher*
-					process.BXAnalyzer*
+#					process.L1TMuonTriggerPrimitives *
+#                                   	process.L1CSCTFTrackConverter    *
+#                                   	process.L1DTTFTrackConverter     *
+#                                   	process.L1RPCTFTrackConverters   *
+#                                   	process.L1TMuonSimpleDeltaEtaHitMatcher*
+#					process.BXAnalyzer*
 					process.dttriganalyzer
 				)
 
