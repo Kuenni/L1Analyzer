@@ -40,6 +40,9 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 
+#include "SimDataFormats/DigiSimLinks/interface/DTDigiSimLink.h"
+#include "DataFormats/MuonDetId/interface/DTLayerId.h"
+
 // ROOT headers 
 #include "TROOT.h"
 #include "TTree.h"
@@ -237,9 +240,14 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	const float ptcut  = 1.0;
 	const float etacut = 2.4;
 
-	edm::Handle<DTDigiCollection> dtDigis;
+	//### The DTDigis
+	edm::Handle<MuonDigiCollection<DTLayerId, DTDigi> > dtDigis;
 	iEvent.getByLabel("simMuonDTDigis", dtDigis);
 
+	//### The DTDigiSimLink
+	edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
+	iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+	
 	my_trig->triggerReco(iEvent,iEventSetup);
 	if (my_debug)
 		cout << "[DTTrigTest] Trigger algorithm executed for run " << iEvent.id().run() <<" event " << iEvent.id().event() << endl;
@@ -250,9 +258,9 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	// GENERAL Block
 	runn   = iEvent.id().run();
 	eventn = iEvent.id().event();
-	weight = 1; // FIXME what to do with this varable?
+	weight = 1; // FIXME what to do with this variable?
 
-	//Genparticle info
+	//### The Gen-particle info
 	edm::Handle<reco::GenParticleCollection> genParticles;
 	iEvent.getByLabel("genParticles",genParticles);
 
@@ -330,6 +338,12 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		cout << "[DTTrigTest] " << btitrigs.size() << " BTI triggers found" << endl;
 
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
+		
+
+		DTLayerId* layerId = new DTLayerId(pbti->ChamberId().rawId());
+		layerId->layer();
+//		std::cout << "SimTrack Id: " << (dtSimLinks->get(*layerId).second)->SimTrackId() << std::endl;
+
 		//    if ( ibti < 100 ) {
 		bwh.push_back( 		pbti->wheel() );
 		bstat.push_back( 	pbti->station() );

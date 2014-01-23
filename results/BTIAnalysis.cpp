@@ -32,7 +32,9 @@ TH1D* BTIAnalysis::plotBtiTrgVsBx(){
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < bbx->size() ; j++ ){
-			hist->Fill( bbx->at(j) );
+			//Look only at HTRG, since LTRG are not used for DT Trig
+			if( bcod->at(j) == 8 )
+				hist->Fill( bbx->at(j) );
 		}
 	}
 	return hist;
@@ -60,7 +62,16 @@ TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationPhi(int station, int sl){
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < bbx->size() ; j++ ){
+<<<<<<< HEAD
 			if( bstat->at(j) == station && (bsl->at(j) == sl) )
+=======
+<<<<<<< Updated upstream
+			if( bstat->at(j) == station && (bsl->at(j) == 1 || bsl->at(j) == 3) )
+=======
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bstat->at(j) == station && (bsl->at(j) == sl) && ( bcod->at(j) == 8 ) )
+>>>>>>> Stashed changes
+>>>>>>> 14tev
 				hist->Fill( bbx->at(j) );
 		}
 	}
@@ -85,7 +96,8 @@ TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationTheta(int station){
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < bbx->size() ; j++ ){
-			if( bstat->at(j) == station && (bsl->at(j) == 2) )
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bstat->at(j) == station && (bsl->at(j) == 2) && (bcod->at(j) == 8) )
 				hist->Fill( bbx->at(j) );
 		}
 	}
@@ -118,7 +130,8 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 			int wheel  = -1;
 			int sector = -1;
 			//Only start loop if we haven't sl2 (i.e. Theta) already at the beginning
-			if( ( bsl-> at(j) != 2 ) && ( bstat->at(j) == station ) ){
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( ( bsl-> at(j) != 2 ) && ( bstat->at(j) == station ) && (bcod->at(j) == 8) ){
 				//Save wheel and sector for later
 				wheel = bwh->at(j);
 				sector = bsect->at(j);
@@ -133,6 +146,7 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 						&& ( bstat->at(k)	== station )
 						&& ( bwh->at(k)		== wheel )
 						&& ( bsect->at(k)	== sector )
+						&& ( bcod->at(k) 	== 8 )
 						){
 					counter++;
 					break;
@@ -156,6 +170,45 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 	st->SetY2NDC(0.99);
 	delete localCanvas;
 	localCanvas = 0;
+	return hist;
+}
+
+/**
+ * Plots the mean number of BTI events per station for a given station and super layer
+ */
+TH2D* BTIAnalysis::plotBtiTrigPerStatAndSL(int station, int sl){
+	if(getDebug())
+			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSL called" << std::endl;
+	TString histName("histBtiTrigPerStatAndSL");
+	histName += getSampleName();
+	histName += "St";
+	histName += station;
+	histName += "SL";
+	histName += sl;
+
+	TString histTitle("Distribution of # of BTI triggers per station ");
+	histTitle += station;
+	histTitle += " and SL ";
+	histTitle += sl;
+	histTitle += ", " + getSampleName();
+	histTitle += ";Wheel;Sector";
+
+	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 15 , -1.5 , 13.5 );
+
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		for( int i = 0 ; i < Nbti ; i++ ){
+			//If the desired SL has a trigger, add entry for wheel and sector in histogram
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bsl->at(i) == sl && bstat->at(i) == station && bcod->at(i) == 8)
+				hist->Fill(bwh->at(i),bsect->at(i));
+		}
+
+
+	}
+
+	hist->SetOption("colz");
+
 	return hist;
 }
 
@@ -189,7 +242,9 @@ TH1D* BTIAnalysis::plotBtiTriggersPerEta(){
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for ( unsigned int j = 0 ; j < beta->size() ; j++ ){
-			hist->Fill(beta->at(j));
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if(bcod->at(j) == 8)
+				hist->Fill(beta->at(j));
 		}
 	}
 	return hist;
@@ -211,13 +266,14 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
 	histTitle += stationNr;
 	histTitle += ";# BTI triggers per evt;# Entries";
 
-	TH1D* hist = new TH1D( histName , histTitle ,201,-1.5,199.5);
+	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		int stationCounter = 0;
 		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
 			//Filter for the requested station
-			if( bstat->at(j) == stationNr ){
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bstat->at(j) == stationNr && bcod->at(j) == 8){
 				stationCounter++;
 			}
 		}

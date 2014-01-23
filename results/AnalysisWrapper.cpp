@@ -65,6 +65,16 @@ std::vector<TH1*> AnalysisWrapper::analyseBtiNoThetaPerWheel(){
 	return vect;
 }
 
+std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSL(){
+	std::vector<TH1*> vect;
+	for (int var = 0; var < 4; ++var) {
+		for (int k = 0 ; k < 3 ; k++){
+			vect.push_back(btiAna->plotBtiTrigPerStatAndSL( var+1 , k+1 ) );
+		}
+	}
+	return vect;
+}
+
 //Call all the subanalyzer functions
 void AnalysisWrapper::analyseBti(){
 	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseBtiBx(),"btiBx");
@@ -76,6 +86,7 @@ void AnalysisWrapper::analyseBti(){
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(1),"btiBxPerStationPhiSL1");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(3),"btiBxPerStationPhiSL3");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationTheta(),"btiBxPerStationTheta");
+	tempCanvas = cManager->plotDividedCanvas(analyseBtiTrigPerStatAndSL(),"btiTrigPerStatAndSL",3,true);
 }
 
 //#######################################

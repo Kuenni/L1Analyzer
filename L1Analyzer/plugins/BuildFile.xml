@@ -15,5 +15,5 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="L1TriggerDPGUpgrade/L1TMuon"/>
 <use name="L1Analyzer/DTTrigger"/>
-
+<use name="SimDataFormats/DigiSimLinks"/>
 <flags EDM_PLUGIN="1"/>
