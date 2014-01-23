@@ -4,12 +4,12 @@ process = cms.Process('DataAggregatorL1TUpgrade')
 
 
 process.load('Configuration.StandardSequences.Services_cff')
-#process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')			#originally included
-process.load('FWCore.MessageService.MessageLogger_cfi')
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')			#originally included
+#process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 #process.load('Configuration.Geometry.GeometryIdeal_cff')			#originally included
 process.load('Configuration.Geometry.GeometryDB_cff')
-process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+#process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonTriggerPrimitiveProducer_cfi')
@@ -41,8 +41,8 @@ process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
 process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 infile = []
-#infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
-infile.append('file:STEP2_RAW2DIGI_L1Reco_RECO_PU.root')
+infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
+#infile.append('file:STEP2_RAW2DIGI_L1Reco_RECO_PU.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
@@ -67,7 +67,7 @@ process.TFileService = cms.Service("TFileService",
 ##
 # MAX EVENT NUMBER
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source(
     'PoolSource',

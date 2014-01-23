@@ -33,6 +33,7 @@ public:
 	std::vector<TH1*> analyseBtiNoThetaPerWheel();
 	std::vector<TH1*> analyseBtiBxPerStationPhi();
 	std::vector<TH1*> analyseBtiBxPerStationTheta();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSL();
 
 	//Traco Analyzer functions
 	std::vector<TH1*> analyseTracoTriggers();

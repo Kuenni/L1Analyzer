@@ -11,7 +11,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Andreas Künsken
+// Original Author:  Andreas K��nsken
 //         Created:  Mon, 11 Nov 2013 13:14:22 GMT
 // $Id$
 //
@@ -52,14 +52,14 @@
 #include <TH2D.h>
 
 //L1TriggerDPGUpgrade input
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
-#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
+//#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitive.h"
+//#include "L1TriggerDPGUpgrade/DataFormats/interface/L1TMuonTriggerPrimitiveFwd.h"
 
 //
 // class declaration
 //
 
-//Auf DtBxAnalyzer �ndern, und den code DT-spezifisch machen?
+//Auf DtBxAnalyzer ���ndern, und den code DT-spezifisch machen?
 class BXAnalyzer : public edm::EDAnalyzer {
    public:
       explicit BXAnalyzer(const edm::ParameterSet&);
@@ -146,8 +146,8 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 	edm::Handle<reco::GenParticleCollection> genParticles;
 	iEvent.getByLabel("genParticles",genParticles);
 
-	edm::Handle<L1TMuon::TriggerPrimitiveCollection> dtTriggerPrimitives;
-	iEvent.getByLabel("L1TMuonTriggerPrimitives","DT",dtTriggerPrimitives);
+//	edm::Handle<L1TMuon::TriggerPrimitiveCollection> dtTriggerPrimitives;
+//	iEvent.getByLabel("L1TMuonTriggerPrimitives","DT",dtTriggerPrimitives);
 
 	edm::Handle<L1MuDTTrackContainer> dtTracks;
 	iEvent.getByLabel(dtTrackSrc,dtTracks);
@@ -238,7 +238,7 @@ BXAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
 				genMuonCounter++;
 			}
 		}
-	histo2DMap["hist2dGenPartTrigPrimCount"]->Fill(genMuonCounter,dtTriggerPrimitives->size());
+//	histo2DMap["hist2dGenPartTrigPrimCount"]->Fill(genMuonCounter,dtTriggerPrimitives->size());
 	histoMap["histNGenMuons"]->Fill(genMuonCounter);
 	edm::LogInfo("Number of GenMuons in Event") << genMuonCounter;
 

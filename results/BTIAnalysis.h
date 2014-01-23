@@ -22,6 +22,7 @@ public:
 	TH1D* plotNoBtiThetaPerWheel(TH2D*,int);
 	TH1D* plotBtiTrgVsBxPerStationPhi(int);
 	TH1D* plotBtiTrgVsBxPerStationTheta(int);
+	TH2D* plotBtiTrigPerStatAndSL(int station,int sl);
 };
 
 

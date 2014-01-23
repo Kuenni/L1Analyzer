@@ -11,7 +11,7 @@
 class CanvasManager{
 public:
 	CanvasManager(std::string sampleName) : sampleName(sampleName){};
-	TCanvas* plotDividedCanvas(std::vector<TH1*> input,std::string name ,int nY = 0);
+	TCanvas* plotDividedCanvas(std::vector<TH1*> input,std::string name ,int nY = 0, bool fillColumns = false);
 	TCanvas* getDividedCanvas(int nX, int nY = 0);
 	TCanvas* showCanvas(std::string);
 	void storePlots();
