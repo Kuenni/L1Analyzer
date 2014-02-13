@@ -77,29 +77,15 @@ std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSectAndSL(){
 	return vect;
 }
 
-void AnalysisWrapper::analyseBtiTrigPerStatAndSL(){
-	TCanvas* c = cManager->getDividedCanvas(2,2);
-	std::vector<TH1D*> vect;
+std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSL(){
+	std::vector<TH1*> vect;
 	//create the histograms
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 1; j < 4; j+=2) {
 			vect.push_back(btiAna->plotBtiTriggersPerStationAndSL(i+1,j));
 		}
 	}
-	//Draw the super layers for the same station together
-	for (int i = 0; i < 4; ++i) {
-		//change to canvas and set log y
-		c->cd(i+1)->SetLogy();
-		std::cout << i << "\t" << vect.size() <<  std::endl;
-		vect[2*i]->Draw();
-		vect[2*i+1]->SetLineColor(kRed);
-		vect[2*i+1]->Draw("same");
-		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
-		l->AddEntry(vect[2*i],"SL 1");
-		l->AddEntry(vect[2*i+1],"SL 3");
-		l->Draw();
-	}
-	cManager->addCanvas("btiTrigPerStatAndSL",c);
+	return vect;
 }
 
 //Call all the subanalyzer functions
@@ -114,8 +100,24 @@ void AnalysisWrapper::analyseBti(){
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(3),"btiBxPerStationPhiSL3");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationTheta(),"btiBxPerStationTheta");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiTrigPerStatAndSectAndSL(),"btiTrigPerStatAndSectAndSL",3,/*fill columns*/true);
+
 	//Calls the ana function which does more complex stuff for plotting
-	analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> vect = analyseBtiTrigPerStatAndSL();
+	tempCanvas = cManager->getDividedCanvas(2,2);
+	//Draw the super layers for the same station together
+	for (int i = 0; i < 4; ++i) {
+		//change to canvas and set log y
+		tempCanvas->cd(i+1)->SetLogy();
+		vect[2*i]->Draw();
+		vect[2*i+1]->SetLineColor(kRed);
+		vect[2*i+1]->Draw("same");
+		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
+		l->AddEntry(vect[2*i],"SL 1");
+		l->AddEntry(vect[2*i+1],"SL 3");
+		l->Draw();
+	}
+	cManager->addCanvas("btiTrigPerStatAndSL",tempCanvas);
+
 }
 
 //#######################################
