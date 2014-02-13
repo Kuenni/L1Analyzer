@@ -32,14 +32,14 @@ int main(int argc, char** argv){
 	//# Creating Trees and Analyse objects
 	//#######################
 
-	AnalysisWrapper muGunPt10Wrapper("DIMUGUN_studies/DTTrigTest.root","muGun",10.,true);
+	AnalysisWrapper muGunPt10Wrapper("DIMUGUN_studies/DTTrigTest.root","muGun",10.,false);
 	muGunPt10Wrapper.analyseBti();
 	muGunPt10Wrapper.analyseTraco();
 	muGunPt10Wrapper.analyseGenParticles();
 	muGunPt10Wrapper.savePlots();
 	muGunPt10Wrapper.showPlot("btiTrgPerEta");
 
-	AnalysisWrapper des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,true);
+	AnalysisWrapper des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,false);
 	des17Pt10Wrapper.analyseBti();
 	des17Pt10Wrapper.analyseTraco();
 	des17Pt10Wrapper.analyseGenParticles();

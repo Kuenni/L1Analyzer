@@ -10,7 +10,8 @@
 TCanvas* CanvasManager::showCanvas(std::string canvasName){
 	TCanvas* c = canvasContainer[canvasName];
 	if(!c){
-		std::cout << "[CanvasManager] Show canvas error! Didn't find canvas with name " << canvasName << "." << std::endl;
+		if(getVerbose())
+			std::cout << "[CanvasManager] Show canvas error! Didn't find canvas with name " << canvasName << "." << std::endl;
 	} else {
 		c->Show();
 	}
@@ -59,7 +60,8 @@ TCanvas* CanvasManager::getDividedCanvas(int nX , int nY){
 	}else {
 		canvas->Divide(nX,nY);
 	}
-	std::cout << "[CanvasManager] Created canvas with " << nX << " pads." << std::endl;
+	if(getVerbose())
+		std::cout << "[CanvasManager] Created canvas with " << nX << " pads." << std::endl;
 	return canvas;
 }
 
@@ -68,7 +70,8 @@ TCanvas* CanvasManager::getDividedCanvas(int nX , int nY){
  */
 void CanvasManager::addCanvas(std::string name, TCanvas* canvas){
 	if(!canvas){
-		std::cout << "[CanvasManager] Given canvas is a null pointer!" << std::endl;
+		if(getVerbose())
+			std::cout << "[CanvasManager] Given canvas is a null pointer!" << std::endl;
 		return;
 	}
 	TCanvas* c = canvasContainer[name];

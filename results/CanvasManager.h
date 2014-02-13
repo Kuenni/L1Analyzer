@@ -10,7 +10,7 @@
 
 class CanvasManager{
 public:
-	CanvasManager(std::string sampleName) : sampleName(sampleName){};
+	CanvasManager(std::string sampleName) : sampleName(sampleName),verbose(false){};
 	/*
 	 * Destructor, that automatically calls the store plots function
 	 */
@@ -22,7 +22,18 @@ public:
 	void addCanvas(std::string,TCanvas*);
 	TCanvas* showCanvas(std::string);
 	void storePlots();
+
+	/**
+	 * Getter and setter vor verbosity
+	 */
+	inline void setVerbose(bool verbose){
+		this->verbose = verbose;
+	}
+	inline bool getVerbose(){
+		return verbose;
+	}
 private:
+	bool verbose;
 	std::string sampleName;
 	std::map<std::string,TCanvas*> canvasContainer;
 };
