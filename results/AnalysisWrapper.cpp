@@ -117,7 +117,7 @@ void AnalysisWrapper::analyseBti(){
 		l->Draw();
 	}
 	cManager->addCanvas("btiTrigPerStatAndSL",tempCanvas);
-
+	tempCanvas = 0;
 }
 
 //#######################################

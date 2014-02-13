@@ -37,7 +37,6 @@ int main(int argc, char** argv){
 	muGunPt10Wrapper.analyseTraco();
 	muGunPt10Wrapper.analyseGenParticles();
 	muGunPt10Wrapper.savePlots();
-	muGunPt10Wrapper.showPlot("btiTrgPerEta");
 
 	AnalysisWrapper des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,false);
 	des17Pt10Wrapper.analyseBti();
@@ -52,11 +51,12 @@ int main(int argc, char** argv){
 	TCanvas* c = cManager->getDividedCanvas(2,2);
 	for (int i = 0; i < std::min(muGunVect.size(),des17Vect.size())/2.; ++i) {
 		c->cd(i+1)->SetLogy();
-
+		TH2D* frame = new TH2D("frame","btiTrigsPerStatAndSlTogetherFrame",1,0,25,1,0.1,500);
+		frame->Draw();
 		muGunVect[2*i]->SetLineColor(kBlack);
 		muGunVect[2*i+1]->SetLineColor(kBlack);
 		muGunVect[2*i+1]->SetLineStyle(2);
-		muGunVect[2*i]->Draw();
+		muGunVect[2*i]->Draw("same");
 		muGunVect[2*i+1]->Draw("same");
 
 		des17Vect[2*i]->SetLineColor(kBlue);
@@ -74,9 +74,10 @@ int main(int argc, char** argv){
 
 	}
 	cManager->addCanvas("btiTrigsPerStatAndSlTogether",c);
-
+	cManager->storePlots();
 
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
 //	app->Run();
+	delete cManager;
 	return 0;
 }

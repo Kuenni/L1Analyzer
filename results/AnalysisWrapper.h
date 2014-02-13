@@ -18,6 +18,13 @@ public:
 		cManager = new CanvasManager(sampleName);
 	};
 
+	~AnalysisWrapper(){
+		delete cManager;
+		delete btiAna;
+		delete tracoAna;
+		delete genAna;
+	}
+
 	//GenMuon analyzer functions
 	std::vector<TH1*> analyseNGenMuons();
 	std::vector<TH1*> analyseGenParticleIds();
@@ -51,6 +58,11 @@ public:
 
 	//Save the plots in the canvas manager
 	void savePlots(){ cManager->storePlots();};
+
+	//Calls the close canvases function of the underlying canvas manager
+	void closeCanvases(){
+		cManager->closeCanvases();
+	};
 
 	//Show a certain plot from the canvas manager with the given name
 	TCanvas* showPlot(std::string);

@@ -99,6 +99,5 @@ void CanvasManager::storePlots(){
 			mapIterator++ ){
 		mapIterator->second->SaveAs((directory + "/pdf/" + mapIterator->first + ".pdf"));
 		mapIterator->second->SaveAs((directory + "/png/" + mapIterator->first + ".png"));
-
 	}
 }
