@@ -13,6 +13,7 @@ public:
 	CanvasManager(std::string sampleName) : sampleName(sampleName){};
 	TCanvas* plotDividedCanvas(std::vector<TH1*> input,std::string name ,int nY = 0, bool fillColumns = false);
 	TCanvas* getDividedCanvas(int nX, int nY = 0);
+	void addCanvas(std::string,TCanvas*);
 	TCanvas* showCanvas(std::string);
 	void storePlots();
 private:

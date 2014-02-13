@@ -62,16 +62,7 @@ TH1D* BTIAnalysis::plotBtiTrgVsBxPerStationPhi(int station, int sl){
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < bbx->size() ; j++ ){
-<<<<<<< HEAD
-			if( bstat->at(j) == station && (bsl->at(j) == sl) )
-=======
-<<<<<<< Updated upstream
-			if( bstat->at(j) == station && (bsl->at(j) == 1 || bsl->at(j) == 3) )
-=======
-			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
 			if( bstat->at(j) == station && (bsl->at(j) == sl) && ( bcod->at(j) == 8 ) )
->>>>>>> Stashed changes
->>>>>>> 14tev
 				hist->Fill( bbx->at(j) );
 		}
 	}
@@ -176,9 +167,9 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 /**
  * Plots the mean number of BTI events per station for a given station and super layer
  */
-TH2D* BTIAnalysis::plotBtiTrigPerStatAndSL(int station, int sl){
+TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 	if(getDebug())
-			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSL called" << std::endl;
+			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSectAndSL called" << std::endl;
 	TString histName("histBtiTrigPerStatAndSL");
 	histName += getSampleName();
 	histName += "St";
@@ -280,6 +271,41 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
 		hist->Fill(stationCounter);
 	}
 	hist->SetStats(true);
+	return hist;
+}
+
+/**
+ * Make the plots for number of hit BTIs per station and given SL
+ */
+TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl){
+	if(getDebug())
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerStationAndSL called" << std::endl;
+	//Build histogram name
+	TString histName("histNBtiTrg");
+	histName += getSampleName();
+	histName += "St";
+	histName += stationNr;
+	histName += "SL";
+	histName += sl;
+	//Build histogram title
+	TString histTitle("Distribution of number of BTI triggers per event for station ");
+	histTitle += stationNr;
+	histTitle += ";# BTI triggers per evt;# Entries";
+
+	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		int stationCounter = 0;
+		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
+			//Filter for the requested station
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bstat->at(j) == stationNr && bsl->at(j) == sl && bcod->at(j) == 8){
+				stationCounter++;
+			}
+		}
+		hist->Fill(stationCounter);
+	}
+	hist->SetStats(kFALSE);
 	return hist;
 }
 

@@ -186,6 +186,8 @@ private:
   int scthpos[40][7];
   int scthqual[40][7];
 
+  std::map<std::string, TH1*> histoMap;
+  
   void clearVectors();
 };
  

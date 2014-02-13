@@ -1,5 +1,7 @@
 #include "AnalysisWrapper.h"
 
+#include "TLegend.h"
+
 TCanvas* AnalysisWrapper::showPlot(std::string plotName){
 	return cManager->showCanvas(plotName);
 }
@@ -65,14 +67,39 @@ std::vector<TH1*> AnalysisWrapper::analyseBtiNoThetaPerWheel(){
 	return vect;
 }
 
-std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSL(){
+std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSectAndSL(){
 	std::vector<TH1*> vect;
 	for (int var = 0; var < 4; ++var) {
 		for (int k = 0 ; k < 3 ; k++){
-			vect.push_back(btiAna->plotBtiTrigPerStatAndSL( var+1 , k+1 ) );
+			vect.push_back(btiAna->plotBtiTrigPerStatAndSectAndSL( var+1 , k+1 ) );
 		}
 	}
 	return vect;
+}
+
+void AnalysisWrapper::analyseBtiTrigPerStatAndSL(){
+	TCanvas* c = cManager->getDividedCanvas(2,2);
+	std::vector<TH1D*> vect;
+	//create the histograms
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 1; j < 4; j+=2) {
+			vect.push_back(btiAna->plotBtiTriggersPerStationAndSL(i+1,j));
+		}
+	}
+	//Draw the super layers for the same station together
+	for (int i = 0; i < 4; ++i) {
+		//change to canvas and set log y
+		c->cd(i+1)->SetLogy();
+		std::cout << i << "\t" << vect.size() <<  std::endl;
+		vect[2*i]->Draw();
+		vect[2*i+1]->SetLineColor(kRed);
+		vect[2*i+1]->Draw("same");
+		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
+		l->AddEntry(vect[2*i],"SL 1");
+		l->AddEntry(vect[2*i+1],"SL 3");
+		l->Draw();
+	}
+	cManager->addCanvas("btiTrigPerStatAndSL",c);
 }
 
 //Call all the subanalyzer functions
@@ -86,7 +113,9 @@ void AnalysisWrapper::analyseBti(){
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(1),"btiBxPerStationPhiSL1");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationPhi(3),"btiBxPerStationPhiSL3");
 	tempCanvas = cManager->plotDividedCanvas(analyseBtiBxPerStationTheta(),"btiBxPerStationTheta");
-	tempCanvas = cManager->plotDividedCanvas(analyseBtiTrigPerStatAndSL(),"btiTrigPerStatAndSL",3,true);
+	tempCanvas = cManager->plotDividedCanvas(analyseBtiTrigPerStatAndSectAndSL(),"btiTrigPerStatAndSectAndSL",3,/*fill columns*/true);
+	//Calls the ana function which does more complex stuff for plotting
+	analyseBtiTrigPerStatAndSL();
 }
 
 //#######################################

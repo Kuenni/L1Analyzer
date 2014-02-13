@@ -41,9 +41,15 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 
 #include "SimDataFormats/DigiSimLinks/interface/DTDigiSimLink.h"
+#include "SimDataFormats/DigiSimLinks/interface/DTDigiSimLinkCollection.h"
 #include "DataFormats/MuonDetId/interface/DTLayerId.h"
 
-// ROOT headers 
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+
+//Root
+#include <TH1D.h>
+#include <TH2D.h>
 #include "TROOT.h"
 #include "TTree.h"
 #include "TFile.h"
@@ -63,6 +69,8 @@ using namespace std;
 using namespace edm;
 
 const double DTTrigTest::my_TtoTDC = 32./25.;
+
+
 
 DTTrigTest::DTTrigTest(const ParameterSet& pset): my_trig(0) { 
 
@@ -100,6 +108,9 @@ void DTTrigTest::endJob(){
 
 //void DTTrigTest::beginJob(const EventSetup & iEventSetup){
 void DTTrigTest::beginJob(){
+	edm::Service<TFileService> fs;
+	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",20,-10,10);
+	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",20,-10,10);
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
 	// iEventSetup.get< DTConfigManagerRcd >().get( confManager ) ;
@@ -240,14 +251,18 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	const float ptcut  = 1.0;
 	const float etacut = 2.4;
 
+	//	std::cout << "###################" << std::endl;
+	//	std::cout << "Event nr. " << iEvent.id().event() << std::endl;
+	//	std::cout << "###################" << std::endl;
 	//### The DTDigis
 	edm::Handle<MuonDigiCollection<DTLayerId, DTDigi> > dtDigis;
 	iEvent.getByLabel("simMuonDTDigis", dtDigis);
 
 	//### The DTDigiSimLink
 	edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
+	//	bool simLinksOk =
 	iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
-	
+
 	my_trig->triggerReco(iEvent,iEventSetup);
 	if (my_debug)
 		cout << "[DTTrigTest] Trigger algorithm executed for run " << iEvent.id().run() <<" event " << iEvent.id().event() << endl;
@@ -288,11 +303,13 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	iEvent.getByLabel("g4SimHits",MyTracks);
 	iEvent.getByLabel("g4SimHits",MyVertexes);
 	vector<SimTrack>::const_iterator itrack;
+
 	ngen=0;
 	if (my_debug)
 		cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << MyTracks->size() <<endl;
 
 	for (itrack=MyTracks->begin(); itrack!=MyTracks->end(); itrack++){
+		//TODO: Keep in mind the filter on muons with certain eta range
 		if ( abs(itrack->type())==13){
 			math::XYZTLorentzVectorD momentum = itrack->momentum();
 			float pt  = momentum.Pt();
@@ -338,11 +355,40 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		cout << "[DTTrigTest] " << btitrigs.size() << " BTI triggers found" << endl;
 
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
-		
 
-		DTLayerId* layerId = new DTLayerId(pbti->ChamberId().rawId());
-		layerId->layer();
-//		std::cout << "SimTrack Id: " << (dtSimLinks->get(*layerId).second)->SimTrackId() << std::endl;
+		for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
+				detUnit !=dtSimLinks->end();
+				++detUnit) {
+
+			const DTLayerId& layerid = (*detUnit).first;
+
+			if(pbti->ChamberId() == layerid.chamberId()){	//check for same chamber
+				if(pbti->SLId() == layerid.superlayerId()){	//check for same Superlayer
+					const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+					DTDigiSimLinkCollection::const_iterator link;
+					/*
+					 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
+					 * and then look for the same TrackId im the sim tracks.
+					 * On match fill the vertex index and genParticle index of the track
+					 */
+					for (link=range.first; link!=range.second; ++link){
+						std::cout << "Begin SimLink loop\n";
+						for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
+								trackIt != MyTracks->end(); trackIt++){
+							std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;
+							if((*link).SimTrackId() == trackIt->trackId() ){
+								//Add all Sim track ids to histo
+								std::cout << "MATCH!" << std::endl;
+								histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
+								histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
+							}
+						}
+
+
+					}
+				}
+			}
+		}
 
 		//    if ( ibti < 100 ) {
 		bwh.push_back( 		pbti->wheel() );

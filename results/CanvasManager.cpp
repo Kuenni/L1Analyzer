@@ -54,13 +54,29 @@ TCanvas* CanvasManager::getDividedCanvas(int nX , int nY){
 	TCanvas* canvas = new TCanvas("c","",1600,1200);
 	if( nY <= 0 ){
 		if(nY < 0)
-			std::cout << "[main] Warning! Ignoring invalid canvas row count " << nY << std::endl;
+			std::cout << "[CanvasManager] Warning! Ignoring invalid canvas row count " << nY << std::endl;
 		canvas->Divide(nX,nX);
 	}else {
 		canvas->Divide(nX,nY);
 	}
-	std::cout << "[main] Created canvas with " << nX << " pads." << std::endl;
+	std::cout << "[CanvasManager] Created canvas with " << nX << " pads." << std::endl;
 	return canvas;
+}
+
+/**
+ * Adds a canvas to the list of canvases, the manager maintains
+ */
+void CanvasManager::addCanvas(std::string name, TCanvas* canvas){
+	if(!canvas){
+		std::cout << "[CanvasManager] Given canvas is a null pointer!" << std::endl;
+		return;
+	}
+	TCanvas* c = canvasContainer[name];
+	if(c){
+		std::cout << "[CanvasManager] Warning! overwriting existing canvas with name " << name << "!" << std::endl;
+	}
+	canvas->SetName(name.c_str());
+	canvasContainer[name] = canvas;
 }
 
 /**

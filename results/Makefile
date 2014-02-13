@@ -13,7 +13,7 @@ all: $(OBJECTS)
 	c++ $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 %.o: %.cpp
-	c++ -c $< $(CFLAGS) -o $@
+	c++ -g -c $< $(CFLAGS) -o $@
 
 %.o: %.C
 	c++ -c $< $(CFLAGS) -o $@

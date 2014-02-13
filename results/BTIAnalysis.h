@@ -15,6 +15,7 @@ public:
 	BTIAnalysis(std::string treeName, std::string sampleName , double ptCut, bool debug) : Analyse(treeName , sampleName , ptCut , debug){};
 	TH1D* plotBtiTriggers();
 	TH1D* plotBtiTriggersPerStation(int);
+	TH1D* plotBtiTriggersPerStationAndSL(int,int);
 	TH1D* plotBtiTriggersPerEta();
 	TH1D* plotEtaNoBtiTriggers();
 	TH1D* plotBtiTrgVsBx();
@@ -22,7 +23,7 @@ public:
 	TH1D* plotNoBtiThetaPerWheel(TH2D*,int);
 	TH1D* plotBtiTrgVsBxPerStationPhi(int,int);
 	TH1D* plotBtiTrgVsBxPerStationTheta(int);
-	TH2D* plotBtiTrigPerStatAndSL(int station,int sl);
+	TH2D* plotBtiTrigPerStatAndSectAndSL(int station,int sl);
 };
 
 

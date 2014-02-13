@@ -24,7 +24,7 @@ public:
 	std::vector<TH1*> analyseGenParticleEta();
 	std::vector<TH1*> analyseGenParticlePhi();
 
-	//BTI Analyser functions
+	//BTI Analyzer functions
 	std::vector<TH1*> analyseBtiBx();
 	std::vector<TH1*> analyseBtiTriggers();
 	std::vector<TH1*> analyseBtiTriggersPerStation();
@@ -33,7 +33,8 @@ public:
 	std::vector<TH1*> analyseBtiNoThetaPerWheel();
 	std::vector<TH1*> analyseBtiBxPerStationPhi(int);
 	std::vector<TH1*> analyseBtiBxPerStationTheta();
-	std::vector<TH1*> analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSectAndSL();
+	void analyseBtiTrigPerStatAndSL();
 
 	//Traco Analyzer functions
 	std::vector<TH1*> analyseTracoTriggers();
