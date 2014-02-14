@@ -8,5 +8,5 @@ Analyse::Analyse(std::string treeName,std::string sampleName, double ptCut, bool
 	, sampleName(sampleName)
 	, ptCut(ptCut)
 	, debug(debug){
-	std::cout << "[Analyse " << sampleName << "] Loading Tree: " << LoadTree(0) << std::endl;
+	std::cout << "[Analyse " << sampleName << "] Loading Tree: " << ( LoadTree(0) ? "ERROR" : "OK" ) << std::endl;
 }

@@ -51,17 +51,26 @@ int main(int argc, char** argv){
 	TCanvas* c = cManager->getDividedCanvas(2,2);
 	for (int i = 0; i < std::min(muGunVect.size(),des17Vect.size())/2.; ++i) {
 		c->cd(i+1)->SetLogy();
-		TH2D* frame = new TH2D("frame","btiTrigsPerStatAndSlTogetherFrame",1,0,25,1,0.1,500);
+		TString frameName = "BTI triggers for station ";
+		frameName += i+1;
+
+		TH2D* frame = new TH2D("frame",frameName,1,0,25,1,0.000001,1);
+		frame->SetStats(kFALSE);
 		frame->Draw();
+
 		muGunVect[2*i]->SetLineColor(kBlack);
 		muGunVect[2*i+1]->SetLineColor(kBlack);
 		muGunVect[2*i+1]->SetLineStyle(2);
+		muGunVect[2*i]->Scale(1/muGunVect[2*i]->Integral());
+		muGunVect[2*i+1]->Scale(1/muGunVect[2*i+1]->Integral());
 		muGunVect[2*i]->Draw("same");
 		muGunVect[2*i+1]->Draw("same");
 
 		des17Vect[2*i]->SetLineColor(kBlue);
 		des17Vect[2*i+1]->SetLineColor(kBlue);
 		des17Vect[2*i+1]->SetLineStyle(2);
+		des17Vect[2*i]->Scale(1/des17Vect[2*i]->GetEntries());
+		des17Vect[2*i+1]->Scale(1/des17Vect[2*i+1]->GetEntries());
 		des17Vect[2*i]->Draw("same");
 		des17Vect[2*i+1]->Draw("same");
 
