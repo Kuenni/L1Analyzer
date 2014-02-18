@@ -55,7 +55,9 @@ public:
   void analyze(const edm::Event & iEvent, const edm::EventSetup& iEventSetup);
   
 private:
-
+  //switch used to determine whether analyzer is running on data or MC
+  bool runOnData;
+  
   // time to TDC_time conversion
   static const double my_TtoTDC;
 
@@ -72,7 +74,6 @@ private:
   TTree* my_tree;
   // TFile
   TFile *my_rootfile;
-
 
   //GENERAL block
   int             runn;

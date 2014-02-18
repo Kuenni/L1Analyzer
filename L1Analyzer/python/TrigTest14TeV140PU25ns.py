@@ -11,15 +11,9 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.Geometry.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-
 #global Tag for the given source File
-#FIXME: Choose the right global tag!!!
-#process.GlobalTag.globaltag = 'DES17_62_V7::All'
-
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2017', '')
-
-
+#process.GlobalTag.globaltag = 'AUTO::ALL'
+process.GlobalTag.globaltag = 'DES17_62_V7::All'
 
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1TMuonTriggerPrimitiveProducer_cfi')
 process.load('L1TriggerDPGUpgrade.L1TMuon.L1CSCTFTrackConverter_cfi')
@@ -36,13 +30,13 @@ process.load("L1TriggerConfig.DTTPGConfigProducers.L1DTTPGConfig_cff")
 #Load the DTTrigTest config
 process.load('L1Analyzer.DTTrigger.dttrigtest_cfi')
 process.dttriganalyzer.debug = cms.untracked.bool(False)
-process.dttriganalyzer.outputFileName = cms.untracked.string('TrigTestMuGun.root')
+process.dttriganalyzer.outputFileName = cms.untracked.string('TrigTestRelVal14Tev140PU25ns.root')
 
 #Load the gen muon filter
 process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
 
 infile = []
-infile.append('file:STEP2_RAW2DIGI_L1Reco_RECO_PU.root')
+infile.append('file:0E84878D-1522-E311-B1DB-003048678FB8.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
@@ -67,7 +61,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 ##
 # MAX EVENT NUMBER
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(4) )
 
 process.source = cms.Source(
     'PoolSource',

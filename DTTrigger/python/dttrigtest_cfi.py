@@ -15,5 +15,7 @@ dttriganalyzer = cms.EDAnalyzer("DTTrigTest",
     # Synchronizer related stuff
     tTrigMode = cms.string('DTTTrigSyncTOFCorr'),
     # Output filename
-    outputFileName = cms.untracked.string('DTTPG_test.root')
+    outputFileName = cms.untracked.string('DTTPG_test.root'),
+    #running on data?
+    runOnData = cms.untracked.bool(False)
 )

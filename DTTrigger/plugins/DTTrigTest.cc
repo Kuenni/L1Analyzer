@@ -76,6 +76,7 @@ DTTrigTest::DTTrigTest(const ParameterSet& pset): my_trig(0) {
 
 	my_debug= pset.getUntrackedParameter<bool>("debug");
 	string outputfile = pset.getUntrackedParameter<string>("outputFileName");
+	runOnData = pset.getUntrackedParameter<bool>("runOnData");
 	if (my_debug)
 		cout << "[DTTrigTest] Creating rootfile " <<  outputfile <<endl;
 	my_rootfile = new TFile(outputfile.c_str(),"RECREATE");
@@ -251,17 +252,88 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	const float ptcut  = 1.0;
 	const float etacut = 2.4;
 
-	//	std::cout << "###################" << std::endl;
-	//	std::cout << "Event nr. " << iEvent.id().event() << std::endl;
-	//	std::cout << "###################" << std::endl;
-	//### The DTDigis
-	edm::Handle<MuonDigiCollection<DTLayerId, DTDigi> > dtDigis;
-	iEvent.getByLabel("simMuonDTDigis", dtDigis);
+	// GEANT Block
+	Handle<vector<SimTrack> > MyTracks;
+	Handle<vector<SimVertex> > MyVertexes;
 
-	//### The DTDigiSimLink
-	edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
-	//	bool simLinksOk =
-	iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+	if(!runOnData){
+		//	std::cout << "###################" << std::endl;
+		//	std::cout << "Event nr. " << iEvent.id().event() << std::endl;
+		//	std::cout << "###################" << std::endl;
+
+		//### The DTDigis
+		edm::Handle<MuonDigiCollection<DTLayerId, DTDigi> > dtDigis;
+		iEvent.getByLabel("simMuonDTDigis", dtDigis);
+
+		//### The Gen-particle info
+		edm::Handle<reco::GenParticleCollection> genParticles;
+		iEvent.getByLabel("genParticles",genParticles);
+
+		int genMuonCounter = 0;
+		reco::GenParticleCollection::const_iterator iterGenParticleCollection;
+		for(iterGenParticleCollection = genParticles->begin(); iterGenParticleCollection != genParticles->end() ; ++iterGenParticleCollection){
+			if( isMuon(*iterGenParticleCollection) ){ //Check whether gen particle is a muon
+				etaGenParticles.push_back( iterGenParticleCollection->eta() );
+				double phi = iterGenParticleCollection->phi();
+				if ( phi < 0 )
+					phi += 2*M_PI;
+				phiGenParticles.push_back( phi );
+				genMuonCounter++;
+			}
+			if( iterGenParticleCollection->status() == 1 )
+				genParticleId.push_back(iterGenParticleCollection->pdgId());
+		}
+		if(my_debug)
+			cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
+		nGenParticles = genMuonCounter;
+
+
+		iEvent.getByLabel("g4SimHits",MyTracks);
+		iEvent.getByLabel("g4SimHits",MyVertexes);
+		vector<SimTrack>::const_iterator itrack;
+
+		ngen=0;
+		if (my_debug)
+			cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << MyTracks->size() <<endl;
+
+		for (itrack=MyTracks->begin(); itrack!=MyTracks->end(); itrack++){
+			//TODO: Keep in mind the filter on muons with certain eta range
+			if ( abs(itrack->type())==13){
+				math::XYZTLorentzVectorD momentum = itrack->momentum();
+				float pt  = momentum.Pt();
+				float eta = momentum.eta();
+				if ( pt>ptcut && fabs(eta)<etacut ){
+					float phi = momentum.phi();
+					int charge = static_cast<int> (-itrack->type()/13); //static_cast<int> (itrack->charge());
+					if ( phi<0 ){
+						phi = 2*M_PI + phi;
+					}
+
+					int vtxindex = itrack->vertIndex();
+					float gvx=0,gvy=0,gvz=0;
+					if (vtxindex >-1){
+						gvx = MyVertexes->at( vtxindex ).position().x();
+						gvy = MyVertexes->at( vtxindex ).position().y();
+						gvz = MyVertexes->at( vtxindex ).position().z();
+					}
+					if ( ngen < MAXGEN ) {
+						pxgen.push_back( 	momentum.x() );
+						pygen.push_back( 	momentum.y() );
+						pzgen.push_back( 	momentum.z() );
+						ptgen.push_back( 	pt );
+						etagen.push_back( 	eta );
+						phigen.push_back( 	phi );
+						chagen.push_back( 	charge );
+						vxgen.push_back( 	gvx );
+						vygen.push_back( 	gvy );
+						vzgen.push_back( 	gvz );
+						ngen++;
+					}
+				}
+			}
+		}
+	}
+
 
 	my_trig->triggerReco(iEvent,iEventSetup);
 	if (my_debug)
@@ -275,75 +347,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	eventn = iEvent.id().event();
 	weight = 1; // FIXME what to do with this variable?
 
-	//### The Gen-particle info
-	edm::Handle<reco::GenParticleCollection> genParticles;
-	iEvent.getByLabel("genParticles",genParticles);
 
-	int genMuonCounter = 0;
-	reco::GenParticleCollection::const_iterator iterGenParticleCollection;
-	for(iterGenParticleCollection = genParticles->begin(); iterGenParticleCollection != genParticles->end() ; ++iterGenParticleCollection){
-		if( isMuon(*iterGenParticleCollection) ){ //Check whether gen particle is a muon
-			etaGenParticles.push_back( iterGenParticleCollection->eta() );
-			double phi = iterGenParticleCollection->phi();
-			if ( phi < 0 )
-				phi += 2*M_PI;
-			phiGenParticles.push_back( phi );
-			genMuonCounter++;
-		}
-		if( iterGenParticleCollection->status() == 1 )
-			genParticleId.push_back(iterGenParticleCollection->pdgId());
-	}
-	if(my_debug)
-		cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
-	nGenParticles = genMuonCounter;
-
-	// GEANT Block
-	Handle<vector<SimTrack> > MyTracks;
-	Handle<vector<SimVertex> > MyVertexes;
-	iEvent.getByLabel("g4SimHits",MyTracks);
-	iEvent.getByLabel("g4SimHits",MyVertexes);
-	vector<SimTrack>::const_iterator itrack;
-
-	ngen=0;
-	if (my_debug)
-		cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << MyTracks->size() <<endl;
-
-	for (itrack=MyTracks->begin(); itrack!=MyTracks->end(); itrack++){
-		//TODO: Keep in mind the filter on muons with certain eta range
-		if ( abs(itrack->type())==13){
-			math::XYZTLorentzVectorD momentum = itrack->momentum();
-			float pt  = momentum.Pt();
-			float eta = momentum.eta();
-			if ( pt>ptcut && fabs(eta)<etacut ){
-				float phi = momentum.phi();
-				int charge = static_cast<int> (-itrack->type()/13); //static_cast<int> (itrack->charge());
-				if ( phi<0 ){
-					phi = 2*M_PI + phi;
-				}
-
-				int vtxindex = itrack->vertIndex();
-				float gvx=0,gvy=0,gvz=0;
-				if (vtxindex >-1){
-					gvx = MyVertexes->at( vtxindex ).position().x();
-					gvy = MyVertexes->at( vtxindex ).position().y();
-					gvz = MyVertexes->at( vtxindex ).position().z();
-				}
-				if ( ngen < MAXGEN ) {
-					pxgen.push_back( 	momentum.x() );
-					pygen.push_back( 	momentum.y() );
-					pzgen.push_back( 	momentum.z() );
-					ptgen.push_back( 	pt );
-					etagen.push_back( 	eta );
-					phigen.push_back( 	phi );
-					chagen.push_back( 	charge );
-					vxgen.push_back( 	gvx );
-					vygen.push_back( 	gvy );
-					vzgen.push_back( 	gvz );
-					ngen++;
-				}
-			}
-		}
-	}
 
 	// L1 Local Trigger Block
 	// BTI
@@ -356,35 +360,40 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
 
-		for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
-				detUnit !=dtSimLinks->end();
-				++detUnit) {
+		if(!runOnData){
+			//### The DTDigiSimLink
+			edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
+			iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+			for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
+					detUnit !=dtSimLinks->end();
+					++detUnit) {
 
-			const DTLayerId& layerid = (*detUnit).first;
+				const DTLayerId& layerid = (*detUnit).first;
 
-			if(pbti->ChamberId() == layerid.chamberId()){	//check for same chamber
-				if(pbti->SLId() == layerid.superlayerId()){	//check for same Superlayer
-					const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
-					DTDigiSimLinkCollection::const_iterator link;
-					/*
-					 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
-					 * and then look for the same TrackId im the sim tracks.
-					 * On match fill the vertex index and genParticle index of the track
-					 */
-					for (link=range.first; link!=range.second; ++link){
-						std::cout << "Begin SimLink loop\n";
-						for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
-								trackIt != MyTracks->end(); trackIt++){
-							std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;
-							if((*link).SimTrackId() == trackIt->trackId() ){
-								//Add all Sim track ids to histo
-								std::cout << "MATCH!" << std::endl;
-								histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
-								histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
+				if(pbti->ChamberId() == layerid.chamberId()){	//check for same chamber
+					if(pbti->SLId() == layerid.superlayerId()){	//check for same Superlayer
+						const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+						DTDigiSimLinkCollection::const_iterator link;
+						/*
+						 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
+						 * and then look for the same TrackId im the sim tracks.
+						 * On match fill the vertex index and genParticle index of the track
+						 */
+						for (link=range.first; link!=range.second; ++link){
+							std::cout << "Begin SimLink loop\n";
+							for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
+									trackIt != MyTracks->end(); trackIt++){
+								//						std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;
+								if((*link).SimTrackId() == trackIt->trackId() ){
+									//Add all Sim track ids to histo
+									//								std::cout << "MATCH!" << std::endl;
+									histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
+									histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
+								}
 							}
+
+
 						}
-
-
 					}
 				}
 			}
