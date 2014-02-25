@@ -24,6 +24,9 @@ public:
 	TH1D* plotBtiTrgVsBxPerStationPhi(int,int);
 	TH1D* plotBtiTrgVsBxPerStationTheta(int);
 	TH2D* plotBtiTrigPerStatAndSectAndSL(int station,int sl);
+	inline int getNBti(){
+		return Nbti;
+	}
 };
 
 

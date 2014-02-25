@@ -67,6 +67,11 @@ public:
 	//Show a certain plot from the canvas manager with the given name
 	TCanvas* showPlot(std::string);
 
+	inline int getNbti(){
+		return btiAna->getNBti();
+	}
+
+
 private:
 	bool debug;
 	std::string treeName;

@@ -380,7 +380,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 						 * On match fill the vertex index and genParticle index of the track
 						 */
 						for (link=range.first; link!=range.second; ++link){
-							std::cout << "Begin SimLink loop\n";
+						//	std::cout << "Begin SimLink loop\n";
 							for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
 									trackIt != MyTracks->end(); trackIt++){
 								//						std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;

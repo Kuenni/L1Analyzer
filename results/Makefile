@@ -10,13 +10,17 @@ EXECUTABLE=Analyse
 #       CanvasManager.h
 
 all: $(OBJECTS)
+	@echo Linking $(EXECUTABLE)
 	c++ $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 %.o: %.cpp
+	@echo Compiling $<
 	c++ -g -c $< $(CFLAGS) -o $@
 
 %.o: %.C
+	@echo Compiling $<
 	c++ -c $< $(CFLAGS) -o $@
 clean:
 	rm -f $(EXECUTABLE)
 	rm -f $(OBJECTS)
+	@echo All clean!

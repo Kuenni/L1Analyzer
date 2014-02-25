@@ -44,10 +44,17 @@ int main(int argc, char** argv){
 	des17Pt10Wrapper.analyseGenParticles();
 	des17Pt10Wrapper.savePlots();
 
+	AnalysisWrapper SingleMuPt10("SingleMuGun/TrigTestsMuPt10.root","sMuPt10",10.,false);
+	SingleMuPt10.analyseBti();
+	SingleMuPt10.analyseTraco();
+	SingleMuPt10.analyseGenParticles();
+	SingleMuPt10.savePlots();
 
 	//Plot the bti trigs per Station and sl together
 	std::vector<TH1*> muGunVect = muGunPt10Wrapper.analyseBtiTrigPerStatAndSL();
 	std::vector<TH1*> des17Vect = des17Pt10Wrapper.analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> sMuPt10vect = SingleMuPt10.analyseBtiTrigPerStatAndSL();
+
 	TCanvas* c = cManager->getDividedCanvas(2,2);
 	for (int i = 0; i < std::min(muGunVect.size(),des17Vect.size())/2.; ++i) {
 		c->cd(i+1)->SetLogy();
@@ -74,11 +81,22 @@ int main(int argc, char** argv){
 		des17Vect[2*i]->Draw("same");
 		des17Vect[2*i+1]->Draw("same");
 
+		sMuPt10vect[2*i]->SetLineColor(kRed);
+		sMuPt10vect[2*i]->Scale(1/sMuPt10vect[2*i]->Integral());
+		sMuPt10vect[2*i]->Draw("same");
+		sMuPt10vect[2*i+1]->SetLineColor(kRed);
+		sMuPt10vect[2*i+1]->SetLineStyle(2);
+		sMuPt10vect[2*i+1]->Scale(1/sMuPt10vect[2*i]->Integral());
+		sMuPt10vect[2*i+1]->Draw("same");
+
+
 		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
 		l->AddEntry(muGunVect[2*i],"mu gun SL 1");
 		l->AddEntry(muGunVect[2*i+1],"mu gun SL 3");
 		l->AddEntry(des17Vect[2*i],"des 17 SL 1");
 		l->AddEntry(des17Vect[2*i+1],"des 17 SL 3");
+		l->AddEntry(sMuPt10vect[2*i],"Single #mu Pt 10 SL 1");
+		l->AddEntry(sMuPt10vect[2*i+1],"Single #mu Pt 10 SL 3");
 		l->Draw();
 
 	}

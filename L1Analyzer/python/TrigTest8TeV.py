@@ -37,7 +37,7 @@ process.dttriganalyzer.outputFileName = cms.untracked.string('TrigTestRelVal8Tev
 process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
 
 infile = []
-infile.append('file:00D4272D-8EF1-E111-BE0F-0017A4770C18.root')
+infile.append('root://xrootd.unl.edu//store/relval/CMSSW_5_3_11/RelValZMM/GEN-SIM-DIGI-RAW-HLTDEBUG/START53_LV3_Alca7TeV_14Jun2013-v1/00000/4888C5FF-E7D4-E211-AA11-003048F1BEC8.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
