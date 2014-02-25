@@ -1,0 +1,9 @@
+1. SingleMuPt100_cfi_py_GEN_SIM.py
+2. MinBias_TuneZ2star_14TeV_pythia6_cff_py_GEN_SIM.py
+3. REDIGI_DIGI_L1_DIGI2RAW_PU.py
+4. STEP2_RAW2DIGI_L1Reco_RECO_PU.py
+
+The first file generates the muon gun events with the muon in cone producer
+The second file generates the PU events for the sample
+Redigi then mixes signal and PU together
+Step 2 then does the reco
