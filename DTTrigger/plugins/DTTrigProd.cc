@@ -94,7 +94,6 @@ void DTTrigProd::beginRun(edm::Run const& iRun, const edm::EventSetup& iEventSet
 
 
 void DTTrigProd::produce(Event & iEvent, const EventSetup& iEventSetup){
-	std::cout << "[DTTrigProd] Modified file from L1Analyzer" << std::endl;
   vector<L1MuDTChambPhDigi> outPhi;
   vector<L1MuDTChambThDigi> outTheta;
 

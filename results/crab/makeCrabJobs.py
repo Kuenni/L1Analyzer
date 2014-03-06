@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import re
 import sys,os
 import argparse
@@ -96,6 +98,9 @@ for line in infile:
 infile.close()
 outfile.close()
 
+#####
+#Generate crab config file
+#####
 infile = open(CRABCFG)
 outfile = open(JOBDIR + "/crab.cfg", 'w')
 #Create a replacement dictionary for crab cfg file
@@ -103,7 +108,7 @@ replaceDictCrab = {"@t2_dir@":JOBDIR}
 
 print
 print "Creating CRAB config with following parameters:"
-for src, target in replaceDictCmssw.iteritems():
+for src, target in replaceDictCrab.iteritems():
     print "\t" + src.replace("@","") + " -> " + target
 print
 
@@ -114,10 +119,35 @@ for line in infile:
 infile.close()
 outfile.close()
 
+#####
+#Generate CMSSW exe for Trig Test file
+#####
+
+#infile = open(TRIGTESTCFG)
+#outnameFragment = JOBDIR + "/TrigTestPt" + pt + "dR" + dr
+#outnameFragment.replace(".","_")
+#outfile = open( outnameFragment + ".py", 'w')
+#Create a replacement dictionary for crab cfg file
+#replaceDictTrigTest = {"@infile@" : JOBDIR,
+#                       "@outifle@" : }
+
+#print
+#print "Creating TrigTest config with following parameters:"
+#for src, target in replaceDictTrigTest.iteritems():
+#    print "\t" + src.replace("@","") + " -> " + target
+#print
+
+#for line in infile:
+#    for src, target in replaceDictTrigTest.iteritems():
+#        line = line.replace(src, target)
+#    outfile.write(line)
+#infile.close()
+#outfile.close()
+
 print "Done. You may proceed with copy & paste of these commands:"
 print 
 print "voms-proxy-init -voms cms:/cms/dcms -valid 164:00"
-print "cd $JOBDIR"
+print "cd " + JOBDIR
 print "crab -create"
 print "crab -submit"
 print "crab -status"

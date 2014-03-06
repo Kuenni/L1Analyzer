@@ -31,7 +31,7 @@ process.dttriganalyzer.digiTag = cms.InputTag("simMuonDTDigis")
 process.load('L1Analyzer.L1Analyzer.GenParticleFilter_cfi')
 
 infile = []
-infile.append('file:SingleMuGun/SingleMuPt10_cfi_py_GEN_SIM_DIGI.root')
+infile.append('file:/user/kuensken/Promotion/CMSSW/CMSSW_6_2_0_SLHC3/src/crabDirs/MuGunPt10dR0_3/root/MuGun.root')
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string('Analysed.root')
@@ -44,7 +44,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 ##
 # MAX EVENT NUMBER
 ##
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(4) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source(
     'PoolSource',
