@@ -138,7 +138,7 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
 						&& ( bwh->at(k)		== wheel )
 						&& ( bsect->at(k)	== sector )
 						&& ( bcod->at(k) 	== 8 )
-						){
+				){
 					counter++;
 					break;
 				}
@@ -169,7 +169,7 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
  */
 TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 	if(getDebug())
-			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSectAndSL called" << std::endl;
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSectAndSL called" << std::endl;
 	TString histName("histBtiTrigPerStatAndSL");
 	histName += getSampleName();
 	histName += "St";
@@ -184,8 +184,10 @@ TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 	histTitle += ", " + getSampleName();
 	histTitle += ";Wheel;Sector";
 
-	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 15 , -1.5 , 13.5 );
+	std::map<int,int> eventCounter;
 
+	TH2D* hist = new TH2D( histName , histTitle , 7, -3.5 , 3.5 , 15 , -1.5 , 13.5 );
+	int totalNBticounter = 0;
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int i = 0 ; i < Nbti ; i++ ){
@@ -194,10 +196,8 @@ TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 			if( bsl->at(i) == sl && bstat->at(i) == station && bcod->at(i) == 8)
 				hist->Fill(bwh->at(i),bsect->at(i));
 		}
-
-
 	}
-
+//	hist->Scale(1/((double)totalNBticounter));
 	hist->SetOption("colz");
 
 	return hist;
@@ -209,7 +209,7 @@ TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 TH1D* BTIAnalysis::plotBtiTriggersPerEta(){
 	int nBins = 301;
 	if(getDebug())
-			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerEta called" << std::endl;
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerEta called" << std::endl;
 
 	//Build histogram name
 	TString histName("histNBtiTrgPerEta");
@@ -293,18 +293,41 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl){
 	histTitle += ";# BTI triggers per evt;# Entries";
 
 	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
+	histName += "Temp";
+	TH1D* hist2 = new TH1D( histName , histName ,43,-1.5,41.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		int stationCounter = 0;
+		std::map<int,int> idMap;
 		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
+			unsigned int chamberId;
 			//Filter for the requested station
 			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
 			if( bstat->at(j) == stationNr && bsl->at(j) == sl && bcod->at(j) == 8){
+				//unsigned int
+				chamberId = (((unsigned int)bwh->at(j)) << 16 ) | (((unsigned int)bsect->at(j)) << 8 ) | (((unsigned int)bstat->at(j))) ;
+				idMap[chamberId] = 1;
 				stationCounter++;
 			}
 		}
-		hist->Fill(stationCounter);
+		hist2 -> Fill(idMap.size());
+		//Check whether there were BTI Triggers
+		if(idMap.size() != 0){
+			double res = stationCounter/((double) idMap.size());
+			std::cout << "counter / size: " << stationCounter << "/" << ((double) idMap.size()) << std::endl;
+			std::cout << bstat->size() << std::endl;
+			std::cout << std::endl;
+			hist->Fill(res);
+		}else{
+			//If no triggers, just add the 0 to the hist
+			hist->Fill(0);
+		}
+		idMap.clear();
 	}
+	TCanvas* c = new TCanvas();
+	c->cd()->SetLogy();
+	hist2->Draw();
+	c->SaveAs(histName + ".png");
 	hist->SetStats(kFALSE);
 	return hist;
 }
@@ -336,7 +359,7 @@ TH1D* BTIAnalysis::plotEtaNoBtiTriggers(){
  */
 TH1D* BTIAnalysis::plotNoBtiThetaPerWheel(TH2D* input, int station) {
 	if(getDebug())
-			std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigsNoThetaPerWheel called" << std::endl;
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigsNoThetaPerWheel called" << std::endl;
 	TString histName("histNoBtiThetaPerWheel");
 	histName += getSampleName();
 	histName += "St";

@@ -110,8 +110,10 @@ void DTTrigTest::endJob(){
 //void DTTrigTest::beginJob(const EventSetup & iEventSetup){
 void DTTrigTest::beginJob(){
 	edm::Service<TFileService> fs;
-	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",20,-10,10);
-	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",20,-10,10);
+	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",32,-2.5,29.5);
+	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",22,-2.5,19.5);
+	histoMap["histSimTrackSimTrackIds"]	= fs->make<TH1D>("histSimTrackSimTrackIds","SimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
+	histoMap["histSimLinkSimTrackIds"]	= fs->make<TH1D>("histSimLinkSimTrackIds","SimLinkSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
 	// iEventSetup.get< DTConfigManagerRcd >().get( confManager ) ;
@@ -249,8 +251,8 @@ void DTTrigTest::beginRun(const edm::Run& iRun, const edm::EventSetup& iEventSet
 
 void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	const int MAXGEN  = 20;
-	const float ptcut  = 1.0;
-	const float etacut = 2.4;
+	//	const float ptcut  = 1.0;
+	//	const float etacut = 2.4;
 
 	// GEANT Block
 	Handle<vector<SimTrack> > MyTracks;
@@ -292,6 +294,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		iEvent.getByLabel("g4SimHits",MyVertexes);
 		vector<SimTrack>::const_iterator itrack;
 
+
 		ngen=0;
 		if (my_debug)
 			cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << MyTracks->size() <<endl;
@@ -302,38 +305,41 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 				math::XYZTLorentzVectorD momentum = itrack->momentum();
 				float pt  = momentum.Pt();
 				float eta = momentum.eta();
-				if ( pt>ptcut && fabs(eta)<etacut ){
-					float phi = momentum.phi();
-					int charge = static_cast<int> (-itrack->type()/13); //static_cast<int> (itrack->charge());
-					if ( phi<0 ){
-						phi = 2*M_PI + phi;
-					}
-
-					int vtxindex = itrack->vertIndex();
-					float gvx=0,gvy=0,gvz=0;
-					if (vtxindex >-1){
-						gvx = MyVertexes->at( vtxindex ).position().x();
-						gvy = MyVertexes->at( vtxindex ).position().y();
-						gvz = MyVertexes->at( vtxindex ).position().z();
-					}
-					if ( ngen < MAXGEN ) {
-						pxgen.push_back( 	momentum.x() );
-						pygen.push_back( 	momentum.y() );
-						pzgen.push_back( 	momentum.z() );
-						ptgen.push_back( 	pt );
-						etagen.push_back( 	eta );
-						phigen.push_back( 	phi );
-						chagen.push_back( 	charge );
-						vxgen.push_back( 	gvx );
-						vygen.push_back( 	gvy );
-						vzgen.push_back( 	gvz );
-						ngen++;
-					}
+				//				if ( pt>ptcut && fabs(eta)<etacut ){
+				float phi = momentum.phi();
+				int charge = static_cast<int> (-itrack->type()/13); //static_cast<int> (itrack->charge());
+				if ( phi<0 ){
+					phi = 2*M_PI + phi;
 				}
-			}
-		}
-	}
 
+				int vtxindex = itrack->vertIndex();
+				float gvx=0,gvy=0,gvz=0;
+				if (vtxindex >-1){
+					gvx = MyVertexes->at( vtxindex ).position().x();
+					gvy = MyVertexes->at( vtxindex ).position().y();
+					gvz = MyVertexes->at( vtxindex ).position().z();
+				}
+				if ( ngen < MAXGEN ) {
+					pxgen.push_back( 	momentum.x() );
+					pygen.push_back( 	momentum.y() );
+					pzgen.push_back( 	momentum.z() );
+					ptgen.push_back( 	pt );
+					etagen.push_back( 	eta );
+					phigen.push_back( 	phi );
+					chagen.push_back( 	charge );
+					vxgen.push_back( 	gvx );
+					vygen.push_back( 	gvy );
+					vzgen.push_back( 	gvz );
+					ngen++;
+				}
+				//}
+		}
+			std::cout << "Sim Tracks type: " << itrack->type() << std::endl;
+		}
+	}// runOnData
+
+
+	std::cout << "running on simulation" << std::endl;
 
 	my_trig->triggerReco(iEvent,iEventSetup);
 	if (my_debug)
@@ -354,12 +360,12 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	vector<DTBtiTrigData> btitrigs = my_trig->BtiTrigs();
 	vector<DTBtiTrigData>::const_iterator pbti;
 
+
 	int ibti = 0;
 	if (my_debug)
 		cout << "[DTTrigTest] " << btitrigs.size() << " BTI triggers found" << endl;
 
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
-
 		if(!runOnData){
 			//### The DTDigiSimLink
 			edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
@@ -380,7 +386,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 						 * On match fill the vertex index and genParticle index of the track
 						 */
 						for (link=range.first; link!=range.second; ++link){
-						//	std::cout << "Begin SimLink loop\n";
+							//	std::cout << "Begin SimLink loop\n";
 							for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
 									trackIt != MyTracks->end(); trackIt++){
 								//						std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;
@@ -390,8 +396,9 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 									histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
 									histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
 								}
+								histoMap["histSimTrackSimTrackIds"]->Fill(trackIt->trackId());
 							}
-
+							histoMap["histSimLinkSimTrackIds"]->Fill(link->SimTrackId());
 
 						}
 					}
@@ -399,7 +406,6 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 			}
 		}
 
-		//    if ( ibti < 100 ) {
 		bwh.push_back( 		pbti->wheel() );
 		bstat.push_back( 	pbti->station() );
 		bsect.push_back( 	pbti->sector() );
@@ -419,7 +425,6 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		bdirz.push_back( dir.z() );
 		beta.push_back( pos.eta() );
 		ibti++;
-		//    }
 	}
 	nbti = ibti;
 

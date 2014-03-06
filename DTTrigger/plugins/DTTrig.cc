@@ -157,6 +157,7 @@ DTTrig::triggerReco(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	  return;
   }
 
+
   DTDigiMap digiMap;
   //Sort digis by chamber so they can be used by BTIs
   edm::Handle<DTDigiCollection> dtDigis;
@@ -179,7 +180,7 @@ DTTrig::triggerReco(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     const DTLayerId& layId = (*detUnitIt).first;
     const DTChamberId chambId=layId.superlayerId().chamberId();
     const DTDigiCollection::Range& range = (*detUnitIt).second; 
-    digiMap[chambId].put(range,layId); 
+    digiMap[chambId].put(range,layId);
 
   }
   

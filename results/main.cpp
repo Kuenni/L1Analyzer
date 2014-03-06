@@ -45,10 +45,16 @@ int main(int argc, char** argv){
 //	des17Pt10Wrapper.savePlots();
 
 	AnalysisWrapper SingleMuPt100dR0_3("crab/MuGunPt100dR0_3/TrigTest.root","MuGunPt100dR0_3",10.,false);
-//	SingleMuPt100dR0_3.analyseBti();
+	SingleMuPt100dR0_3.analyseBti();
 //	SingleMuPt100dR0_3.analyseTraco();
 //	SingleMuPt100dR0_3.analyseGenParticles();
-//	SingleMuPt100dR0_3.savePlots();
+	SingleMuPt100dR0_3.savePlots();
+
+	AnalysisWrapper SingleMuPt100dR0_2("crab/MuGunPt100dR0_2/TrigTest.root","MuGunPt100dR0_2",10.,false);
+//	SingleMuPt100dR0_2.analyseBti();
+//	SingleMuPt100dR0_2.analyseTraco();
+//	SingleMuPt100dR0_2.analyseGenParticles();
+//	SingleMuPt100dR0_2.savePlots();
 
 	AnalysisWrapper SingleMuPt100dR0_1("crab/MuGunPt100dR0_1/TrigTest.root","MuGunPt100dR0_1",10.,false);
 //	SingleMuPt100dR0_1.analyseBti();
@@ -56,11 +62,12 @@ int main(int argc, char** argv){
 //	SingleMuPt100dR0_1.analyseGenParticles();
 //	SingleMuPt100dR0_1.savePlots();
 
-	AnalysisWrapper SingleMuPt100dR0_025("SingleMuGun/TrigTestSingleMu.root","SingleMuGunPt100dR0_3 Reco",10.,false);
-	SingleMuPt100dR0_025.analyseBti();
-	SingleMuPt100dR0_025.analyseTraco();
-	SingleMuPt100dR0_025.analyseGenParticles();
-	SingleMuPt100dR0_025.savePlots();
+//	AnalysisWrapper SingleMuPt100dR0_025("SingleMuGun/TrigTestSingleMu.root","MuGunPt100dR0_025",10.,false);
+//	SingleMuPt100dR0_025.analyseBti();
+//	SingleMuPt100dR0_025.analyseTraco();
+//	SingleMuPt100dR0_025.analyseGenParticles();
+//	SingleMuPt100dR0_025.savePlots();
+
 
 
 
@@ -70,13 +77,13 @@ int main(int argc, char** argv){
 
 
 	std::vector<TH1*> sMuPt100dR0_3vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_2vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> sMuPt100dR0_2vect = SingleMuPt100dR0_2.analyseBtiTrigPerStatAndSL();
 	std::vector<TH1*> sMuPt100dR0_1vect = SingleMuPt100dR0_1.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_075vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_05vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_025vect = SingleMuPt100dR0_025.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_01vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_005vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+//	std::vector<TH1*> sMuPt100dR0_075vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+//	std::vector<TH1*> sMuPt100dR0_05vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+//	std::vector<TH1*> sMuPt100dR0_025vect = SingleMuPt100dR0_025.analyseBtiTrigPerStatAndSL();
+//	std::vector<TH1*> sMuPt100dR0_01vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+//	std::vector<TH1*> sMuPt100dR0_005vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
 
 	TCanvas* c = cManager->getDividedCanvas(2,2);
 	for (int i = 0; i < sMuPt100dR0_3vect.size()/2. ; ++i) {
@@ -96,6 +103,14 @@ int main(int argc, char** argv){
 		sMuPt100dR0_3vect[2*i+1]->Scale(1/sMuPt100dR0_3vect[2*i+1]->Integral());
 		sMuPt100dR0_3vect[2*i+1]->Draw("same");
 
+		sMuPt100dR0_2vect[2*i]->SetLineColor(kRed);
+		sMuPt100dR0_2vect[2*i+1]->SetLineColor(kRed);
+		sMuPt100dR0_2vect[2*i+1]->SetLineStyle(2);
+		sMuPt100dR0_2vect[2*i]->Scale(1/sMuPt100dR0_2vect[2*i]->Integral());
+		sMuPt100dR0_2vect[2*i+1]->Scale(1/sMuPt100dR0_2vect[2*i+1]->Integral());
+		sMuPt100dR0_2vect[2*i]->Draw("same");
+		sMuPt100dR0_2vect[2*i+1]->Draw("same");
+
 		sMuPt100dR0_1vect[2*i]->SetLineColor(kBlue);
 		sMuPt100dR0_1vect[2*i+1]->SetLineColor(kBlue);
 		sMuPt100dR0_1vect[2*i+1]->SetLineStyle(2);
@@ -104,13 +119,13 @@ int main(int argc, char** argv){
 		sMuPt100dR0_1vect[2*i]->Draw("same");
 		sMuPt100dR0_1vect[2*i+1]->Draw("same");
 
-		sMuPt100dR0_025vect[2*i]->SetLineColor(kRed);
-		sMuPt100dR0_025vect[2*i+1]->SetLineColor(kRed);
-		sMuPt100dR0_025vect[2*i+1]->SetLineStyle(2);
-		sMuPt100dR0_025vect[2*i]->Scale(1/sMuPt100dR0_025vect[2*i]->Integral());
-		sMuPt100dR0_025vect[2*i+1]->Scale(1/sMuPt100dR0_025vect[2*i+1]->Integral());
-		sMuPt100dR0_025vect[2*i]->Draw("same");
-		sMuPt100dR0_025vect[2*i+1]->Draw("same");
+//		sMuPt100dR0_025vect[2*i]->SetLineColor(kGreen);
+//		sMuPt100dR0_025vect[2*i+1]->SetLineColor(kGreen);
+//		sMuPt100dR0_025vect[2*i+1]->SetLineStyle(2);
+//		sMuPt100dR0_025vect[2*i]->Scale(1/sMuPt100dR0_025vect[2*i]->Integral());
+//		sMuPt100dR0_025vect[2*i+1]->Scale(1/sMuPt100dR0_025vect[2*i+1]->Integral());
+//		sMuPt100dR0_025vect[2*i]->Draw("same");
+//		sMuPt100dR0_025vect[2*i+1]->Draw("same");
 
 //		sMuPt100dR0_1vect[2*i]->SetLineColor(kRed);
 //		sMuPt100dR0_1vect[2*i+1]->SetLineColor(kRed);
@@ -126,12 +141,13 @@ int main(int argc, char** argv){
 
 		l->AddEntry(sMuPt100dR0_3vect[2*i],"#DeltaR 0.3 SL 1");
 		l->AddEntry(sMuPt100dR0_3vect[2*i+1],"#DeltaR 0.3 SL 3");
+		l->AddEntry(sMuPt100dR0_2vect[2*i],"#DeltaR 0.2 SL 1");
+		l->AddEntry(sMuPt100dR0_2vect[2*i+1],"#DeltaR 0.2 SL 3");
 		l->AddEntry(sMuPt100dR0_1vect[2*i],"#DeltaR 0.1 SL 1");
 		l->AddEntry(sMuPt100dR0_1vect[2*i+1],"#DeltaR 0.1 SL 3");
-		l->AddEntry(sMuPt100dR0_025vect[2*i],"#DeltaR 0.025 SL 1");
-		l->AddEntry(sMuPt100dR0_025vect[2*i+1],"#DeltaR 0.025 SL 3");
-//		l->AddEntry(sMuPt100dR0_1vect[2*i],"#DeltaR 0.1 SL 1");
-//		l->AddEntry(sMuPt100dR0_1vect[2*i+1],"#DeltaR 0.1 SL 3");
+//		l->AddEntry(sMuPt100dR0_025vect[2*i],"#DeltaR 0.025 SL 1");
+//		l->AddEntry(sMuPt100dR0_025vect[2*i+1],"#DeltaR 0.025 SL 3");
+
 		l->Draw();
 
 	}

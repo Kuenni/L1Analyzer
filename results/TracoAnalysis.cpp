@@ -40,3 +40,38 @@ TH1D* TracoAnalysis::plotTracoBx(){
 	}
 	return hist;
 }
+
+/**
+ * Make the plots for number of hit BTIs per station and given SL
+ */
+TH1D* TracoAnalysis::plotTracoTriggersPerStationAndSL(int stationNr,int sl){
+	if(getDebug())
+		std::cout << "[TracoAnalysis " << getSampleName() << "] plotBtiTriggersPerStationAndSL called" << std::endl;
+	//Build histogram name
+	TString histName("histNTracoTrg");
+	histName += getSampleName();
+	histName += "St";
+	histName += stationNr;
+	histName += "SL";
+	histName += sl;
+	//Build histogram title
+	TString histTitle("Distribution of number of BTI triggers per event for station ");
+	histTitle += stationNr;
+	histTitle += ";# BTI triggers per evt;# Entries";
+
+	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
+	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
+		GetEntry(n);
+		int stationCounter = 0;
+		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
+			//Filter for the requested station
+			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
+			if( bstat->at(j) == stationNr && bsl->at(j) == sl && bcod->at(j) == 8){
+				stationCounter++;
+			}
+		}
+		hist->Fill(stationCounter);
+	}
+	hist->SetStats(kFALSE);
+	return hist;
+}
