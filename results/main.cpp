@@ -44,23 +44,28 @@ int main(int argc, char** argv){
 //	des17Pt10Wrapper.analyseGenParticles();
 //	des17Pt10Wrapper.savePlots();
 
-	AnalysisWrapper SingleMuPt100dR0_3("crab/MuGunPt100dR0_3/TrigTest.root","MuGunPt100dR0_3",10.,false);
-	SingleMuPt100dR0_3.analyseBti();
-//	SingleMuPt100dR0_3.analyseTraco();
+	AnalysisWrapper doubleMuPt100dR0_3("crab/MuGunPt100dR0_3/TrigTest.root","MuGunPt100dR0_3",10.,true);
+//	SingleMuPt100dR0_3.analyseBti();
+	doubleMuPt100dR0_3.analyseTraco();
 //	SingleMuPt100dR0_3.analyseGenParticles();
-	SingleMuPt100dR0_3.savePlots();
+	doubleMuPt100dR0_3.savePlots();
 
-	AnalysisWrapper SingleMuPt100dR0_2("crab/MuGunPt100dR0_2/TrigTest.root","MuGunPt100dR0_2",10.,false);
+	AnalysisWrapper doubleMuPt100dR0_2("crab/MuGunPt100dR0_2/TrigTest.root","MuGunPt100dR0_2",10.,true);
 //	SingleMuPt100dR0_2.analyseBti();
-//	SingleMuPt100dR0_2.analyseTraco();
+	doubleMuPt100dR0_2.analyseTraco();
 //	SingleMuPt100dR0_2.analyseGenParticles();
 //	SingleMuPt100dR0_2.savePlots();
 
-	AnalysisWrapper SingleMuPt100dR0_1("crab/MuGunPt100dR0_1/TrigTest.root","MuGunPt100dR0_1",10.,false);
+	AnalysisWrapper doubleMuPt100dR0_1("crab/MuGunPt100dR0_1/TrigTest.root","MuGunPt100dR0_1",10.,true);
 //	SingleMuPt100dR0_1.analyseBti();
-//	SingleMuPt100dR0_1.analyseTraco();
+	doubleMuPt100dR0_1.analyseTraco();
 //	SingleMuPt100dR0_1.analyseGenParticles();
 //	SingleMuPt100dR0_1.savePlots();
+
+	AnalysisWrapper singleMuPt100("SingleMuGun/TrigTestSingleMu2.root","SingleMuGun",10.,true);
+	singleMuPt100.analyseBti();
+	singleMuPt100.analyseTraco();
+	singleMuPt100.savePlots();
 
 //	AnalysisWrapper SingleMuPt100dR0_025("SingleMuGun/TrigTestSingleMu.root","MuGunPt100dR0_025",10.,false);
 //	SingleMuPt100dR0_025.analyseBti();
@@ -76,9 +81,9 @@ int main(int argc, char** argv){
 //	std::vector<TH1*> des17Vect = des17Pt10Wrapper.analyseBtiTrigPerStatAndSL();
 
 
-	std::vector<TH1*> sMuPt100dR0_3vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_2vect = SingleMuPt100dR0_2.analyseBtiTrigPerStatAndSL();
-	std::vector<TH1*> sMuPt100dR0_1vect = SingleMuPt100dR0_1.analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> doubleMuPt100dR0_3vect = doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> doubleMuPt100dR0_2vect = doubleMuPt100dR0_2.analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> doubleMuPt100dR0_1vect = doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSL();
 //	std::vector<TH1*> sMuPt100dR0_075vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
 //	std::vector<TH1*> sMuPt100dR0_05vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
 //	std::vector<TH1*> sMuPt100dR0_025vect = SingleMuPt100dR0_025.analyseBtiTrigPerStatAndSL();
@@ -86,7 +91,7 @@ int main(int argc, char** argv){
 //	std::vector<TH1*> sMuPt100dR0_005vect = SingleMuPt100dR0_3.analyseBtiTrigPerStatAndSL();
 
 	TCanvas* c = cManager->getDividedCanvas(2,2);
-	for (int i = 0; i < sMuPt100dR0_3vect.size()/2. ; ++i) {
+	for (int i = 0; i < doubleMuPt100dR0_3vect.size()/2. ; ++i) {
 		c->cd(i+1)->SetLogy();
 		TString frameName = "BTI triggers for station ";
 		frameName += i+1;
@@ -95,29 +100,29 @@ int main(int argc, char** argv){
 		frame->SetStats(kFALSE);
 		frame->Draw();
 
-		sMuPt100dR0_3vect[2*i]->SetLineColor(kBlack);
-		sMuPt100dR0_3vect[2*i]->Scale(1/sMuPt100dR0_3vect[2*i]->Integral());
-		sMuPt100dR0_3vect[2*i]->Draw("same");
-		sMuPt100dR0_3vect[2*i+1]->SetLineColor(kBlack);
-		sMuPt100dR0_3vect[2*i+1]->SetLineStyle(2);
-		sMuPt100dR0_3vect[2*i+1]->Scale(1/sMuPt100dR0_3vect[2*i+1]->Integral());
-		sMuPt100dR0_3vect[2*i+1]->Draw("same");
+		doubleMuPt100dR0_3vect[2*i]->SetLineColor(kBlack);
+		doubleMuPt100dR0_3vect[2*i]->Scale(1/doubleMuPt100dR0_3vect[2*i]->Integral());
+		doubleMuPt100dR0_3vect[2*i]->Draw("same");
+		doubleMuPt100dR0_3vect[2*i+1]->SetLineColor(kBlack);
+		doubleMuPt100dR0_3vect[2*i+1]->SetLineStyle(2);
+		doubleMuPt100dR0_3vect[2*i+1]->Scale(1/doubleMuPt100dR0_3vect[2*i+1]->Integral());
+		doubleMuPt100dR0_3vect[2*i+1]->Draw("same");
 
-		sMuPt100dR0_2vect[2*i]->SetLineColor(kRed);
-		sMuPt100dR0_2vect[2*i+1]->SetLineColor(kRed);
-		sMuPt100dR0_2vect[2*i+1]->SetLineStyle(2);
-		sMuPt100dR0_2vect[2*i]->Scale(1/sMuPt100dR0_2vect[2*i]->Integral());
-		sMuPt100dR0_2vect[2*i+1]->Scale(1/sMuPt100dR0_2vect[2*i+1]->Integral());
-		sMuPt100dR0_2vect[2*i]->Draw("same");
-		sMuPt100dR0_2vect[2*i+1]->Draw("same");
+		doubleMuPt100dR0_2vect[2*i]->SetLineColor(kRed);
+		doubleMuPt100dR0_2vect[2*i+1]->SetLineColor(kRed);
+		doubleMuPt100dR0_2vect[2*i+1]->SetLineStyle(2);
+		doubleMuPt100dR0_2vect[2*i]->Scale(1/doubleMuPt100dR0_2vect[2*i]->Integral());
+		doubleMuPt100dR0_2vect[2*i+1]->Scale(1/doubleMuPt100dR0_2vect[2*i+1]->Integral());
+		doubleMuPt100dR0_2vect[2*i]->Draw("same");
+		doubleMuPt100dR0_2vect[2*i+1]->Draw("same");
 
-		sMuPt100dR0_1vect[2*i]->SetLineColor(kBlue);
-		sMuPt100dR0_1vect[2*i+1]->SetLineColor(kBlue);
-		sMuPt100dR0_1vect[2*i+1]->SetLineStyle(2);
-		sMuPt100dR0_1vect[2*i]->Scale(1/sMuPt100dR0_1vect[2*i]->Integral());
-		sMuPt100dR0_1vect[2*i+1]->Scale(1/sMuPt100dR0_1vect[2*i+1]->Integral());
-		sMuPt100dR0_1vect[2*i]->Draw("same");
-		sMuPt100dR0_1vect[2*i+1]->Draw("same");
+		doubleMuPt100dR0_1vect[2*i]->SetLineColor(kBlue);
+		doubleMuPt100dR0_1vect[2*i+1]->SetLineColor(kBlue);
+		doubleMuPt100dR0_1vect[2*i+1]->SetLineStyle(2);
+		doubleMuPt100dR0_1vect[2*i]->Scale(1/doubleMuPt100dR0_1vect[2*i]->Integral());
+		doubleMuPt100dR0_1vect[2*i+1]->Scale(1/doubleMuPt100dR0_1vect[2*i+1]->Integral());
+		doubleMuPt100dR0_1vect[2*i]->Draw("same");
+		doubleMuPt100dR0_1vect[2*i+1]->Draw("same");
 
 //		sMuPt100dR0_025vect[2*i]->SetLineColor(kGreen);
 //		sMuPt100dR0_025vect[2*i+1]->SetLineColor(kGreen);
@@ -139,12 +144,12 @@ int main(int argc, char** argv){
 
 		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
 
-		l->AddEntry(sMuPt100dR0_3vect[2*i],"#DeltaR 0.3 SL 1");
-		l->AddEntry(sMuPt100dR0_3vect[2*i+1],"#DeltaR 0.3 SL 3");
-		l->AddEntry(sMuPt100dR0_2vect[2*i],"#DeltaR 0.2 SL 1");
-		l->AddEntry(sMuPt100dR0_2vect[2*i+1],"#DeltaR 0.2 SL 3");
-		l->AddEntry(sMuPt100dR0_1vect[2*i],"#DeltaR 0.1 SL 1");
-		l->AddEntry(sMuPt100dR0_1vect[2*i+1],"#DeltaR 0.1 SL 3");
+		l->AddEntry(doubleMuPt100dR0_3vect[2*i],"#DeltaR 0.3 SL 1");
+		l->AddEntry(doubleMuPt100dR0_3vect[2*i+1],"#DeltaR 0.3 SL 3");
+		l->AddEntry(doubleMuPt100dR0_2vect[2*i],"#DeltaR 0.2 SL 1");
+		l->AddEntry(doubleMuPt100dR0_2vect[2*i+1],"#DeltaR 0.2 SL 3");
+		l->AddEntry(doubleMuPt100dR0_1vect[2*i],"#DeltaR 0.1 SL 1");
+		l->AddEntry(doubleMuPt100dR0_1vect[2*i+1],"#DeltaR 0.1 SL 3");
 //		l->AddEntry(sMuPt100dR0_025vect[2*i],"#DeltaR 0.025 SL 1");
 //		l->AddEntry(sMuPt100dR0_025vect[2*i+1],"#DeltaR 0.025 SL 3");
 

@@ -436,7 +436,6 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		cout << "[DTTrigTest] " << tracotrigs.size() << " TRACO triggers found" << endl;
 
 	for (ptc=tracotrigs.begin(); ptc!=tracotrigs.end(); ptc++) {
-		//    if (itraco<80) {
 		twh.push_back(		ptc->wheel() );
 		tstat.push_back( 	ptc->station() );
 		tsect.push_back( 	ptc->sector() );
@@ -454,7 +453,6 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		tdiry.push_back( dir.y() );
 		tdirz.push_back( dir.z() );
 		itraco++;
-		//    }
 	}
 	ntraco = itraco;
 

@@ -314,9 +314,6 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl){
 		//Check whether there were BTI Triggers
 		if(idMap.size() != 0){
 			double res = stationCounter/((double) idMap.size());
-			std::cout << "counter / size: " << stationCounter << "/" << ((double) idMap.size()) << std::endl;
-			std::cout << bstat->size() << std::endl;
-			std::cout << std::endl;
 			hist->Fill(res);
 		}else{
 			//If no triggers, just add the 0 to the hist

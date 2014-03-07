@@ -46,6 +46,8 @@ public:
 	//Traco Analyzer functions
 	std::vector<TH1*> analyseTracoTriggers();
 	std::vector<TH1*> analyseTracoBx();
+	std::vector<TH1*> analyseTracoTrigPerStaion();
+	std::vector<TH1*> analyseTracoTrigPerStationHtrig();
 
 	//Calls all bti analyzer functions
 	void analyseBti();

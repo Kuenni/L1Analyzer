@@ -135,9 +135,27 @@ std::vector<TH1*> AnalysisWrapper::analyseTracoBx(){
 	return vect;
 }
 
+std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStaion(){
+	std::vector<TH1*> vect;
+	for (int i = 0; i < 4; ++i) {
+		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,false));
+	}
+	return vect;
+}
+
+std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStationHtrig(){
+	std::vector<TH1*> vect;
+	for (int i = 0; i < 4; ++i) {
+		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,true));
+	}
+	return vect;
+}
+
 void AnalysisWrapper::analyseTraco(){
 	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseTracoTriggers(),"tracoTriggers");
 	tempCanvas = cManager->plotDividedCanvas(analyseTracoBx(),"tracoBx");
+	tempCanvas = cManager->plotDividedCanvas(analyseTracoTrigPerStaion(),"tracoTriggersPerStation");
+	tempCanvas = cManager->plotDividedCanvas(analyseTracoTrigPerStationHtrig(),"htrigTracoTriggersPerStation");
 }
 
 //#######################################

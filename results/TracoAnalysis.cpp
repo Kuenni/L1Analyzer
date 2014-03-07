@@ -6,13 +6,14 @@
  */
 
 #include "TracoAnalysis.h"
+#include "TCanvas.h"
 
 /**
  * Make the plots for number of hit TRACOs
  */
 TH1D* TracoAnalysis::plotTracoTriggers(){
 	if(getDebug())
-		std::cout << "[TracoAnalyis " << getSampleName() << "] plotTracoTriggers called" << std::endl;
+		std::cout << "[TracoAnalysis " << getSampleName() << "] plotTracoTriggers called" << std::endl;
 	TString histName("histNTracoTrg");
 	histName += getSampleName();
 	TH1D* hist = new TH1D(histName,"Distribution of number of TRACO triggers per event;# TRACO triggers per evt;# Entries",41,-1.5,39.5);
@@ -28,14 +29,14 @@ TH1D* TracoAnalysis::plotTracoTriggers(){
  */
 TH1D* TracoAnalysis::plotTracoBx(){
 	if(getDebug())
-		std::cout << "[TracoAnalyis " << getSampleName() << "] plotTracoBx called" << std::endl;
+		std::cout << "[TracoAnalysis " << getSampleName() << "] plotTracoBx called" << std::endl;
 	TString histName("histNTracoBx");
 	histName += getSampleName();
 	TH1D* hist = new TH1D(histName,"Distribution of BX ID for TRACO triggers;BX ID;# Entries",32,-1.5,30.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		for( int j = 0 ; j < tbx->size() ; j++ ){
-					hist->Fill( tbx->at(j) );
+			hist->Fill( tbx->at(j) );
 		}
 	}
 	return hist;
@@ -44,34 +45,75 @@ TH1D* TracoAnalysis::plotTracoBx(){
 /**
  * Make the plots for number of hit BTIs per station and given SL
  */
-TH1D* TracoAnalysis::plotTracoTriggersPerStationAndSL(int stationNr,int sl){
+TH1D* TracoAnalysis::plotTracoTriggersPerStation(int stationNr,bool useHtrigOnly){
 	if(getDebug())
-		std::cout << "[TracoAnalysis " << getSampleName() << "] plotBtiTriggersPerStationAndSL called" << std::endl;
+		std::cout << "[TracoAnalysis " << getSampleName() << "] plotTracoTriggersPerStation called "
+		<< "Station " << stationNr << " " << (useHtrigOnly ? "HTRG" : "") << std::endl;
 	//Build histogram name
 	TString histName("histNTracoTrg");
+	if(useHtrigOnly){
+		histName += "Htrig";
+	}
 	histName += getSampleName();
 	histName += "St";
 	histName += stationNr;
-	histName += "SL";
-	histName += sl;
+
 	//Build histogram title
-	TString histTitle("Distribution of number of BTI triggers per event for station ");
+	TString histTitle("Distribution of number of TRACO triggers ");
+	if(useHtrigOnly){
+		histTitle += "(HTRIG)";
+	}
+	histTitle += " per event for station ";
 	histTitle += stationNr;
-	histTitle += ";# BTI triggers per evt;# Entries";
+	histTitle += ";# TRACO triggers per evt;# Entries";
+
+	TH1D* histTemp = new TH1D( histName+"Temp" , histName+"Temp" ,92,-1.5,90.5);
 
 	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
-		GetEntry(n);
 		int stationCounter = 0;
-		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
+		std::map<int,int> idMap;
+		GetEntry(n);
+		for( unsigned int j = 0 ; j < tstat->size() ; j++ ){
+			unsigned int chamberId;
+
 			//Filter for the requested station
-			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
-			if( bstat->at(j) == stationNr && bsl->at(j) == sl && bcod->at(j) == 8){
-				stationCounter++;
+			/** tcod: Look only at HTRG, since LTRG are not used for DT Trig
+			 *  the traco code function calculates the code from the bti trigger codes
+			 *  building the traco trigger via code = codeInner*10 + codeOuter
+			 *  Two HTRG --> code = 88
+			 */
+
+			if( tstat->at(j) == stationNr){
+				if(useHtrigOnly){
+					if(tcod->at(j) == 88){
+						chamberId = (((unsigned int)twh->at(j)) << 16 ) | (((unsigned int)tsect->at(j)) << 8 ) | (((unsigned int)tstat->at(j))) ;
+						idMap[chamberId] = 1;
+						stationCounter++;
+					}
+				} else {
+					chamberId = (((unsigned int)twh->at(j)) << 16 ) | (((unsigned int)tsect->at(j)) << 8 ) | (((unsigned int)tstat->at(j))) ;
+					idMap[chamberId] = 1;
+					stationCounter++;
+				}
 			}
+			histTemp->Fill(tcod->at(j));
 		}
-		hist->Fill(stationCounter);
+		if(idMap.size() != 0){
+			double res = stationCounter/((double) idMap.size());
+			hist->Fill(res);
+		}else{
+			//If no triggers, just add the 0 to the hist
+			hist->Fill(0);
+		}
+		idMap.clear();
 	}
+
+	TCanvas* c = new TCanvas();
+	//	c->cd()->SetLogy();
+	histTemp->Draw();
+	c->SaveAs(histName + ".png");
+
 	hist->SetStats(kFALSE);
 	return hist;
 }
