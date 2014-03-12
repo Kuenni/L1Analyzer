@@ -3,6 +3,7 @@
 #include "TColor.h"
 #include <iostream>
 #include "TSystem.h"
+#include "TFile.h"
 
 /**
  * Searches for the canvas in the container and if found, shows it and returns a pointer to it
@@ -94,10 +95,22 @@ void CanvasManager::storePlots(){
 	gSystem->MakeDirectory(directory + "/png");
 	gSystem->MakeDirectory(directory + "/pdf");
 
+	gSystem->MakeDirectory("./plots/rootfiles");
+	TString fileName("./plots/rootfiles/" + sampleName);
+	fileName += ".root";
+	std::cout << "Creating root file " << fileName.Data() << "... ";
+	TFile* rootfile = new TFile(fileName,"RECREATE");
+	std::cout << (rootfile ? "Success!" : "Failed!") << std::endl;
+
 	for (std::map<std::string,TCanvas*>::iterator mapIterator = canvasContainer.begin();
 			mapIterator != canvasContainer.end();
 			mapIterator++ ){
 		mapIterator->second->SaveAs((directory + "/pdf/" + mapIterator->first + ".pdf"));
 		mapIterator->second->SaveAs((directory + "/png/" + mapIterator->first + ".png"));
+		rootfile->Cd(0);
+		mapIterator->second->Write();
 	}
+	rootfile->Write();
+	rootfile->Close();
+	delete rootfile;
 }

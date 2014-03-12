@@ -41,12 +41,20 @@ public:
 	std::vector<TH1*> analyseBtiBxPerStationPhi(int);
 	std::vector<TH1*> analyseBtiBxPerStationTheta();
 	std::vector<TH1*> analyseBtiTrigPerStatAndSectAndSL();
-	std::vector<TH1*> analyseBtiTrigPerStatAndSL();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSl();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSlHtrg();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSlLtrg();
+	std::vector<TH1*> analyseBtiTrigPerStatAndSlBestCase();
+
+	void drawBtiTriggers();
+	void drawBtiTriggersHtrg();
+	void drawBtiTriggersBestCase();
+	void drawBtiTriggersStacked();
 
 	//Traco Analyzer functions
 	std::vector<TH1*> analyseTracoTriggers();
 	std::vector<TH1*> analyseTracoBx();
-	std::vector<TH1*> analyseTracoTrigPerStaion();
+	std::vector<TH1*> analyseTracoTrigPerStation();
 	std::vector<TH1*> analyseTracoTrigPerStationHtrig();
 
 	//Calls all bti analyzer functions

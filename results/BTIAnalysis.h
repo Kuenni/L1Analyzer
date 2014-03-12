@@ -15,7 +15,7 @@ public:
 	BTIAnalysis(std::string treeName, std::string sampleName , double ptCut, bool debug) : Analyse(treeName , sampleName , ptCut , debug){};
 	TH1D* plotBtiTriggers();
 	TH1D* plotBtiTriggersPerStation(int);
-	TH1D* plotBtiTriggersPerStationAndSL(int,int);
+	TH1D* plotBtiTriggersPerStationAndSL(int,int,int,bool);
 	TH1D* plotBtiTriggersPerEta();
 	TH1D* plotEtaNoBtiTriggers();
 	TH1D* plotBtiTrgVsBx();

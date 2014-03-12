@@ -22,6 +22,11 @@ class Analyse : public TrigTestTreeData {
 		bool getDebug(){ return debug; };
 		double getPtCut(){ return ptCut; };
 		std::string getSampleName(){ return sampleName; };
+		enum TrigQuality{
+			LTRG,
+			HTRG,
+			BOTH
+		};
 	private:
 		bool debug;
 		double ptCut;

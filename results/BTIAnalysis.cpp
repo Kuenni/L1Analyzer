@@ -4,6 +4,9 @@
 #include "TCanvas.h"
 #include "TH1.h"
 #include <vector>
+
+//TODO: Plot number of HTRG BTI trigs
+
 /**
  * Make the plots for number of hit BTIs
  */
@@ -169,7 +172,7 @@ TH2D* BTIAnalysis::plotNoBtiTheta(int station){
  */
 TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 	if(getDebug())
-		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSectAndSL called" << std::endl;
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTrigPerStatAndSectAndSL called for station " << station << " SL " << sl << std::endl;
 	TString histName("histBtiTrigPerStatAndSL");
 	histName += getSampleName();
 	histName += "St";
@@ -197,7 +200,7 @@ TH2D* BTIAnalysis::plotBtiTrigPerStatAndSectAndSL(int station, int sl){
 				hist->Fill(bwh->at(i),bsect->at(i));
 		}
 	}
-//	hist->Scale(1/((double)totalNBticounter));
+	//	hist->Scale(1/((double)totalNBticounter));
 	hist->SetOption("colz");
 
 	return hist;
@@ -277,40 +280,91 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStation(int stationNr){
 /**
  * Make the plots for number of hit BTIs per station and given SL
  */
-TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl){
-	if(getDebug())
-		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerStationAndSL called" << std::endl;
+TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl,int trigQuali,bool filterBX){
+	TString quality("");
+	switch (trigQuali) {
+	case LTRG:
+		quality += "(LTRG) ";
+		break;
+	case HTRG:
+		quality += "(HTRG) ";
+		break;
+	case BOTH:
+		quality += "(BOTH) ";
+		break;
+	default:
+		break;
+	}
+	if(getDebug()){
+		std::cout << "[BTIAnalysis " << getSampleName() << "] plotBtiTriggersPerStationAndSL "
+				<< quality << "called for station " << stationNr << " SL " << sl << std::endl;
+	}
 	//Build histogram name
 	TString histName("histNBtiTrg");
 	histName += getSampleName();
+	histName += quality;
 	histName += "St";
 	histName += stationNr;
 	histName += "SL";
 	histName += sl;
 	//Build histogram title
-	TString histTitle("Distribution of number of BTI triggers per event for station ");
+	TString histTitle("Distribution of number of BTI triggers ");
+	if(trigQuali != BOTH){
+		histTitle += "(" + quality + ")";
+	}
+	histTitle += " per event for station ";
 	histTitle += stationNr;
 	histTitle += ";# BTI triggers per evt;# Entries";
 
 	TH1D* hist = new TH1D( histName , histTitle ,43,-1.5,41.5);
-	histName += "Temp";
-	TH1D* hist2 = new TH1D( histName , histName ,43,-1.5,41.5);
 	for (int n = 0 ; n < fChain->GetEntries() ; n++ ){
 		GetEntry(n);
 		int stationCounter = 0;
 		std::map<int,int> idMap;
 		for( unsigned int j = 0 ; j < bstat->size() ; j++ ){
 			unsigned int chamberId;
+			bool bxRight = false;
+			bool qualiRight = false;
+
 			//Filter for the requested station
 			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
-			if( bstat->at(j) == stationNr && bsl->at(j) == sl && bcod->at(j) == 8){
-				//unsigned int
-				chamberId = (((unsigned int)bwh->at(j)) << 16 ) | (((unsigned int)bsect->at(j)) << 8 ) | (((unsigned int)bstat->at(j))) ;
-				idMap[chamberId] = 1;
-				stationCounter++;
+			if( bstat->at(j) == stationNr && bsl->at(j) == sl){
+				//Look, if we want to filter on the correct BX
+				if(filterBX){
+					if(bx->at(j) == 16){
+						bxRight = true;
+					}
+				} else {
+					bxRight = true;
+				}
+
+				//Look, if the trigger quality is the one we are looking for
+				switch (trigQuali) {
+					case HTRG:
+						if(bcod->at(j) == 8){
+							qualiRight = true;
+						}
+						break;
+					case LTRG:
+						if(bcod->at(j) != 8){
+							qualiRight = true;
+						}
+						break;
+					case BOTH:
+						qualiRight = true;
+						break;
+					default:
+						break;
+				}
+
+				if(qualiRight && bxRight){
+						//unsigned int
+						chamberId = (((unsigned int)bwh->at(j)) << 16 ) | (((unsigned int)bsect->at(j)) << 8 ) | (((unsigned int)bstat->at(j))) ;
+						idMap[chamberId] = 1;
+						stationCounter++;
+				}
 			}
 		}
-		hist2 -> Fill(idMap.size());
 		//Check whether there were BTI Triggers
 		if(idMap.size() != 0){
 			double res = stationCounter/((double) idMap.size());
@@ -321,10 +375,6 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl){
 		}
 		idMap.clear();
 	}
-	TCanvas* c = new TCanvas();
-	c->cd()->SetLogy();
-	hist2->Draw();
-	c->SaveAs(histName + ".png");
 	hist->SetStats(kFALSE);
 	return hist;
 }
