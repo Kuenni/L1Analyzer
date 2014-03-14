@@ -18,5 +18,4 @@
 <use name="L1Trigger/DTSectorCollector"/>
 <use name="DataFormats/L1DTTrackFinder"/>
 <use name="SimDataFormats/DigiSimLinks"/>
-<use name="L1TriggerDPGUpgrade/L1TMuon"/>
 <flags EDM_PLUGIN="1"/>
