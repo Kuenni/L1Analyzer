@@ -1,17 +1,20 @@
 LDFLAGS=$(shell root-config --libs --glibs)
 CFLAGS=$(shell root-config --cflags)
-OBJECTS = main.o PlotTitle.o Analyse.o TrigTestTreeData.o PlotStyle.o CanvasManager.o AnalysisWrapper.o BTIAnalysis.o TracoAnalysis.o GenAnalysis.o
-EXECUTABLE=Analyse
-#       AnalysisWrapper.cpp
-#       AnalysisWrapper.h
+OBJECTS = Analyse.o TrigTestTreeData.o PlotStyle.o CanvasManager.o AnalysisWrapper.o BTIAnalysis.o TracoAnalysis.o GenAnalysis.o
+EXE = main.o
+NO_PH_EXE = noPhMain.o
 #       BTIAnalysis.cpp
 #       BTIAnalysis.h
 #       CanvasManager.cpp
 #       CanvasManager.h
 
-all: $(OBJECTS)
-	@echo Linking $(EXECUTABLE)
-	c++ $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+all: $(EXE) $(OBJECTS)
+	@echo Linking Analyse
+	c++ $(LDFLAGS) $(EXE) $(OBJECTS) -o Analyse
+
+noPh: $(NO_PH_EXE) $(OBJECTS)
+	@echo Linking AnalyseNoPh
+	c++ $(LDFLAGS) $(NO_PH_EXE) $(OBJECTS) -o AnalyseNoPh
 
 %.o: %.cpp
 	@echo Compiling $<
