@@ -45,27 +45,40 @@ TH1D* TracoAnalysis::plotTracoBx(){
 /**
  * Make the plots for number of hit BTIs per station and given SL
  */
-TH1D* TracoAnalysis::plotTracoTriggersPerStation(int stationNr,bool useHtrigOnly){
+TH1D* TracoAnalysis::plotTracoTriggersPerStation(int stationNr, int trigQuality, bool useRightBx){
+
+
+	TString quality("");
+	switch (trigQuality) {
+	case LTRG:
+		quality += "(LTRG) ";
+		break;
+	case HTRG:
+		quality += "(HTRG) ";
+		break;
+	case BOTH:
+		quality += "(BOTH) ";
+		break;
+	default:
+		break;
+	}
+
 	if(getDebug())
 		std::cout << "[TracoAnalysis " << getSampleName() << "] plotTracoTriggersPerStation called "
-		<< "Station " << stationNr << " " << (useHtrigOnly ? "HTRG" : "") << std::endl;
+		<< "Station " << stationNr << " " << quality.Data() << std::endl;
 	//Build histogram name
 	TString histName("histNTracoTrg");
-	if(useHtrigOnly){
-		histName += "Htrig";
-	}
+	histName += quality;
 	histName += getSampleName();
 	histName += "St";
 	histName += stationNr;
 
 	//Build histogram title
 	TString histTitle("Distribution of number of TRACO triggers ");
-	if(useHtrigOnly){
-		histTitle += "(HTRIG)";
-	}
+	histTitle += quality;
 	histTitle += " per event for station ";
 	histTitle += stationNr;
-	histTitle += ";# TRACO triggers per evt;# Entries";
+	histTitle += ";# TRACO triggers per evt;Fraction of all Events";
 
 	TH1D* histTemp = new TH1D( histName+"Temp" , histName+"Temp" ,92,-1.5,90.5);
 
@@ -76,22 +89,45 @@ TH1D* TracoAnalysis::plotTracoTriggersPerStation(int stationNr,bool useHtrigOnly
 		GetEntry(n);
 		for( unsigned int j = 0 ; j < tstat->size() ; j++ ){
 			unsigned int chamberId;
+			bool bxRight = false;
+			bool qualiRight = false;
 
 			//Filter for the requested station
-			/** tcod: Look only at HTRG, since LTRG are not used for DT Trig
-			 *  the traco code function calculates the code from the bti trigger codes
-			 *  building the traco trigger via code = codeInner*10 + codeOuter
-			 *  Two HTRG --> code = 88
-			 */
-
 			if( tstat->at(j) == stationNr){
-				if(useHtrigOnly){
-					if(tcod->at(j) == 88){
-						chamberId = (((unsigned int)twh->at(j)) << 16 ) | (((unsigned int)tsect->at(j)) << 8 ) | (((unsigned int)tstat->at(j))) ;
-						idMap[chamberId] = 1;
-						stationCounter++;
+
+				if(useRightBx){
+					if(bx->at(j) == 16){
+						bxRight = true;
 					}
 				} else {
+					bxRight = true;
+				}
+
+				//Look, if the trigger quality is the one we are looking for
+				/** tcod: Look only at HTRG, since LTRG are not used for DT Trig
+				 *  the traco code function calculates the code from the bti trigger codes
+				 *  building the traco trigger via code = codeInner*10 + codeOuter
+				 *  Two HTRG --> code = 88
+				 */
+				switch (trigQuality) {
+				case HTRG:
+					if(tcod->at(j) == 88){
+						qualiRight = true;
+					}
+					break;
+				case LTRG:
+					if(tcod->at(j) != 88){
+						qualiRight = true;
+					}
+					break;
+				case BOTH:
+					qualiRight = true;
+					break;
+				default:
+					break;
+				}
+
+				if(bxRight && qualiRight){
 					chamberId = (((unsigned int)twh->at(j)) << 16 ) | (((unsigned int)tsect->at(j)) << 8 ) | (((unsigned int)tstat->at(j))) ;
 					idMap[chamberId] = 1;
 					stationCounter++;
@@ -102,9 +138,6 @@ TH1D* TracoAnalysis::plotTracoTriggersPerStation(int stationNr,bool useHtrigOnly
 		if(idMap.size() != 0){
 			double res = stationCounter/((double) idMap.size());
 			hist->Fill(res);
-		}else{
-			//If no triggers, just add the 0 to the hist
-			hist->Fill(0);
 		}
 		idMap.clear();
 	}

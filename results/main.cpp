@@ -3,6 +3,7 @@
 #include "PlotStyle.h"
 #include "CanvasManager.h"
 #include "AnalysisWrapper.h"
+#include "PlotTitle.h"
 
 #include "TTree.h"
 #include "TH1.h"
@@ -14,6 +15,7 @@
 #include "TColor.h"
 #include "TSystem.h"
 #include "TLegend.h"
+#include "TPaveText.h"
 
 #include <stdio.h>
 #include <iostream>
@@ -32,282 +34,350 @@ int main(int argc, char** argv){
 	//# Creating Trees and Analyse objects
 	//#######################
 
-//	AnalysisWrapper muGunPt10Wrapper("DIMUGUN_studies/DTTrigTest.root","muGun",10.,false);
-//	muGunPt10Wrapper.analyseBti();
-//	muGunPt10Wrapper.analyseTraco();
-//	muGunPt10Wrapper.analyseGenParticles();
-//	muGunPt10Wrapper.savePlots();
-//
-//	AnalysisWrapper des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,false);
-//	des17Pt10Wrapper.analyseBti();
-//	des17Pt10Wrapper.analyseTraco();
-//	des17Pt10Wrapper.analyseGenParticles();
-//	des17Pt10Wrapper.savePlots();
+	//	AnalysisWrapper muGunPt10Wrapper("DIMUGUN_studies/DTTrigTest.root","muGun",10.,false);
+	//	muGunPt10Wrapper.analyseBti();
+	//	muGunPt10Wrapper.analyseTraco();
+	//	muGunPt10Wrapper.analyseGenParticles();
+	//	muGunPt10Wrapper.savePlots();
+	//
+	//	AnalysisWrapper des17Pt10Wrapper("UPG2017-v2_studies/DTTrigTest_Pt10.root","des17",10.,false);
+	//	des17Pt10Wrapper.analyseBti();
+	//	des17Pt10Wrapper.analyseTraco();
+	//	des17Pt10Wrapper.analyseGenParticles();
+	//	des17Pt10Wrapper.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_3("crab/MuGunPt100dR0_3/TrigTest.root","MuGunPt100dR0_3",10.,true);
-	doubleMuPt100dR0_3.analyseBti();
-	doubleMuPt100dR0_3.analyseTraco();
-//	doubleMuPt100dR0_3.analyseGenParticles();
-	doubleMuPt100dR0_3.savePlots();
+	//	doubleMuPt100dR0_3.analyseBti();
+	//	doubleMuPt100dR0_3.analyseTraco();
+	//	doubleMuPt100dR0_3.analyseGenParticles();
+	//	doubleMuPt100dR0_3.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_2("crab/MuGunPt100dR0_2/TrigTest.root","MuGunPt100dR0_2",10.,true);
-	doubleMuPt100dR0_2.analyseBti();
-//	doubleMuPt100dR0_2.analyseTraco();
-//	doubleMuPt100dR0_2.analyseGenParticles();
-	doubleMuPt100dR0_2.savePlots();
+	//	doubleMuPt100dR0_2.analyseBti();
+	//	doubleMuPt100dR0_2.analyseTraco();
+	//	doubleMuPt100dR0_2.analyseGenParticles();
+	//	doubleMuPt100dR0_2.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_1("crab/MuGunPt100dR0_1/TrigTest.root","MuGunPt100dR0_1",10.,true);
-	doubleMuPt100dR0_1.analyseBti();
-//	doubleMuPt100dR0_1.analyseTraco();
-//	doubleMuPt100dR0_1.analyseGenParticles();
-	doubleMuPt100dR0_1.savePlots();
+	//	doubleMuPt100dR0_1.analyseBti();
+	//	doubleMuPt100dR0_1.analyseTraco();
+	//	doubleMuPt100dR0_1.analyseGenParticles();
+	//	doubleMuPt100dR0_1.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_075("crab/MuGunPt100dR0_075/TrigTest.root","MuGunPt100dR0_075",10.,true);
-	doubleMuPt100dR0_075.analyseBti();
-//	doubleMuPt100dR0_075.analyseTraco();
-//	doubleMuPt100dR0_075.analyseGenParticles();
-	doubleMuPt100dR0_075.savePlots();
+	//	doubleMuPt100dR0_075.analyseBti();
+	//	doubleMuPt100dR0_075.analyseTraco();
+	//	doubleMuPt100dR0_075.analyseGenParticles();
+	//	doubleMuPt100dR0_075.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_05("crab/MuGunPt100dR0_05/TrigTest.root","MuGunPt100dR0_05",10.,true);
-	doubleMuPt100dR0_05.analyseBti();
-//	doubleMuPt100dR0_05.analyseTraco();
-//	doubleMuPt100dR0_05.analyseGenParticles();
-	doubleMuPt100dR0_05.savePlots();
+	//	doubleMuPt100dR0_05.analyseBti();
+	//	doubleMuPt100dR0_05.analyseTraco();
+	//	doubleMuPt100dR0_05.analyseGenParticles();
+	//	doubleMuPt100dR0_05.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_025("crab/MuGunPt100dR0_025/TrigTest.root","MuGunPt100dR0_025",10.,true);
-	doubleMuPt100dR0_025.analyseBti();
-//	doubleMuPt100dR0_025.analyseTraco();
-//	doubleMuPt100dR0_025.analyseGenParticles();
-	doubleMuPt100dR0_025.savePlots();
+	//	doubleMuPt100dR0_025.analyseBti();
+	//	doubleMuPt100dR0_025.analyseTraco();
+	//	doubleMuPt100dR0_025.analyseGenParticles();
+	//	doubleMuPt100dR0_025.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_01("crab/MuGunPt100dR0_01/TrigTest.root","MuGunPt100dR0_01",10.,true);
-	doubleMuPt100dR0_01.analyseBti();
-//	doubleMuPt100dR0_01.analyseTraco();
-//	doubleMuPt100dR0_01.analyseGenParticles();
-	doubleMuPt100dR0_01.savePlots();
+	//	doubleMuPt100dR0_01.analyseBti();
+	//	doubleMuPt100dR0_01.analyseTraco();
+	//	doubleMuPt100dR0_01.analyseGenParticles();
+	//	doubleMuPt100dR0_01.savePlots();
 
 	AnalysisWrapper doubleMuPt100dR0_005("crab/MuGunPt100dR0_005/TrigTest.root","MuGunPt100dR0_005",10.,true);
-	doubleMuPt100dR0_005.analyseBti();
-//	doubleMuPt100dR0_005.analyseTraco();
-//	doubleMuPt100dR0_005.analyseGenParticles();
-	doubleMuPt100dR0_005.savePlots();
+	//	doubleMuPt100dR0_005.analyseBti();
+	//	doubleMuPt100dR0_005.analyseTraco();
+	//	doubleMuPt100dR0_005.analyseGenParticles();
+	//	doubleMuPt100dR0_005.savePlots();
 
 	AnalysisWrapper singleMuPt100("SingleMuGun/TrigTestSingleMu.root","SingleMuGun",10.,true);
 	singleMuPt100.analyseBti();
-	singleMuPt100.analyseTraco();
+	//	singleMuPt100.analyseTraco();
 	singleMuPt100.savePlots();
 
+	//Create a vector with colors to access during scenario iterations
+	std::vector<int> colorVector;
+	colorVector.push_back(kBlack);
+	colorVector.push_back(kBlue);
+	colorVector.push_back(kViolet);
+	colorVector.push_back(kRed);
+	colorVector.push_back(kOrange);
+	colorVector.push_back(kGreen);
+	colorVector.push_back(kTeal);
+	colorVector.push_back(kCyan - 1);
+
+	//Create a vector with scenarios to access during scenario iterations
+	std::vector<TString> legendNameVector;
+	legendNameVector.push_back(TString("#DeltaR 0.3"));
+	legendNameVector.push_back(TString("#DeltaR 0.2"));
+	legendNameVector.push_back(TString("#DeltaR 0.1"));
+	legendNameVector.push_back(TString("#DeltaR 0.075"));
+	legendNameVector.push_back(TString("#DeltaR 0.05"));
+	legendNameVector.push_back(TString("#DeltaR 0.025"));
+	legendNameVector.push_back(TString("#DeltaR 0.01"));
+	legendNameVector.push_back(TString("#DeltaR 0.005"));
+
+	std::vector<std::vector<TH1*> > btiScenariosBestCase;
+
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_2.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_075.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_05.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_025.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_01.analyseBtiTrigPerStatAndSlBestCase());
+	btiScenariosBestCase.push_back(doubleMuPt100dR0_005.analyseBtiTrigPerStatAndSlBestCase());
+
+	std::vector<std::vector<TH1*> > btiScenariosHtrg;
+
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_2.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_075.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_05.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_025.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_01.analyseBtiTrigPerStatAndSlHtrg());
+	btiScenariosHtrg.push_back(doubleMuPt100dR0_005.analyseBtiTrigPerStatAndSlHtrg());
 
 
-	std::vector<TH1*> doubleMuPt100dR0_3vect 	= doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_2vect 	= doubleMuPt100dR0_2.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_1vect 	= doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_075vect 	= doubleMuPt100dR0_075.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_05vect 	= doubleMuPt100dR0_05.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_025vect 	= doubleMuPt100dR0_025.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_01vect 	= doubleMuPt100dR0_01.analyseBtiTrigPerStatAndSlBestCase();
-	std::vector<TH1*> doubleMuPt100dR0_005vect 	= doubleMuPt100dR0_005.analyseBtiTrigPerStatAndSlBestCase();
+	TCanvas* btiBestCaseCanvas = cManager->getDividedCanvas(1,1);
+	btiBestCaseCanvas->SetName("btiTrigsPerStatAndSlTogetherBestCase");
+	TCanvas* btiHtrgCanvas = cManager->getDividedCanvas(1,1);
+	btiHtrgCanvas->SetName("btiTrigsPerStatAndSlTogetherHtrg");
 
-	TCanvas* c = cManager->getDividedCanvas(1,1);
-	for (int i = 0; i < doubleMuPt100dR0_3vect.size()/8. ; ++i) {
-		c->cd(i+1)->SetLogy();
-		TString frameName = "BTI triggers for station ";
+	//Get the size of the first vector stored in the scenarios
+	for (int i = 0 ; i < btiScenariosBestCase[0].size()/8. ; i++){
+		int scenarioCounter = 0;
+		TLegend* lBestCase = new TLegend(0.5,.525,0.7,0.9);
+		TLegend* lBestCase2 = new TLegend(0.7,.525,0.9,0.9);
+		TLegend* lHtrg = new TLegend(0.5,.525,0.7,0.9);
+		TLegend* lHtrg2 = new TLegend(0.7,.525,0.9,0.9);
+
+		btiBestCaseCanvas->cd(i+1)->SetLogy();
+		//Build the frame
+		TString frameName = "BTI Trigger (Best Case) f#ddot{u}r Station ";
 		frameName += i+1;
-		frameName += ";# BTI Triggers;Fraction of all events";
+		frameName += ";# BTI Trigger;Relative H#ddot{a}ufigkeit";
 
-		TH2D* frame = new TH2D("frame",frameName,1,-0.50,10.5,1,0.000001,1);
+		TH2D* frame = new TH2D("frameBtiBestCase",frameName,1,-0.5,10.5,1,0.000001,1);
 		frame->SetStats(kFALSE);
 		frame->Draw();
 
-		doubleMuPt100dR0_3vect[2*i]->SetLineColor(kBlack);
-		doubleMuPt100dR0_3vect[2*i]->Scale(1/doubleMuPt100dR0_3vect[2*i]->Integral());
-		doubleMuPt100dR0_3vect[2*i]->Draw("same");
-		doubleMuPt100dR0_3vect[2*i+1]->SetLineColor(kBlack);
-		doubleMuPt100dR0_3vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_3vect[2*i+1]->Scale(1/doubleMuPt100dR0_3vect[2*i+1]->Integral());
-		doubleMuPt100dR0_3vect[2*i+1]->Draw("same");
+		for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosBestCase.begin();
+				scenarioIt != btiScenariosBestCase.end() ; scenarioIt++){
 
-		doubleMuPt100dR0_2vect[2*i]->SetLineColor(kBlue);
-		doubleMuPt100dR0_2vect[2*i+1]->SetLineColor(kBlue);
-		doubleMuPt100dR0_2vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_2vect[2*i]->Scale(1/doubleMuPt100dR0_2vect[2*i]->Integral());
-		doubleMuPt100dR0_2vect[2*i+1]->Scale(1/doubleMuPt100dR0_2vect[2*i+1]->Integral());
-		doubleMuPt100dR0_2vect[2*i]->Draw("same");
-		doubleMuPt100dR0_2vect[2*i+1]->Draw("same");
+			//Loop over the scenarios
+			scenarioIt->at(2*i)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(2*i)->Scale(1/scenarioIt->at(2*i)->Integral());
+			scenarioIt->at(2*i)->Draw("same");
+			scenarioIt->at(2*i+1)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(2*i+1)->SetLineStyle(2);
+			scenarioIt->at(2*i+1)->Scale(1/scenarioIt->at(2*i+1)->Integral());
+			scenarioIt->at(2*i+1)->Draw("same");
 
-		doubleMuPt100dR0_1vect[2*i]->SetLineColor(kViolet);
-		doubleMuPt100dR0_1vect[2*i+1]->SetLineColor(kViolet);
-		doubleMuPt100dR0_1vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_1vect[2*i]->Scale(1/doubleMuPt100dR0_1vect[2*i]->Integral());
-		doubleMuPt100dR0_1vect[2*i+1]->Scale(1/doubleMuPt100dR0_1vect[2*i+1]->Integral());
-		doubleMuPt100dR0_1vect[2*i]->Draw("same");
-		doubleMuPt100dR0_1vect[2*i+1]->Draw("same");
+			lBestCase->AddEntry(scenarioIt->at(2*i),(legendNameVector[scenarioCounter] + " SL 1").Data());
+			lBestCase2->AddEntry(scenarioIt->at(2*i+1),(legendNameVector[scenarioCounter] + " SL 3").Data());
 
-		doubleMuPt100dR0_075vect[2*i]->SetLineColor(kRed);
-		doubleMuPt100dR0_075vect[2*i+1]->SetLineColor(kRed);
-		doubleMuPt100dR0_075vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_075vect[2*i]->Scale(1/doubleMuPt100dR0_075vect[2*i]->Integral());
-		doubleMuPt100dR0_075vect[2*i+1]->Scale(1/doubleMuPt100dR0_075vect[2*i+1]->Integral());
-		doubleMuPt100dR0_075vect[2*i]->Draw("same");
-		doubleMuPt100dR0_075vect[2*i+1]->Draw("same");
+			scenarioCounter++;
+		}
+		lBestCase->Draw();
+		lBestCase2->Draw();
 
-		doubleMuPt100dR0_05vect[2*i]->SetLineColor(kOrange);
-		doubleMuPt100dR0_05vect[2*i+1]->SetLineColor(kOrange);
-		doubleMuPt100dR0_05vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_05vect[2*i]->Scale(1/doubleMuPt100dR0_05vect[2*i]->Integral());
-		doubleMuPt100dR0_05vect[2*i+1]->Scale(1/doubleMuPt100dR0_05vect[2*i+1]->Integral());
-		doubleMuPt100dR0_05vect[2*i]->Draw("same");
-		doubleMuPt100dR0_05vect[2*i+1]->Draw("same");
+		btiBestCaseCanvas->Update();
+		TString plotTitle("BTI Trigger (Best Case) f#ddot{u}r Station ");
+		plotTitle += i+1;
+		(new PlotTitle(plotTitle.Data()))->Draw();
 
-		doubleMuPt100dR0_025vect[2*i]->SetLineColor(kGreen);
-		doubleMuPt100dR0_025vect[2*i+1]->SetLineColor(kGreen);
-		doubleMuPt100dR0_025vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_025vect[2*i]->Scale(1/doubleMuPt100dR0_025vect[2*i]->Integral());
-		doubleMuPt100dR0_025vect[2*i+1]->Scale(1/doubleMuPt100dR0_025vect[2*i+1]->Integral());
-		doubleMuPt100dR0_025vect[2*i]->Draw("same");
-		doubleMuPt100dR0_025vect[2*i+1]->Draw("same");
+		scenarioCounter = 0;
 
-		doubleMuPt100dR0_01vect[2*i]->SetLineColor(kTeal);
-		doubleMuPt100dR0_01vect[2*i+1]->SetLineColor(kTeal);
-		doubleMuPt100dR0_01vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_01vect[2*i]->Scale(1/doubleMuPt100dR0_01vect[2*i]->Integral());
-		doubleMuPt100dR0_01vect[2*i+1]->Scale(1/doubleMuPt100dR0_01vect[2*i+1]->Integral());
-		doubleMuPt100dR0_01vect[2*i]->Draw("same");
-		doubleMuPt100dR0_01vect[2*i+1]->Draw("same");
-
-		doubleMuPt100dR0_005vect[2*i]->SetLineColor(kCyan -1);
-		doubleMuPt100dR0_005vect[2*i+1]->SetLineColor(kCyan -1);
-		doubleMuPt100dR0_005vect[2*i+1]->SetLineStyle(2);
-		doubleMuPt100dR0_005vect[2*i]->Scale(1/doubleMuPt100dR0_005vect[2*i]->Integral());
-		doubleMuPt100dR0_005vect[2*i+1]->Scale(1/doubleMuPt100dR0_005vect[2*i+1]->Integral());
-		doubleMuPt100dR0_005vect[2*i]->Draw("same");
-		doubleMuPt100dR0_005vect[2*i+1]->Draw("same");
-
-
-//		sMuPt100dR0_025vect[2*i]->SetLineColor(kGreen);
-//		sMuPt100dR0_025vect[2*i+1]->SetLineColor(kGreen);
-//		sMuPt100dR0_025vect[2*i+1]->SetLineStyle(2);
-//		sMuPt100dR0_025vect[2*i]->Scale(1/sMuPt100dR0_025vect[2*i]->Integral());
-//		sMuPt100dR0_025vect[2*i+1]->Scale(1/sMuPt100dR0_025vect[2*i+1]->Integral());
-//		sMuPt100dR0_025vect[2*i]->Draw("same");
-//		sMuPt100dR0_025vect[2*i+1]->Draw("same");
-
-//		sMuPt100dR0_1vect[2*i]->SetLineColor(kRed);
-//		sMuPt100dR0_1vect[2*i+1]->SetLineColor(kRed);
-//		sMuPt100dR0_1vect[2*i+1]->SetLineStyle(2);
-//		sMuPt100dR0_1vect[2*i]->Scale(1/sMuPt100dR0_1vect[2*i]->GetEntries());
-//		sMuPt100dR0_1vect[2*i+1]->Scale(1/sMuPt100dR0_1vect[2*i+1]->GetEntries());
-//		sMuPt100dR0_1vect[2*i]->Draw("same");
-//		sMuPt100dR0_1vect[2*i+1]->Draw("same");
-
-
-
-		TLegend* l = new TLegend(0.7,.1,0.9,0.9);
-
-		l->AddEntry(doubleMuPt100dR0_3vect[2*i],"#DeltaR 0.3 SL 1");
-		l->AddEntry(doubleMuPt100dR0_3vect[2*i+1],"#DeltaR 0.3 SL 3");
-		l->AddEntry(doubleMuPt100dR0_2vect[2*i],"#DeltaR 0.2 SL 1");
-		l->AddEntry(doubleMuPt100dR0_2vect[2*i+1],"#DeltaR 0.2 SL 3");
-		l->AddEntry(doubleMuPt100dR0_1vect[2*i],"#DeltaR 0.1 SL 1");
-		l->AddEntry(doubleMuPt100dR0_1vect[2*i+1],"#DeltaR 0.1 SL 3");
-		l->AddEntry(doubleMuPt100dR0_075vect[2*i],"#DeltaR 0.075 SL 1");
-		l->AddEntry(doubleMuPt100dR0_075vect[2*i+1],"#DeltaR 0.075 SL 3");
-		l->AddEntry(doubleMuPt100dR0_05vect[2*i],"#DeltaR 0.05 SL 1");
-		l->AddEntry(doubleMuPt100dR0_05vect[2*i+1],"#DeltaR 0.05 SL 3");
-		l->AddEntry(doubleMuPt100dR0_025vect[2*i],"#DeltaR 0.025 SL 1");
-		l->AddEntry(doubleMuPt100dR0_025vect[2*i+1],"#DeltaR 0.025 SL 3");
-		l->AddEntry(doubleMuPt100dR0_01vect[2*i],"#DeltaR 0.01 SL 1");
-		l->AddEntry(doubleMuPt100dR0_01vect[2*i+1],"#DeltaR 0.01 SL 3");
-		l->AddEntry(doubleMuPt100dR0_005vect[2*i],"#DeltaR 0.005 SL 1");
-		l->AddEntry(doubleMuPt100dR0_005vect[2*i+1],"#DeltaR 0.005 SL 3");
-
-//		l->AddEntry(sMuPt100dR0_025vect[2*i],"#DeltaR 0.025 SL 1");
-//		l->AddEntry(sMuPt100dR0_025vect[2*i+1],"#DeltaR 0.025 SL 3");
-
-		l->Draw();
-
-	}
-	cManager->addCanvas("btiTrigsPerStatAndSlTogether",c);
-
-
-//################################
-//### plot TRACO triggers together
-//################################
-
-	std::vector<TH1*> doubleMuPt100dR0_3tracoVect 	= doubleMuPt100dR0_3.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_2tracoVect 	= doubleMuPt100dR0_2.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_1tracoVect 	= doubleMuPt100dR0_1.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_075tracoVect	= doubleMuPt100dR0_075.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_05tracoVect 	= doubleMuPt100dR0_05.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_025tracoVect	= doubleMuPt100dR0_025.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_01tracoVect 	= doubleMuPt100dR0_01.analyseTracoTrigPerStationHtrig();
-	std::vector<TH1*> doubleMuPt100dR0_005tracoVect	= doubleMuPt100dR0_005.analyseTracoTrigPerStationHtrig();
-
-
-	c = cManager->getDividedCanvas(2,2);
-
-	for (int i = 0; i < doubleMuPt100dR0_3tracoVect.size() ; ++i) {
-		c->cd(i+1)->SetLogy();
-		TString frameName = "TRACO triggers (HTRG) for station ";
+		btiHtrgCanvas->cd(i+1)->SetLogy();
+		//Build the frame
+		frameName = "BTI Trigger (HTRG) f#ddot{u}r Station ";
 		frameName += i+1;
-		frameName += ";# TRACO Triggers;Fraction of all events events";
+		frameName += ";# BTI Trigger;Relative H#ddot{a}ufigkeit";
 
-		TH2D* frame = new TH2D("frameTraco",frameName,1,-0.5,7.5,1,0.000001,1);
+		frame = new TH2D("frameBtiHtrg",frameName,1,-0.5,25.5,1,0.000001,1);
 		frame->SetStats(kFALSE);
 		frame->Draw();
 
-		doubleMuPt100dR0_3tracoVect[i]->SetLineColor(kBlack);
-		doubleMuPt100dR0_3tracoVect[i]->Scale(1/doubleMuPt100dR0_3tracoVect[i]->Integral());
-		doubleMuPt100dR0_3tracoVect[i]->Draw("same");
+		for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosHtrg.begin();
+				scenarioIt != btiScenariosHtrg.end() ; scenarioIt++){
 
-		doubleMuPt100dR0_2tracoVect[i]->SetLineColor(kBlue);
-		doubleMuPt100dR0_2tracoVect[i]->Scale(1/doubleMuPt100dR0_2tracoVect[i]->Integral());
-		doubleMuPt100dR0_2tracoVect[i]->Draw("same");
+			//Loop over the scenarios
+			scenarioIt->at(2*i)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(2*i)->Scale(1/scenarioIt->at(2*i)->Integral());
+			scenarioIt->at(2*i)->Draw("same");
+			scenarioIt->at(2*i+1)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(2*i+1)->SetLineStyle(2);
+			scenarioIt->at(2*i+1)->Scale(1/scenarioIt->at(2*i+1)->Integral());
+			scenarioIt->at(2*i+1)->Draw("same");
 
-		doubleMuPt100dR0_1tracoVect[i]->SetLineColor(kViolet);
-		doubleMuPt100dR0_1tracoVect[i]->Scale(1/doubleMuPt100dR0_1tracoVect[i]->Integral());
-		doubleMuPt100dR0_1tracoVect[i]->Draw("same");
+			lHtrg->AddEntry(scenarioIt->at(2*i),(legendNameVector[scenarioCounter] + " SL 1").Data());
+			lHtrg2->AddEntry(scenarioIt->at(2*i+1),(legendNameVector[scenarioCounter] + " SL 3").Data());
 
-		doubleMuPt100dR0_075tracoVect[i]->SetLineColor(kRed);
-		doubleMuPt100dR0_075tracoVect[i]->Scale(1/doubleMuPt100dR0_075tracoVect[i]->Integral());
-		doubleMuPt100dR0_075tracoVect[i]->Draw("same");
+			scenarioCounter++;
+		}
+		lHtrg->Draw();
+		lHtrg2->Draw();
 
-		doubleMuPt100dR0_05tracoVect[i]->SetLineColor(kOrange);
-		doubleMuPt100dR0_05tracoVect[i]->Scale(1/doubleMuPt100dR0_05tracoVect[i]->Integral());
-		doubleMuPt100dR0_05tracoVect[i]->Draw("same");
+		btiHtrgCanvas->Update();
 
-		doubleMuPt100dR0_025tracoVect[i]->SetLineColor(kGreen);
-		doubleMuPt100dR0_025tracoVect[i]->Scale(1/doubleMuPt100dR0_025tracoVect[i]->Integral());
-		doubleMuPt100dR0_025tracoVect[i]->Draw("same");
+		plotTitle = "BTI Trigger (HTRG) f#ddot{u}r Station ";
+		plotTitle += i+1;
+		(new PlotTitle(plotTitle.Data()))->Draw();
+	}
 
-		doubleMuPt100dR0_01tracoVect[i]->SetLineColor(kTeal);
-		doubleMuPt100dR0_01tracoVect[i]->Scale(1/doubleMuPt100dR0_01tracoVect[i]->Integral());
-		doubleMuPt100dR0_01tracoVect[i]->Draw("same");
+	cManager->addCanvas("btiTrigsPerStatAndSlTogetherBestCase",btiBestCaseCanvas);
+	cManager->addCanvas("btiTrigsPerStatAndSlTogetherHtrg",btiHtrgCanvas);
 
-		doubleMuPt100dR0_005tracoVect[i]->SetLineColor(kCyan - 1);
-		doubleMuPt100dR0_005tracoVect[i]->Scale(1/doubleMuPt100dR0_005tracoVect[i]->Integral());
-		doubleMuPt100dR0_005tracoVect[i]->Draw("same");
 
-		TLegend* l = new TLegend(0.75,.55,0.95,0.95);
+	//################################
+	//### plot TRACO triggers together
+	//################################
 
-		l->AddEntry(doubleMuPt100dR0_3tracoVect[i],"#DeltaR 0.3");
-		l->AddEntry(doubleMuPt100dR0_2tracoVect[i],"#DeltaR 0.2");
-		l->AddEntry(doubleMuPt100dR0_1tracoVect[i],"#DeltaR 0.1");
-		l->AddEntry(doubleMuPt100dR0_075tracoVect[i],"#DeltaR 0.075");
-		l->AddEntry(doubleMuPt100dR0_05tracoVect[i],"#DeltaR 0.05");
-		l->AddEntry(doubleMuPt100dR0_025tracoVect[i],"#DeltaR 0.025");
-		l->AddEntry(doubleMuPt100dR0_01tracoVect[i],"#DeltaR 0.01");
-		l->AddEntry(doubleMuPt100dR0_005tracoVect[i],"#DeltaR 0.005");
+	std::vector<std::vector<TH1*> > tracoScenariosBestCase;
 
-		l->Draw();
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_3.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_2.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_1.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_075.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_05.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_025.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_01.analyseTracoTrigPerStationBestCase());
+	tracoScenariosBestCase.push_back(doubleMuPt100dR0_005.analyseTracoTrigPerStationBestCase());
+
+	std::vector<std::vector<TH1*> > tracoScenariosHtrg;
+
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_3.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_2.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_1.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_075.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_05.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_025.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_01.analyseTracoTrigPerStationHtrig());
+	tracoScenariosHtrg.push_back(doubleMuPt100dR0_005.analyseTracoTrigPerStationHtrig());
+
+
+	TCanvas* tracoBestCaseCanvas = cManager->getDividedCanvas(1,1);
+	tracoBestCaseCanvas->SetName("tracoTrigsPerStatTogetherBestCase");
+	TCanvas* tracoHtrgCanvas = cManager->getDividedCanvas(1,1);
+	tracoHtrgCanvas->SetName("tracoTrigsPerStatTogetherHtrg");
+
+	//Get the size of the first vector stored in the scenarios
+	for (int i = 0 ; i < tracoScenariosBestCase[0].size()/4. ; i++){
+		int scenarioCounter = 0;
+		TLegend* lBestCase = new TLegend(0.75,.45,0.90,0.90);
+		TLegend* lHtrg = new TLegend(0.75,.45,0.90,0.90);
+
+		tracoBestCaseCanvas->cd(i+1)->SetLogy();
+		//Build the frame
+		TString frameName = "TRACO Trigger (Best Case) f#ddot{u}r Station ";
+		frameName += i+1;
+		frameName += ";# TRACO Trigger;Relative H#ddot{a}ufigkeit";
+
+		TH2D* frame = new TH2D("frameTracoBestCase",frameName,1,-0.5,7.5,1,0.000001,1);
+		frame->SetStats(kFALSE);
+		frame->Draw();
+
+		for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosBestCase.begin();
+				scenarioIt != tracoScenariosBestCase.end() ; scenarioIt++){
+
+			//Loop over the scenarios
+			scenarioIt->at(i)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(i)->Scale(1/scenarioIt->at(i)->Integral());
+			scenarioIt->at(i)->Draw("same");
+
+			lBestCase->AddEntry(scenarioIt->at(i),legendNameVector[scenarioCounter]);
+
+			scenarioCounter++;
+		}
+		lBestCase->Draw();
+
+		tracoBestCaseCanvas->Update();
+		TString plotTitle("TRACO Trigger (Best Case) f#ddot{u}r Station ");
+		plotTitle += i+1;
+		(new PlotTitle(plotTitle.Data()))->Draw();
+
+		scenarioCounter = 0;
+		tracoHtrgCanvas->cd(i+1)->SetLogy();
+		//Build the frame
+		frameName = "TRACO Trigger (HTRG) f#ddot{u}r Station ";
+		frameName += i+1;
+		frameName += ";# TRACO Trigger;Relative H#ddot{a}ufigkeit";
+
+		frame = new TH2D("frameTracoHtrg",frameName,1,-0.5,7.5,1,0.000001,1);
+		frame->SetStats(kFALSE);
+		frame->Draw();
+		for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosHtrg.begin();
+				scenarioIt != tracoScenariosHtrg.end() ; scenarioIt++){
+
+			//Loop over the scenarios
+			scenarioIt->at(i)->SetLineColor(colorVector[scenarioCounter]);
+			scenarioIt->at(i)->Scale(1/scenarioIt->at(i)->Integral());
+			scenarioIt->at(i)->Draw("same");
+
+			lHtrg->AddEntry(scenarioIt->at(i),legendNameVector[scenarioCounter]);
+
+			scenarioCounter++;
+		}
+		lHtrg->Draw();
+
+		tracoHtrgCanvas->Update();
+		plotTitle = "TRACO Trigger (HTRG) f#ddot{u}r Station ";
+		plotTitle += i+1;
+		(new PlotTitle(plotTitle.Data()))->Draw();
 
 	}
-	cManager->addCanvas("tracoTrigsPerStatTogether",c);
+
+	cManager->addCanvas("tracoTrigsPerStatTogetherBestCase",tracoBestCaseCanvas);
+	cManager->addCanvas("tracoTrigsPerStatTogetherHtrg",tracoHtrgCanvas);
 
 	cManager->storePlots();
 
+	int scenarioCounter = 0;
+	std::cout << "N Entries in traco HTRIG Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosHtrg.begin();
+			scenarioIt != tracoScenariosHtrg.end() ; scenarioIt++) {
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
+	scenarioCounter = 0;
+	std::cout << "N Entries in traco BestCase Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosBestCase.begin();
+			scenarioIt != tracoScenariosBestCase.end() ; scenarioIt++) {
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
+	scenarioCounter = 0;
+	std::cout << "N Entries in bti Best case Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosBestCase.begin();
+			scenarioIt != btiScenariosBestCase.end() ; scenarioIt++) {
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
+	scenarioCounter = 0;
+	std::cout << "N Entries in bti HTRG Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosHtrg.begin();
+			scenarioIt != btiScenariosHtrg.end() ; scenarioIt++) {
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
+
+	delete btiBestCaseCanvas;
+	delete btiHtrgCanvas;
+	delete tracoBestCaseCanvas;
+	delete tracoHtrgCanvas;
+
 	std::cout << "All done!\nExit via ctrl+c..." << std::endl;
-//	app->Run();
+	//	app->Run();
 	delete cManager;
 	return 0;
 }

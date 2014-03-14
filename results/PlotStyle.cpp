@@ -2,7 +2,7 @@
 #include "TROOT.h"
 
 PlotStyle::PlotStyle() : TStyle() {
-	gROOT->SetStyle("Plain");
+	gROOT->SetStyle("Pub");
 	gStyle->SetPadGridX(true);
 	gStyle->SetPadGridY(true);
 	gStyle->SetPadTickX(1);
@@ -11,5 +11,7 @@ PlotStyle::PlotStyle() : TStyle() {
 	gStyle->SetTitleBorderSize(0);
 	gStyle->SetHistLineColor(kBlue);
 	gStyle->SetOptStat("emr");
-	gStyle->SetHistLineWidth(2);
+	gStyle->SetHistLineWidth(3);
+	gStyle->SetLegendBorderSize(1);
+	gStyle->SetLegendFillColor(kWhite);
 }
