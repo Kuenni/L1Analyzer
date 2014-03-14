@@ -2,6 +2,7 @@
 
 #include "TLegend.h"
 #include "THStack.h"
+#include "PlotTitle.h"
 
 TCanvas* AnalysisWrapper::showPlot(std::string plotName){
 	return cManager->showCanvas(plotName);
@@ -155,15 +156,15 @@ void AnalysisWrapper::drawBtiTriggersStacked(){
 	THStack* stack;
 	std::vector<TH1*> vect = analyseBtiTrigPerStatAndSlLtrg();
 	std::vector<TH1*> vectHtrg = analyseBtiTrigPerStatAndSlHtrg();
-	TCanvas* tempCanvas = cManager->getDividedCanvas(2,2);
+	TCanvas* tempCanvas = cManager->getDividedCanvas(1,1);
 	//Draw the super layers for the same station together
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 1; ++i) {
 		TString stackName = "btiStack";
 		stackName += sampleName;
 		stackName += i+1;
-		TString stackTitle = "Stacked BTI Triggers for station ";
+		TString stackTitle = "BTI Trigger f#ddot{u}r Station ";
 		stackTitle += (i+1);
-		stackTitle +=" SL 1;# BTI Triggers;# Events";
+		stackTitle +=" SL 1;# BTI Trigger;# Ereignisse";
 		stack = new THStack(stackName,stackTitle);
 		tempCanvas->cd(i+1)->SetLogy();
 		vectHtrg[2*i]->SetFillColor(kBlue);
@@ -176,9 +177,57 @@ void AnalysisWrapper::drawBtiTriggersStacked(){
 		l->AddEntry(vect[2*i],"LTRG");
 		l->AddEntry(vectHtrg[2*i],"HTRG");
 		l->Draw();
-		std::cout << vect[2*i]->GetName() << std::endl;
+		TString plotTitle("BTI Trigger f#ddot{u}r Station ");
+		plotTitle += i+1;
+		plotTitle += " SL 1";
+		(new PlotTitle(plotTitle.Data()))->Draw();
 	}
 	cManager->addCanvas("btiTrigPerStatAndSlStacked",tempCanvas);
+	tempCanvas = 0;
+}
+
+std::vector<TH1*> AnalysisWrapper::analyseBtiTrigPerStatAndSlLtrgFiltered(){
+	std::vector<TH1*> vect;
+	//create the histograms
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 1; j < 4; j+=2) {
+			vect.push_back(btiAna->plotBtiTriggersPerStationAndSL(i+1,j,BTIAnalysis::LTRG,false));
+		}
+	}
+	return vect;
+}
+
+void AnalysisWrapper::drawBtiTriggersStackedFiltered(){
+	THStack* stack;
+	std::vector<TH1*> vect = analyseBtiTrigPerStatAndSlLtrgFiltered();
+	std::vector<TH1*> vectHtrg = analyseBtiTrigPerStatAndSlBestCase();
+	TCanvas* tempCanvas = cManager->getDividedCanvas(1,1);
+	//Draw the super layers for the same station together
+	for (int i = 0; i < 1; ++i) {
+		TString stackName = "btiStackFiltered";
+		stackName += sampleName;
+		stackName += i+1;
+		TString stackTitle = "BTI Trigger f#ddot{u}r Station ";
+		stackTitle += (i+1);
+		stackTitle += " SL 1;# BTI Trigger;# Ereignisse";
+		stack = new THStack(stackName,stackTitle);
+		tempCanvas->cd(i+1)->SetLogy();
+		vectHtrg[2*i]->SetFillColor(kBlue);
+		stack->Add(vectHtrg[2*i]);
+		vect[2*i]->SetLineColor(kRed);
+		vect[2*i]->SetFillColor(kRed);
+		stack->Add(vect[2*i]);
+		stack->Draw();
+		TLegend* l = new TLegend(0.75,.55,0.95,0.75);
+		l->AddEntry(vect[2*i],"LTRG, BX Filter");
+		l->AddEntry(vectHtrg[2*i],"HTRG, BX Filter");
+		l->Draw();
+		TString plotTitle("BTI Trigger f#ddot{u}r Station ");
+		plotTitle += i+1;
+		plotTitle += " SL 1";
+		(new PlotTitle(plotTitle.Data()))->Draw();
+	}
+	cManager->addCanvas("btiTrigPerStatAndSlStackedFiltered",tempCanvas);
 	tempCanvas = 0;
 }
 
@@ -228,6 +277,7 @@ void AnalysisWrapper::analyseBti(){
 	drawBtiTriggersHtrg();
 	drawBtiTriggersStacked();
 	drawBtiTriggersBestCase();
+	drawBtiTriggersStackedFiltered();
 }
 
 //#######################################
@@ -248,7 +298,7 @@ std::vector<TH1*> AnalysisWrapper::analyseTracoBx(){
 std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStation(){
 	std::vector<TH1*> vect;
 	for (int i = 0; i < 4; ++i) {
-		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,false));
+		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,TracoAnalysis::BOTH,false));
 	}
 	return vect;
 }
@@ -256,27 +306,69 @@ std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStation(){
 std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStationHtrig(){
 	std::vector<TH1*> vect;
 	for (int i = 0; i < 4; ++i) {
-		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,true));
+		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,TracoAnalysis::HTRG,false));
 	}
 	return vect;
 }
 
-void AnalysisWrapper::analyseTraco(){
-	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseTracoTriggers(),"tracoTriggers");
-	tempCanvas = cManager->plotDividedCanvas(analyseTracoBx(),"tracoBx");
-	tempCanvas = cManager->plotDividedCanvas(analyseTracoTrigPerStation(),"tracoTriggersPerStation");
-	//	tempCanvas = cManager->plotDividedCanvas(analyseTracoTrigPerStationHtrig(),"htrigTracoTriggersPerStation");
+std::vector<TH1*> AnalysisWrapper::analyseTracoTrigPerStationBestCase(){
+	std::vector<TH1*> vect;
+	for (int i = 0; i < 4; ++i) {
+		vect.push_back(tracoAna->plotTracoTriggersPerStation(i+1,TracoAnalysis::HTRG,true));
+	}
+	return vect;
+}
+
+void AnalysisWrapper::drawTracoTriggers(){
 	//Calls the ana function which does more complex stuff for plotting
-	std::vector<TH1*> vect = analyseTracoTrigPerStationHtrig();
-	tempCanvas = cManager->getDividedCanvas(2,2);
+	std::vector<TH1*> vect = analyseTracoTrigPerStation();
+	TCanvas* tempCanvas = cManager->getDividedCanvas(2,2);
 	//Draw the super layers for the same station together
 	for (int i = 0; i < 4; ++i) {
 		//change to canvas and set log y
 		tempCanvas->cd(i+1)->SetLogy();
 		vect[i]->Draw();
 	}
-	cManager->addCanvas("htrigTracoTriggersPerStation",tempCanvas);
+	cManager->addCanvas("tracoTriggersPerStation",tempCanvas);
 	tempCanvas = 0;
+}
+
+void AnalysisWrapper::drawTracoTriggersHtrg(){
+	//Calls the ana function which does more complex stuff for plotting
+	std::vector<TH1*> vect = analyseTracoTrigPerStationHtrig();
+	TCanvas* tempCanvas = cManager->getDividedCanvas(2,2);
+	//Draw the super layers for the same station together
+	for (int i = 0; i < 4; ++i) {
+		//change to canvas and set log y
+		tempCanvas->cd(i+1)->SetLogy();
+		vect[i]->Draw();
+	}
+	cManager->addCanvas("tracoTriggersPerStationHtrg",tempCanvas);
+	tempCanvas = 0;
+}
+
+void AnalysisWrapper::drawTracoTriggersBestCase(){
+	//Calls the ana function which does more complex stuff for plotting
+	std::vector<TH1*> vect = analyseTracoTrigPerStationBestCase();
+	TCanvas* tempCanvas = cManager->getDividedCanvas(2,2);
+	//Draw the super layers for the same station together
+	for (int i = 0; i < 4; ++i) {
+		//change to canvas and set log y
+		tempCanvas->cd(i+1)->SetLogy();
+		vect[i]->Draw();
+	}
+	cManager->addCanvas("tracoTriggersPerStationBestCase",tempCanvas);
+	tempCanvas = 0;
+}
+
+void AnalysisWrapper::analyseTraco(){
+	TCanvas* tempCanvas = cManager->plotDividedCanvas(analyseTracoTriggers(),"tracoTriggers");
+	tempCanvas = cManager->plotDividedCanvas(analyseTracoBx(),"tracoBx");
+	tempCanvas = cManager->plotDividedCanvas(analyseTracoTrigPerStation(),"tracoTriggersPerStation");
+	//	drawTracoTriggers();
+	drawTracoTriggersHtrg();
+	drawTracoTriggersBestCase();
+
 }
 
 //#######################################

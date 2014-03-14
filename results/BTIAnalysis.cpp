@@ -369,9 +369,6 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl,int trigQ
 		if(idMap.size() != 0){
 			double res = stationCounter/((double) idMap.size());
 			hist->Fill(res);
-		}else{
-			//If no triggers, just add the 0 to the hist
-			hist->Fill(0);
 		}
 		idMap.clear();
 	}
