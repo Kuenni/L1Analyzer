@@ -2,3 +2,4 @@
 *.pyc
 *.root
 *.o
+__init__*
