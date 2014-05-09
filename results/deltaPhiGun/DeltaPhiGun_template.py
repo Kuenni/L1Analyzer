@@ -67,8 +67,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2017', '')
 
 process.generator = cms.EDProducer("DeltaPhiGunProducer",
     PGunParameters = cms.PSet(
-        MaxPt = cms.double(@pt_max@),
-        MinPt = cms.double(@pt_min@),
+        Pt = cms.double(@pt@),
         PartID = cms.vint32(-13),
         MaxEta = cms.double(0.8),
         MaxPhi = cms.double(3.14159265359),

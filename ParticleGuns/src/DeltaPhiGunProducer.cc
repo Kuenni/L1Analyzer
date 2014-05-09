@@ -32,8 +32,7 @@ DeltaPhiGunProducer::DeltaPhiGunProducer(const ParameterSet& pset) :
 	ParameterSet pgun_params =
 			pset.getParameter<ParameterSet>("PGunParameters") ;
 
-	fMinPt = pgun_params.getParameter<double>("MinPt");
-	fMaxPt = pgun_params.getParameter<double>("MaxPt");
+	fPt = pgun_params.getParameter<double>("Pt");
 
 	fInConeIds = pgun_params.getParameter< vector<int> >("InConeID");
 	fMinDeltaPhi = pgun_params.getParameter<double>("MinDeltaPhi");
@@ -84,7 +83,7 @@ void DeltaPhiGunProducer::produce(Event &e, const EventSetup& es)
 	for (unsigned int ip=0; ip<fPartIDs.size(); ++ip)
 	{
 
-		double pt     = fRandomGenerator->fire(fMinPt, fMaxPt) ;
+		double pt     = fPt;
 		double eta    = fRandomGenerator->fire(fParticleMinEta, fParticleMaxEta) ;
 		double phi    = fRandomGenerator->fire(fParticleMinPhi, fParticleMaxPhi) ;
 		int PartID = fPartIDs[ip] ;

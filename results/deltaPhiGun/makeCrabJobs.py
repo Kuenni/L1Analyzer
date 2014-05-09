@@ -35,8 +35,6 @@ if (dPhi_min > dPhi_max):
 
 pt  = args.pt
 dPhi  = (dPhi_min + dPhi_max)/2.
-pt_min = args.pt - 0.01
-pt_max = args.pt + 0.01
 
 #Create variable for job dir name
 #Cast pt to int to get rid of the floating point
@@ -84,8 +82,6 @@ outfile = open(JOBDIR + "/DeltaPhiGun.py", 'w')
 #Create a replacement dictionary for cmssw exe file
 replaceDictCmssw = {
                 "@pt@":str(pt),
-                "@pt_min@":str(pt_min),
-                "@pt_max@":str(pt_max),
                 "@dPhi_min@":str(dPhi_min),
                 "@dPhi_max@":str(dPhi_max)
                }
