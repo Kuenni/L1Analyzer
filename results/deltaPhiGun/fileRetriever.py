@@ -106,7 +106,7 @@ if copy:
         if os.path.exists('rootfiles/' + sourceFile.split('/')[-1]):
             print 'File ' + sourceFile.split('/')[-1] + ' exists. Skipping!'
             continue
-        print 'Copying file ' + sourceFile.split('/')[-1] + '\t[' + iterCounter + '/' + nFiles + ']'
+        print 'Copying file ' + sourceFile.split('/')[-1] + '\t[' + str(iterCounter) + '/' + str(nFiles) + ']'
         iterCounter += 1 
         copyCmd = 'srmcp ' + STORAGE_SERVER + sourceFile + ' file://./rootfiles'
         ret = call(copyCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
