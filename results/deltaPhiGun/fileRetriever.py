@@ -74,7 +74,7 @@ if copy:
     cmd = "srmls " + OUTPUT_DIR
     
     #Get the list of files in the source directory
-    lsResults = open('dcacheFiles','r+')
+    lsResults = open('dcacheFiles','w+')
     ret = call(cmd, shell=True, stdout=lsResults,stderr=DEVNULL)
     lsResults.seek(0)
     
@@ -98,12 +98,8 @@ if copy:
         os.mkdir('rootfiles')
     else:
         print "Already exists!"
-    
-    #Create a file that stores the names of the copied files
-    copiedFiles = open('copiedRootFiles','w')
-    
+        
     for sourceFile in sourceFiles:
-        copiedFiles.write('file:rootfiles/' + sourceFile.split('/')[-1] + '\n')
         if os.path.exists('rootfiles/' + sourceFile.split('/')[-1]):
             print 'File ' + sourceFile.split('/')[-1] + ' exists. Skipping!'
             continue
@@ -116,13 +112,18 @@ if copy:
 
 #If the merge option is required, the root input files are merged to one large root file
 if merge:
-    #Look for the list of the files copied from dCache
-    #TODO:Do not require the file but perform an ls on the rootfiles directory and create the source file
+    #Look for a list of the files to merge
     if mergeList != None:
         if not os.path.exists(mergeList):
             print 'Cannot merge the files. The given file with the copied files doesn\'t exist!'
             sys.exit(8)
     else:
+        #Create a file that contains the adapted result from an ls
+        filesInDir = open('copiedRootFiles','w')
+        for fileIt in os.listdir('rootfiles'):
+            filesInDir.write('file:rootfiles/' + fileIt + '\n')
+        filesInDir.flush()
+        filesInDir.close()
         if not os.path.exists('copiedRootFiles'):
             print 'Cannot merge the files. The file with the copied files is missing!'
             sys.exit(4)
