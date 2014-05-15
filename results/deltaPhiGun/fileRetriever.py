@@ -98,12 +98,16 @@ if copy:
         os.mkdir('rootfiles')
     else:
         print "Already exists!"
-        
+    
+    nFiles = len(sourceFiles)
+    iterCounter = 1    
     for sourceFile in sourceFiles:
+        
         if os.path.exists('rootfiles/' + sourceFile.split('/')[-1]):
             print 'File ' + sourceFile.split('/')[-1] + ' exists. Skipping!'
             continue
-        print 'Copying file ' + sourceFile.split('/')[-1]
+        print 'Copying file ' + sourceFile.split('/')[-1] + '\t[' + iterCounter + '/' + nFiles + ']'
+        iterCounter += 1 
         copyCmd = 'srmcp ' + STORAGE_SERVER + sourceFile + ' file://./rootfiles'
         ret = call(copyCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
         if ret != 0:
