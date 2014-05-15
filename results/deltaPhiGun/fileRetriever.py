@@ -19,11 +19,6 @@ merge = args.merge
 move = args.move
 all = args.all
 
-
-print 'Copy: ' + str(copy)
-print 'Merge: ' + str(merge)
-print 'Move: ' + str(move)
-
 if all:
     copy = True
     merge = True
@@ -97,6 +92,9 @@ if copy:
         ret = call(copyCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
 
 if merge:
+    if not os.path.exists('copiedRootFiles'):
+        print 'Cannot merge the files. The file with the copied files is missing!'
+        sys.exit(4)
     mergeCmd = 'edmCopyPickMerge inputFiles=copiedRootFiles outputFile=DeltaPhi.root'
     print mergeCmd
 
