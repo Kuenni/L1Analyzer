@@ -7,15 +7,32 @@ from subprocess import call
 
 #Initialize the argparser module
 parser = argparse.ArgumentParser(description='Tool for copying files from dCache, merging to one root file and moving to net_scratch.')
-parser.add_argument('--copy',dest='copy',action='store_true',help='Copy files from dCache.')
-parser.add_argument('--merge',dest='merge',action='store_true',help='Merge files to one edm root file.')
-parser.add_argument('--move',dest='move',action='store_true',help='Move files to directory under net_scratch')
-parser.add_argument('--all',dest='all',action='store_true',help='Enable all of the options')
+parser.add_argument('--copy'
+                    ,dest='copy'
+                    ,action='store_true'
+                    ,help='Copy files from dCache.')
+parser.add_argument('--merge'
+                    ,dest='merge'
+                    ,action='store_true'
+                    ,help='Merge files to one edm root file.')
+parser.add_argument('--remove-originals'
+                    ,dest='removeOriginals'
+                    ,action='store_true'
+                    ,help='If --merge option is given, remove the source files after merging.')
+parser.add_argument('--move'
+                    ,dest='move'
+                    ,action='store_true'
+                    ,help='Move files to directory under net_scratch')
+parser.add_argument('--all'
+                    ,dest='all'
+                    ,action='store_true'
+                    ,help='Enable all of the options')
 args = parser.parse_args()
 
 #local variables for storing arg switches
 copy = args.copy
 merge = args.merge
+removeOriginals = args.removeOriginals
 move = args.move
 all = args.all
 
@@ -29,21 +46,17 @@ else:
         parser.print_help()
         sys.exit(3)
 
+#Find out, where the script is running
+curDir = str(os.getcwd())
+curDirParts = curDir.split('/')
+sampleName = curDirParts[-1]
+print 'Found program running in dir : ' + sampleName
+
 if copy:
     #Get dev null for call later on
     DEVNULL = open(os.devnull, 'wb')
     #define the username on the T2 Storage element
     USERNAME="akunsken"
-    #define cmssw exe template
-    CMSSWCFG="DeltaPhiGun_template.py"
-    #define crab config template
-    CRABCFG ="crab_template.cfg"
-    
-    curDir = str(os.getcwd())
-    curDirParts = curDir.split('/')
-    sampleName = curDirParts[-1]
-    
-    print 'Found program running in dir : ' + sampleName
     
     # Create output directory variable
     STORAGE_SERVER="srm://grid-srm.physik.rwth-aachen.de:8443"
@@ -90,17 +103,48 @@ if copy:
         copiedFiles.write('file:rootfiles/' + sourceFile.split('/')[-1] + '\n')
         copyCmd = 'srmcp ' + STORAGE_SERVER + sourceFile + ' file://./rootfiles'
         ret = call(copyCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
+        if ret != 0:
+             print 'Something went wrong on copying. Abort!'
+             sys.exit(7)
 
+#If the merge option is required, the root input files are merged to one large root file
 if merge:
+    #Look for the list of the files copied from dCache
+    #TODO:Do not require the file but perform an ls on the rootfiles directory and create the source file
     if not os.path.exists('copiedRootFiles'):
         print 'Cannot merge the files. The file with the copied files is missing!'
         sys.exit(4)
     mergeCmd = 'edmCopyPickMerge inputFiles=copiedRootFiles outputFile=DeltaPhi.root'
-    print mergeCmd
+    ret = call(mergeCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
+    if ret != 0: 
+        print 'Something went wrong on merging. Abort!'
+        sys.exit(6)
+    #if this option is given, the smaller source files are being removed
+    if removeOriginals:
+        print 'Removing source files for merging...'
+        for line in open('copiedRootFiles'):
+            print 'Removing ' + line
+            os.remove(line)
 
+#If the move option is selected, moce the merged root file to a directory on net_scratch
 if move:
-	moveCmd = 'mv DeltaPhi.root /net/scratch_cms/institut_3b/kuensken/' + sampleName
-	print moveCmd
+    netScratchPath = '/net/scratch_cms/institut_3b/kuensken/' + sampleName
+    #Find, whether the target directory exists
+    if not os.path.exists(netScratchPath):
+        print 'Target directory ' + netScratchPath + ' does not exist. Creating... '
+        os.mkdir(netScratchPath)
+    else:
+        print 'Target directory ' + netScratchPath + ' exists.'
+    #Abort, in case there is already a root file
+    if os.path.exists(netScratchPath + '/DeltaPhi.root'):
+        print 'Target file ' + netScratchPath + '/DeltaPhi.root exists. Exiting. '
+        sys.exit(5)
+    moveCmd = 'mv DeltaPhi.root ' + netScratchPath
+    print 'Moving DeltaPhi.root to ' + netScratchPath
+    ret = call(moveCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
+    if ret != 0:
+        print 'Something went wrong on moving file to net_scratch. Abort!'
+        sys.exit(8)
 
 print 'All done.'
 
