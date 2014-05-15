@@ -52,9 +52,10 @@ curDirParts = curDir.split('/')
 sampleName = curDirParts[-1]
 print 'Found program running in dir : ' + sampleName
 
+#Get dev null for call later on
+DEVNULL = open(os.devnull, 'wb')
+
 if copy:
-    #Get dev null for call later on
-    DEVNULL = open(os.devnull, 'wb')
     #define the username on the T2 Storage element
     USERNAME="akunsken"
     
