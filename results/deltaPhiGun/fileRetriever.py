@@ -54,7 +54,7 @@ else:
 curDir = str(os.getcwd())
 curDirParts = curDir.split('/')
 sampleName = curDirParts[-1]
-print 'Found program running in dir : ' + sampleName
+print 'Found program running in directory: ' + sampleName
 
 #Get dev null for call later on
 DEVNULL = open(os.devnull, 'wb')
@@ -93,17 +93,19 @@ if copy:
             fileName = lineStr.split(' ')[-1].rstrip('\n')
             sourceFiles.append(fileName)
     
-    print 'Creating local dir for root files'
+    print 'Creating local directory for root files'
     if not os.path.exists('rootfiles'):
         os.mkdir('rootfiles')
     else:
-        print "Error! Directory for root files already exists. Exit."
-        sys.exit(2)
+        print "Already exists!"
     
     #Create a file that stores the names of the copied files
     copiedFiles = open('copiedRootFiles','w')
     
     for sourceFile in sourceFiles:
+        if os.path.exists('rootfiles/' + sourceFile.split('/')[-1]):
+            print 'File ' + sourceFile.split('/')[-1] + ' exists. Skipping!'
+            continue
         print 'Copying file ' + sourceFile.split('/')[-1]
         copiedFiles.write('file:rootfiles/' + sourceFile.split('/')[-1] + '\n')
         copyCmd = 'srmcp ' + STORAGE_SERVER + sourceFile + ' file://./rootfiles'
