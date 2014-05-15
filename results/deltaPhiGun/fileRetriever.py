@@ -19,6 +19,9 @@ parser.add_argument('--remove-originals'
                     ,dest='removeOriginals'
                     ,action='store_true'
                     ,help='If --merge option is given, remove the source files after merging.')
+parser.add_argument('--merge-list'
+                    ,dest='mergeList'
+                    ,help='Give a list of files that are used for merging instead of using the default list.')
 parser.add_argument('--move'
                     ,dest='move'
                     ,action='store_true'
@@ -33,6 +36,7 @@ args = parser.parse_args()
 copy = args.copy
 merge = args.merge
 removeOriginals = args.removeOriginals
+mergeList = args.mergeList
 move = args.move
 all = args.all
 
@@ -112,18 +116,40 @@ if copy:
 if merge:
     #Look for the list of the files copied from dCache
     #TODO:Do not require the file but perform an ls on the rootfiles directory and create the source file
-    if not os.path.exists('copiedRootFiles'):
-        print 'Cannot merge the files. The file with the copied files is missing!'
-        sys.exit(4)
-    mergeCmd = 'edmCopyPickMerge inputFiles=copiedRootFiles outputFile=DeltaPhi.root'
-    ret = call(mergeCmd, shell=True, stdout=DEVNULL,stderr=DEVNULL)
+    if mergeList != None:
+        if not os.path.exists(mergeList):
+            print 'Cannot merge the files. The given file with the copied files doesn\'t exist!'
+            sys.exit(8)
+    else:
+        if not os.path.exists('copiedRootFiles'):
+            print 'Cannot merge the files. The file with the copied files is missing!'
+            sys.exit(4)
+    mergeCmd = 'edmCopyPickMerge inputFiles_load='
+    #Check for an optional file list
+    if mergeList != None:
+        mergeCmd += mergeList
+    else:
+        mergeCmd +=  'copiedRootFiles'
+    mergeCmd += ' outputFile=DeltaPhi.root'
+    
+    if os.path.exists('DeltaPhi.root'):
+        print 'File DeltaPhi.root already exists. Abort Merging!'
+        sys.exit(9)
+    
+    print 'Merging root files...'
+    ret = call(mergeCmd, shell=True,stderr=DEVNULL)
     if ret != 0: 
         print 'Something went wrong on merging. Abort!'
         sys.exit(6)
     #if this option is given, the smaller source files are being removed
     if removeOriginals:
         print 'Removing source files for merging...'
-        for line in open('copiedRootFiles'):
+        mergedFiles = None
+        if mergeList != None:
+            mergedFiles = open(mergeList,'r')
+        else:
+            mergedFiles = open('copiedRootFiles','r')
+        for line in mergedFiles:
             print 'Removing ' + line
             os.remove(line)
 
