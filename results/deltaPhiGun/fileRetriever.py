@@ -150,8 +150,8 @@ if merge:
         else:
             mergedFiles = open('copiedRootFiles','r')
         for line in mergedFiles:
-            print 'Removing ' + line
-            os.remove(line)
+            print 'Removing ' + line.split(':')[-1]
+            os.remove(line.split(':')[-1].replace('\n',""))
 
 #If the move option is selected, moce the merged root file to a directory on net_scratch
 if move:
