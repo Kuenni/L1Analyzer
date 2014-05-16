@@ -77,7 +77,7 @@ if not trigTest:
     #Create variable for job dir name
     #Cast pt to int to get rid of the floating point
     JOBDIR=("DeltaPhiGunPt" + str(int(pt)) + "dPhi" + str(dPhi)).replace(".","_")
-        
+    targetDir = JOBDIR    
     # Create output directory variable
     STORAGE_SERVER="srm://grid-srm.physik.rwth-aachen.de:8443"
     STORAGE_DIR="pnfs/physik.rwth-aachen.de/cms/store/user/" + USERNAME + "/" + JOBDIR
@@ -132,7 +132,7 @@ if not trigTest:
 #####
 #Generate Trig test cmssw file
 #####
-#Create a replacement dictionary for crab cfg file
+#Create a replacement dictionary for crab cfg file  
 replaceDictTrigTest = {"@jobdir@" : targetDir}
 replaceWithDict(TRIGTESTCFG, targetDir + "/TrigTestDeltaPhiGun.py", replaceDictTrigTest)
 
