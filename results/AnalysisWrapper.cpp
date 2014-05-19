@@ -256,7 +256,7 @@ void AnalysisWrapper::drawBtiTriggersBestCase(){
 		l->AddEntry(vect[2*i],"SL 1");
 		l->AddEntry(vect[2*i+1],"SL 3");
 		l->Draw();
-		TPaveText* pt = new TPaveText(0.55,.55,0.75,0.75,"NDC");
+		TPaveText* pt = new TPaveText(0.75,.75,0.95,0.95,"NDC");
 		pt->InsertText("Efficiency with 50k events:");
 		TString efficiencyString("");
 		TString::Format("SL 1:%3.2f",vect[2*i]->Integral()/50000.);

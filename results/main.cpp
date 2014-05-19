@@ -35,35 +35,19 @@ int main(int argc, char** argv){
 	//# Creating Trees and Analyse objects
 	//#######################
 
-	AnalysisWrapper doubleMuPt100dR0_3("deltaPhiGun/DeltaPhiGunPt100dPhi0_3/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_3",10.,true);
-		doubleMuPt100dR0_3.analyseBti();
-		doubleMuPt100dR0_3.analyseTraco();
-		doubleMuPt100dR0_3.analyseGenParticles();
-		doubleMuPt100dR0_3.savePlots();
+	std::vector<AnalysisWrapper> wrapperVect;
 
-	AnalysisWrapper doubleMuPt100dR0_1("deltaPhiGun/DeltaPhiGunPt100dPhi0_1/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_1",10.,true);
-	//	doubleMuPt100dR0_1.analyseBti();
-	//	doubleMuPt100dR0_1.analyseTraco();
-	//	doubleMuPt100dR0_1.analyseGenParticles();
-	//	doubleMuPt100dR0_1.savePlots();
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi3_0/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR3_0",10.,true));
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_3/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_3",10.,true));
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_1/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_1",10.,true));
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_05/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_05",10.,true));
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_01/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_01",10.,true));
+	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_005/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_005",10.,true));
 
-	AnalysisWrapper doubleMuPt100dR0_05("deltaPhiGun/DeltaPhiGunPt100dPhi0_05/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_05",10.,true);
-	//	doubleMuPt100dR0_05.analyseBti();
-	//	doubleMuPt100dR0_05.analyseTraco();
-	//	doubleMuPt100dR0_05.analyseGenParticles();
-	//	doubleMuPt100dR0_05.savePlots();
-
-	AnalysisWrapper doubleMuPt100dR0_01("deltaPhiGun/DeltaPhiGunPt100dPhi0_01/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_01",10.,true);
-	//	doubleMuPt100dR0_01.analyseBti();
-	//	doubleMuPt100dR0_01.analyseTraco();
-	//	doubleMuPt100dR0_01.analyseGenParticles();
-	//	doubleMuPt100dR0_01.savePlots();
-
-	AnalysisWrapper doubleMuPt100dR0_005("deltaPhiGun/DeltaPhiGunPt100dPhi0_005/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_005",10.,true);
-	//	doubleMuPt100dR0_005.analyseBti();
-	//	doubleMuPt100dR0_005.analyseTraco();
-	//	doubleMuPt100dR0_005.analyseGenParticles();
-	//	doubleMuPt100dR0_005.savePlots();
+	wrapperVect[0].analyseBti();
+	wrapperVect[0].analyseTraco();
+	wrapperVect[0].analyseGenParticles();
+	wrapperVect[0].savePlots();
 
 	//Create a vector with colors to access during scenario iterations
 	std::vector<int> colorVector;
@@ -78,28 +62,20 @@ int main(int argc, char** argv){
 
 	//Create a vector with scenarios to access during scenario iterations
 	std::vector<TString> legendNameVector;
-	legendNameVector.push_back(TString("#DeltaR 0.3"));
-	legendNameVector.push_back(TString("#DeltaR 0.1"));
-	legendNameVector.push_back(TString("#DeltaR 0.05"));
-	legendNameVector.push_back(TString("#DeltaR 0.01"));
-	legendNameVector.push_back(TString("#DeltaR 0.005"));
+	legendNameVector.push_back(TString("#Delta#Phi 3.0"));
+	legendNameVector.push_back(TString("#Delta#Phi 0.3"));
+	legendNameVector.push_back(TString("#Delta#Phi 0.1"));
+	legendNameVector.push_back(TString("#Delta#Phi 0.05"));
+	legendNameVector.push_back(TString("#Delta#Phi 0.01"));
+	legendNameVector.push_back(TString("#Delta#Phi 0.005"));
 
 	std::vector<std::vector<TH1*> > btiScenariosBestCase;
-
-	btiScenariosBestCase.push_back(doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSlBestCase());
-	btiScenariosBestCase.push_back(doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSlBestCase());
-	btiScenariosBestCase.push_back(doubleMuPt100dR0_05.analyseBtiTrigPerStatAndSlBestCase());
-	btiScenariosBestCase.push_back(doubleMuPt100dR0_01.analyseBtiTrigPerStatAndSlBestCase());
-	btiScenariosBestCase.push_back(doubleMuPt100dR0_005.analyseBtiTrigPerStatAndSlBestCase());
-
 	std::vector<std::vector<TH1*> > btiScenariosHtrg;
 
-	btiScenariosHtrg.push_back(doubleMuPt100dR0_3.analyseBtiTrigPerStatAndSlHtrg());
-	btiScenariosHtrg.push_back(doubleMuPt100dR0_1.analyseBtiTrigPerStatAndSlHtrg());
-	btiScenariosHtrg.push_back(doubleMuPt100dR0_05.analyseBtiTrigPerStatAndSlHtrg());
-	btiScenariosHtrg.push_back(doubleMuPt100dR0_01.analyseBtiTrigPerStatAndSlHtrg());
-	btiScenariosHtrg.push_back(doubleMuPt100dR0_005.analyseBtiTrigPerStatAndSlHtrg());
-
+	for(unsigned int i = 0 ; i < wrapperVect.size(); i++ ){
+		btiScenariosBestCase.push_back(wrapperVect[i].analyseBtiTrigPerStatAndSlBestCase());
+		btiScenariosHtrg.push_back(wrapperVect[i].analyseBtiTrigPerStatAndSlHtrg());
+	}
 
 	TCanvas* btiBestCaseCanvas = cManager->getDividedCanvas(1,1);
 	btiBestCaseCanvas->SetName("btiTrigsPerStatAndSlTogetherBestCase");
@@ -197,21 +173,12 @@ int main(int argc, char** argv){
 	//################################
 
 	std::vector<std::vector<TH1*> > tracoScenariosBestCase;
-
-	tracoScenariosBestCase.push_back(doubleMuPt100dR0_3.analyseTracoTrigPerStationBestCase());
-	tracoScenariosBestCase.push_back(doubleMuPt100dR0_1.analyseTracoTrigPerStationBestCase());
-	tracoScenariosBestCase.push_back(doubleMuPt100dR0_05.analyseTracoTrigPerStationBestCase());
-	tracoScenariosBestCase.push_back(doubleMuPt100dR0_01.analyseTracoTrigPerStationBestCase());
-	tracoScenariosBestCase.push_back(doubleMuPt100dR0_005.analyseTracoTrigPerStationBestCase());
-
 	std::vector<std::vector<TH1*> > tracoScenariosHtrg;
 
-	tracoScenariosHtrg.push_back(doubleMuPt100dR0_3.analyseTracoTrigPerStationHtrig());
-	tracoScenariosHtrg.push_back(doubleMuPt100dR0_1.analyseTracoTrigPerStationHtrig());
-	tracoScenariosHtrg.push_back(doubleMuPt100dR0_05.analyseTracoTrigPerStationHtrig());
-	tracoScenariosHtrg.push_back(doubleMuPt100dR0_01.analyseTracoTrigPerStationHtrig());
-	tracoScenariosHtrg.push_back(doubleMuPt100dR0_005.analyseTracoTrigPerStationHtrig());
-
+	for(unsigned int i = 0 ; i < wrapperVect.size(); i++ ){
+		tracoScenariosBestCase.push_back(wrapperVect[i].analyseTracoTrigPerStationBestCase());
+		tracoScenariosHtrg.push_back(wrapperVect[i].analyseTracoTrigPerStationHtrig());
+	}
 
 	TCanvas* tracoBestCaseCanvas = cManager->getDividedCanvas(1,1);
 	tracoBestCaseCanvas->SetName("tracoTrigsPerStatTogetherBestCase");
