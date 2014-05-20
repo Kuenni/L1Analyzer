@@ -329,7 +329,7 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl,int trigQ
 			//Filter for the requested station
 			//bcod: Look only at HTRG, since LTRG are not used for DT Trig
 			if( bstat->at(j) == stationNr && bsl->at(j) == sl){
-				//Look, if we want to filter on the correct BX
+				//Look, whether we want to filter on the correct BX
 				if(filterBX){
 					if(bx->at(j) == 16){
 						bxRight = true;
@@ -338,7 +338,7 @@ TH1D* BTIAnalysis::plotBtiTriggersPerStationAndSL(int stationNr,int sl,int trigQ
 					bxRight = true;
 				}
 
-				//Look, if the trigger quality is the one we are looking for
+				//Look, whether the trigger quality is the one we are looking for
 				switch (trigQuali) {
 					case HTRG:
 						if(bcod->at(j) == 8){
