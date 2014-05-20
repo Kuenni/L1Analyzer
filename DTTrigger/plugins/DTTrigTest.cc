@@ -422,12 +422,15 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 									//Add all Sim track ids to histo
 									histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
 									histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
+									//Fill some histograms, that only look at the first muon station
 									if(pbti->station() == 1){
+										//Look for the gen particle index
 										if(trackIt->genpartIndex() > 0)
 											histoMap["histBtiBxIdGenPartNotNullStat1"]->Fill(pbti->step());
 										else{
 											histoMap["histBtiBxIdGenPartNullStat1"]->Fill(pbti->step());
 										}
+										//Look for the gen vertex index
 										if(trackIt->vertIndex() == 0){
 											histoMap["histBtiBxIdVtxNotNullStat1"]->Fill(pbti->step());
 										}
