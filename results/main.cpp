@@ -35,19 +35,19 @@ int main(int argc, char** argv){
 	//# Creating Trees and Analyse objects
 	//#######################
 
-	std::vector<AnalysisWrapper> wrapperVect;
+	std::vector<AnalysisWrapper*> wrapperVect;
 
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi3_0/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR3_0",10.,true));
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_3/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_3",10.,true));
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_1/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_1",10.,true));
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_05/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_05",10.,true));
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_01/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_01",10.,true));
-	wrapperVect.push_back(AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_005/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_005",10.,true));
+	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi3_0/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR3_0",10.,true));
+//	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_3/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_3",10.,true));
+//	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_1/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_1",10.,true));
+//	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_05/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_05",10.,true));
+//	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_01/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_01",10.,true));
+//	wrapperVect.push_back(new AnalysisWrapper("deltaPhiGun/DeltaPhiGunPt100dPhi0_005/TrigTestDeltaPhiGun.root","DeltaPhiGunPt100dR0_005",10.,true));
 
-	wrapperVect[0].analyseBti();
-	wrapperVect[0].analyseTraco();
-	wrapperVect[0].analyseGenParticles();
-	wrapperVect[0].savePlots();
+	wrapperVect[0]->analyseBti();
+	wrapperVect[0]->analyseTraco();
+	wrapperVect[0]->analyseGenParticles();
+	wrapperVect[0]->savePlots();
 
 	//Create a vector with colors to access during scenario iterations
 	std::vector<int> colorVector;
@@ -73,8 +73,8 @@ int main(int argc, char** argv){
 	std::vector<std::vector<TH1*> > btiScenariosHtrg;
 
 	for(unsigned int i = 0 ; i < wrapperVect.size(); i++ ){
-		btiScenariosBestCase.push_back(wrapperVect[i].analyseBtiTrigPerStatAndSlBestCase());
-		btiScenariosHtrg.push_back(wrapperVect[i].analyseBtiTrigPerStatAndSlHtrg());
+		btiScenariosBestCase.push_back(wrapperVect[i]->analyseBtiTrigPerStatAndSlBestCase());
+		btiScenariosHtrg.push_back(wrapperVect[i]->analyseBtiTrigPerStatAndSlHtrg());
 	}
 
 	TCanvas* btiBestCaseCanvas = cManager->getDividedCanvas(1,1);
@@ -176,8 +176,8 @@ int main(int argc, char** argv){
 	std::vector<std::vector<TH1*> > tracoScenariosHtrg;
 
 	for(unsigned int i = 0 ; i < wrapperVect.size(); i++ ){
-		tracoScenariosBestCase.push_back(wrapperVect[i].analyseTracoTrigPerStationBestCase());
-		tracoScenariosHtrg.push_back(wrapperVect[i].analyseTracoTrigPerStationHtrig());
+		tracoScenariosBestCase.push_back(wrapperVect[i]->analyseTracoTrigPerStationBestCase());
+		tracoScenariosHtrg.push_back(wrapperVect[i]->analyseTracoTrigPerStationHtrig());
 	}
 
 	TCanvas* tracoBestCaseCanvas = cManager->getDividedCanvas(1,1);
@@ -257,26 +257,10 @@ int main(int argc, char** argv){
 	cManager->storePlots();
 
 	int scenarioCounter = 0;
-	std::cout << "N Entries in traco HTRIG Scenarios:" << std::endl;
-	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosHtrg.begin();
-			scenarioIt != tracoScenariosHtrg.end() ; scenarioIt++) {
-		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
-		scenarioCounter++;
-	}
-	std::cout << std::endl;
-	scenarioCounter = 0;
-	std::cout << "N Entries in traco BestCase Scenarios:" << std::endl;
-	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosBestCase.begin();
-			scenarioIt != tracoScenariosBestCase.end() ; scenarioIt++) {
-		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
-		scenarioCounter++;
-	}
-	std::cout << std::endl;
-	scenarioCounter = 0;
 	std::cout << "N Entries in bti Best case Scenarios:" << std::endl;
 	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosBestCase.begin();
 			scenarioIt != btiScenariosBestCase.end() ; scenarioIt++) {
-		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t\t" << scenarioIt->at(0)->GetEntries() << std::endl;
 		scenarioCounter++;
 	}
 	std::cout << std::endl;
@@ -284,11 +268,27 @@ int main(int argc, char** argv){
 	std::cout << "N Entries in bti HTRG Scenarios:" << std::endl;
 	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = btiScenariosHtrg.begin();
 			scenarioIt != btiScenariosHtrg.end() ; scenarioIt++) {
-		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t\t" << scenarioIt->at(0)->GetEntries() << std::endl;
 		scenarioCounter++;
 	}
 	std::cout << std::endl;
-
+	scenarioCounter = 0;
+	std::cout << "N Entries in traco HTRIG Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosHtrg.begin();
+			scenarioIt != tracoScenariosHtrg.end() ; scenarioIt++) {
+//		std::cout << TString::Format("%s:\t%6d",legendNameVector[scenarioCounter].Data(),scenarioIt->at(0)->GetEntries()).Data() << std::endl;
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
+	scenarioCounter = 0;
+	std::cout << "N Entries in traco BestCase Scenarios:" << std::endl;
+	for (std::vector<std::vector<TH1*> >::const_iterator scenarioIt = tracoScenariosBestCase.begin();
+			scenarioIt != tracoScenariosBestCase.end() ; scenarioIt++) {
+		std::cout << "\t" << legendNameVector[scenarioCounter] << ":\t\t" << scenarioIt->at(0)->GetEntries() << std::endl;
+		scenarioCounter++;
+	}
+	std::cout << std::endl;
 	delete btiBestCaseCanvas;
 	delete btiHtrgCanvas;
 	delete tracoBestCaseCanvas;
