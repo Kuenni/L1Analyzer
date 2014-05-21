@@ -112,7 +112,7 @@ void DTTrigTest::beginJob(){
 	//TODO: Book mark for the file service
 	edm::Service<TFileService> fs;
 
-	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",102,-0.5,101.5);
+	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",99,-49.5,49.5);
 	histoMap["h1dVtxId"]	= fs->make<TH1D>("h1dVtxId","Vertex IDs;Vertex-ID;# Entries",102,-0.5,101.5);
 	histoMap["h1dVtxIdMuons"]	= fs->make<TH1D>("h1dVtxIdMuons","Vertex IDs for muon sim tracks;Vertex-ID;# Entries",102,-0.5,101.5);
 
@@ -746,7 +746,8 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 					&& pbti->sector() == layerid.sector()
 					&& pbti->SLId() == layerid.superlayerId()
 					&& pbti->station() == layerid.station()
-					&& pbti->code()){
+					&& pbti->code()
+					&& pbti->ChamberId() == layerid.chamberId()){
 				/** This if attempts to use the bti Trigger only once
 				 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
 				 * 	bti trigger
