@@ -746,7 +746,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 					&& pbti->sector() == layerid.sector()
 					&& pbti->SLId() == layerid.superlayerId()
 					&& pbti->station() == layerid.station()
-					&& pbti->code()
+					&& pbti->code() == 8
 					&& pbti->ChamberId() == layerid.chamberId()){
 				/** This if attempts to use the bti Trigger only once
 				 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
