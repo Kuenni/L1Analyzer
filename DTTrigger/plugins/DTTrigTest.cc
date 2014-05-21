@@ -109,7 +109,13 @@ void DTTrigTest::endJob(){
 
 //void DTTrigTest::beginJob(const EventSetup & iEventSetup){
 void DTTrigTest::beginJob(){
+	//TODO: Book mark for the file service
 	edm::Service<TFileService> fs;
+
+	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",12,-0.5,11.5);
+	histoMap["h1dVtxId"]	= fs->make<TH1D>("h1dVtxId","Vertex IDs;Vertex-ID;# Entries",102,-0.5,101.5);
+	histoMap["h1dVtxIdMuons"]	= fs->make<TH1D>("h1dVtxIdMuons","Vertex IDs for muon sim tracks;Vertex-ID;# Entries",102,-0.5,101.5);
+
 	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",32,-2.5,29.5);
 	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",22,-2.5,19.5);
 	histoMap["histSimTrackSimTrackIds"]	= fs->make<TH1D>("histSimTrackSimTrackIds","SimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
@@ -137,6 +143,22 @@ void DTTrigTest::beginJob(){
 	histoMap["histBtiBxHtrgStat1"] = fs->make<TH1D>("histBtiBxHtrgStat1","BXID for BTI HTRG Stat1",30,-0.5,29.5);
 	histoMap["histBtiBxHtrgVtxNotNullStat1"] = fs->make<TH1D>("histBtiBxHtrgVtxNotNullStat1",
 			"BXID for BTI HTRG with Vtx ID #neq 0",30,-0.5,29.5);
+
+	histoMap["histBtiTrgPerSimLink"] = fs->make<TH1D>("histBtiTrgPerSimLink","# of BTI Trgs per SimLink;# Trgs;#Entries",30,-0.5,29.5);
+	histoMap["histBtiTrgPerSimLinkLay1"] = fs->make<TH1D>("histBtiTrgPerSimLinkLay1","# of BTI Trgs per SimLink in Layer 1;# Trgs;#Entries",30,-0.5,29.5);
+
+	histoMap["histBtiTrgWhm2"] = fs->make<TH2D>("histBtiTrgWhm2","Wh -2",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1"] = fs->make<TH2D>("histBtiTrgWhm1","Wh -1",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWh0"] = fs->make<TH2D>("histBtiTrgWh0","Wh 0",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1"] = fs->make<TH2D>("histBtiTrgWhp1","Wh 1",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2"] = fs->make<TH2D>("histBtiTrgWhp2","Wh 2",6,-0.5,5.5,14,-0.5,13.5);
+
+	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1","Wh -1 Stat 1",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1"] = fs->make<TH1D>("histBtiTrgWh0Stat1","Wh 0 Stat 1",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1","Wh 1 Stat 1",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4",14,-0.5,13.5);
+
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
 	// iEventSetup.get< DTConfigManagerRcd >().get( confManager ) ;
@@ -307,6 +329,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 			}
 			if( iterGenParticleCollection->status() == 1 )
 				genParticleId.push_back(iterGenParticleCollection->pdgId());
+			histoMap["h1dGenPartId"]->Fill(iterGenParticleCollection->pdgId());
 		}
 		if(my_debug)
 			cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
@@ -325,6 +348,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 		for (itrack=simTracks->begin(); itrack!=simTracks->end(); itrack++){
 			//TODO: Keep in mind the filter on muons with certain eta range
 			if ( abs(itrack->type())==13){
+				histoMap["h1dVtxIdMuons"]->Fill(itrack->vertIndex());
 				math::XYZTLorentzVectorD momentum = itrack->momentum();
 				float pt  = momentum.Pt();
 				float eta = momentum.eta();
@@ -357,6 +381,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 				}
 				//}
 			}
+			histoMap["h1dVtxId"]->Fill(itrack->vertIndex());
 		}
 	}// runOnData
 
@@ -373,8 +398,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	// GENERAL Block
 	runn   = iEvent.id().run();
 	eventn = iEvent.id().event();
-	weight = 1; // FIXME what to do with this variable?
-
+	weight = 1;
 
 
 	// L1 Local Trigger Block
@@ -389,6 +413,8 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 
 	edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
 	iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+
+	countBtiTrigsPerSimMuon(dtSimLinks,btitrigs);
 
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
 
@@ -687,6 +713,72 @@ int DTTrigTest::countSimLinkMatchesPerBti(DTBtiTrigData btiTrigData,edm::Handle<
 		}
 	}
 	return nMatches;
+}
+
+//FIXME: I am a book mark for count bti trigs per sim muon
+int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks,
+		std::vector<DTBtiTrigData> btiTrigs){
+
+	vector<DTBtiTrigData>::const_iterator pbti;
+	int triggCounter = 0;
+	int triggCounterLay1 = 0;
+	//Iterate over the DTSimLink collection
+	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
+			detUnit !=dtSimLinks->end();++detUnit) {
+		triggCounter = 0;
+		triggCounterLay1 = 0;
+		//Get the layer id
+		const DTLayerId& layerid = (*detUnit).first;
+		if(layerid.layer() == 1)
+			triggCounterLay1++;
+		//Now loop over the bti triggers
+		for ( pbti = btiTrigs.begin(); pbti != btiTrigs.end(); pbti++ ) {
+			if(pbti->ChamberId() == layerid.chamberId()){	//check for same chamber
+				if(pbti->SLId() == layerid.superlayerId() && pbti->code() == 8 ){	//check for same super layer
+					/** This if attempts to use the bti Trigger only once
+					 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
+					 * 	bti trigger
+					 * 	This if should correct for that
+					 */
+					if(layerid.layer() != 1 )
+						continue;
+					triggCounter++;
+					switch(pbti->wheel()){
+					case -2:
+						histoMap["histBtiTrgWhm2"]->Fill(pbti->station(),pbti->sector());
+						if(pbti->station() == 4)
+							histoMap["histBtiTrgWhm2Stat4"]->Fill(pbti->sector());
+						break;
+					case -1:
+						histoMap["histBtiTrgWhm1"]->Fill(pbti->station(),pbti->sector());
+						if(pbti->station() == 1)
+							histoMap["histBtiTrgWhm1Stat1"]->Fill(pbti->sector());
+						break;
+					case 0:
+						histoMap["histBtiTrgWh0"]->Fill(pbti->station(),pbti->sector());
+						if(pbti->station() == 1)
+							histoMap["histBtiTrgWh0Stat1"]->Fill(pbti->sector());
+						break;
+					case 1:
+						histoMap["histBtiTrgWhp1"]->Fill(pbti->station(),pbti->sector());
+						if(pbti->station() == 1)
+							histoMap["histBtiTrgWhp1Stat1"]->Fill(pbti->sector());
+						break;
+					case 2:
+						histoMap["histBtiTrgWhp2"]->Fill(pbti->station(),pbti->sector());
+						if(pbti->station() == 4)
+							histoMap["histBtiTrgWhp2Stat4"]->Fill(pbti->sector());
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+		histoMap["histBtiTrgPerSimLink"]->Fill(triggCounter);
+		histoMap["histBtiTrgPerSimLinkLay1"]->Fill(triggCounterLay1);
+	}
+	return 0;
 }
 
 /**
