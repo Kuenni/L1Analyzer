@@ -112,7 +112,7 @@ void DTTrigTest::beginJob(){
 	//TODO: Book mark for the file service
 	edm::Service<TFileService> fs;
 
-	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",12,-0.5,11.5);
+	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",102,-0.5,101.5);
 	histoMap["h1dVtxId"]	= fs->make<TH1D>("h1dVtxId","Vertex IDs;Vertex-ID;# Entries",102,-0.5,101.5);
 	histoMap["h1dVtxIdMuons"]	= fs->make<TH1D>("h1dVtxIdMuons","Vertex IDs for muon sim tracks;Vertex-ID;# Entries",102,-0.5,101.5);
 
