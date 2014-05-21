@@ -691,25 +691,30 @@ int DTTrigTest::countSimLinkMatchesPerBti(DTBtiTrigData btiTrigData,edm::Handle<
 
 		const DTLayerId& layerid = (*detUnit).first;
 
-		if(btiTrigData.ChamberId() == layerid.chamberId()){	//check for same chamber
-			if(btiTrigData.SLId() == layerid.superlayerId()){	//check for same Superlayer
-				const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
-				DTDigiSimLinkCollection::const_iterator link;
-				/*
-				 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
-				 * and then look for the same TrackId in the sim tracks.
-				 * On match fill the vertex index and genParticle index of the track
-				 */
-				for (link=range.first; link!=range.second; ++link){
-					for(std::vector<SimTrack>::const_iterator trackIt = simTracks->begin();
-							trackIt != simTracks->end(); trackIt++){
-						if((*link).SimTrackId() == trackIt->trackId() ){
-							//Count the number of matches
-							nMatches++;
-						}
+		/**
+		 * Check for same station, sector, wheel, superlayer, station
+		 */
+		if(btiTrigData.wheel() == layerid.wheel()()
+				&& btiTrigData.sector() == layerid.sector()
+				&& btiTrigData.SLId() == layerid.superlayerId()
+				&& btiTrigData.station() == layerid.station()){
+			const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+			DTDigiSimLinkCollection::const_iterator link;
+			/*
+			 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
+			 * and then look for the same TrackId in the sim tracks.
+			 * On match fill the vertex index and genParticle index of the track
+			 */
+			for (link=range.first; link!=range.second; ++link){
+				for(std::vector<SimTrack>::const_iterator trackIt = simTracks->begin();
+						trackIt != simTracks->end(); trackIt++){
+					if((*link).SimTrackId() == trackIt->trackId() ){
+						//Count the number of matches
+						nMatches++;
 					}
 				}
 			}
+
 		}
 	}
 	return nMatches;
@@ -733,45 +738,51 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 			triggCounterLay1++;
 		//Now loop over the bti triggers
 		for ( pbti = btiTrigs.begin(); pbti != btiTrigs.end(); pbti++ ) {
-			if(pbti->ChamberId() == layerid.chamberId()){	//check for same chamber
-				if(pbti->SLId() == layerid.superlayerId() && pbti->code() == 8 ){	//check for same super layer
-					/** This if attempts to use the bti Trigger only once
-					 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
-					 * 	bti trigger
-					 * 	This if should correct for that
-					 */
-					if(layerid.layer() != 1 )
-						continue;
-					triggCounter++;
-					switch(pbti->wheel()){
-					case -2:
-						histoMap["histBtiTrgWhm2"]->Fill(pbti->station(),pbti->sector());
-						if(pbti->station() == 4)
-							histoMap["histBtiTrgWhm2Stat4"]->Fill(pbti->sector());
-						break;
-					case -1:
-						histoMap["histBtiTrgWhm1"]->Fill(pbti->station(),pbti->sector());
-						if(pbti->station() == 1)
-							histoMap["histBtiTrgWhm1Stat1"]->Fill(pbti->sector());
-						break;
-					case 0:
-						histoMap["histBtiTrgWh0"]->Fill(pbti->station(),pbti->sector());
-						if(pbti->station() == 1)
-							histoMap["histBtiTrgWh0Stat1"]->Fill(pbti->sector());
-						break;
-					case 1:
-						histoMap["histBtiTrgWhp1"]->Fill(pbti->station(),pbti->sector());
-						if(pbti->station() == 1)
-							histoMap["histBtiTrgWhp1Stat1"]->Fill(pbti->sector());
-						break;
-					case 2:
-						histoMap["histBtiTrgWhp2"]->Fill(pbti->station(),pbti->sector());
-						if(pbti->station() == 4)
-							histoMap["histBtiTrgWhp2Stat4"]->Fill(pbti->sector());
-						break;
-					default:
-						break;
-					}
+			/**
+			 * Check for same station, sector, wheel, superlayer, station
+			 * And the HTRG code
+			 */
+			if(pbti->wheel() == layerid.wheel()()
+					&& pbti->sector() == layerid.sector()
+					&& pbti->SLId() == layerid.superlayerId()
+					&& pbti->station() == layerid.station()
+					&& pbti->code()){
+				/** This if attempts to use the bti Trigger only once
+				 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
+				 * 	bti trigger
+				 * 	This if should correct for that
+				 */
+				if(layerid.layer() != 1 )
+					continue;
+				triggCounter++;
+				switch(pbti->wheel()){
+				case -2:
+					histoMap["histBtiTrgWhm2"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 4)
+						histoMap["histBtiTrgWhm2Stat4"]->Fill(pbti->sector());
+					break;
+				case -1:
+					histoMap["histBtiTrgWhm1"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1)
+						histoMap["histBtiTrgWhm1Stat1"]->Fill(pbti->sector());
+					break;
+				case 0:
+					histoMap["histBtiTrgWh0"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1)
+						histoMap["histBtiTrgWh0Stat1"]->Fill(pbti->sector());
+					break;
+				case 1:
+					histoMap["histBtiTrgWhp1"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1)
+						histoMap["histBtiTrgWhp1Stat1"]->Fill(pbti->sector());
+					break;
+				case 2:
+					histoMap["histBtiTrgWhp2"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 4)
+						histoMap["histBtiTrgWhp2Stat4"]->Fill(pbti->sector());
+					break;
+				default:
+					break;
 				}
 			}
 		}
