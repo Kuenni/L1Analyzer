@@ -694,7 +694,7 @@ int DTTrigTest::countSimLinkMatchesPerBti(DTBtiTrigData btiTrigData,edm::Handle<
 		/**
 		 * Check for same station, sector, wheel, superlayer, station
 		 */
-		if(btiTrigData.wheel() == layerid.wheel()()
+		if(btiTrigData.wheel() == layerid.wheel()
 				&& btiTrigData.sector() == layerid.sector()
 				&& btiTrigData.SLId() == layerid.superlayerId()
 				&& btiTrigData.station() == layerid.station()){
@@ -742,7 +742,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 			 * Check for same station, sector, wheel, superlayer, station
 			 * And the HTRG code
 			 */
-			if(pbti->wheel() == layerid.wheel()()
+			if(pbti->wheel() == layerid.wheel()
 					&& pbti->sector() == layerid.sector()
 					&& pbti->SLId() == layerid.superlayerId()
 					&& pbti->station() == layerid.station()
