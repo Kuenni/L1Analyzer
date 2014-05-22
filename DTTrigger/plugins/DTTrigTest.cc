@@ -153,11 +153,22 @@ void DTTrigTest::beginJob(){
 	histoMap["histBtiTrgWhp1"] = fs->make<TH2D>("histBtiTrgWhp1","Wh 1",6,-0.5,5.5,14,-0.5,13.5);
 	histoMap["histBtiTrgWhp2"] = fs->make<TH2D>("histBtiTrgWhp2","Wh 2",6,-0.5,5.5,14,-0.5,13.5);
 
-	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4",14,-0.5,13.5);
-	histoMap["histBtiTrgWhm1Stat1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1","Wh -1 Stat 1",14,-0.5,13.5);
-	histoMap["histBtiTrgWh0Stat1"] = fs->make<TH1D>("histBtiTrgWh0Stat1","Wh 0 Stat 1",14,-0.5,13.5);
-	histoMap["histBtiTrgWhp1Stat1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1","Wh 1 Stat 1",14,-0.5,13.5);
-	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1","Wh -1 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1"] = fs->make<TH1D>("histBtiTrgWh0Stat1","Wh 0 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1","Wh 1 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4;Sector;# Entries",14,-0.5,13.5);
+
+	histoMap["histBtiTrgWhm2Stat4BxFilt"] = fs->make<TH1D>("histBtiTrgWhm2Stat4BxFilt","Wh -2 Stat 4 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWhm1Stat1BxFilt","Wh -1 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWh0Stat1BxFilt","Wh 0 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWhp1Stat1BxFilt","Wh 1 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4BxFilt"] = fs->make<TH1D>("histBtiTrgWhp2Stat4BxFilt","Wh 2 Stat 4 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+
+	histoMap["h1dDtCollBxIdDist"] = fs->make<TH1D>("h1dDtCollBxIdDist","Distribution of BX ID for DTDigiColl. Loop;BX ID;# Entries",52,-0.5,51.5);
+	histoMap["h1dDtCollBxIdDistHTRG"] = fs->make<TH1D>("h1dDtCollBxIdDistHTRG","Distribution of BX ID for DTDigiColl. Loop for HTRG;BX ID;# Entries",52,-0.5,51.5);
+
+	histoMap["h1dFilteredBtiHitsPerEvt"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvt","Number of BX filtered HTRG per Event;# HTRG;#Entries",52,-1.5,50.5);
 
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
@@ -464,9 +475,10 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 											histoMap["histBtiBxIdVtxNullStat1"]->Fill(pbti->step());
 										}
 										histoMap["histBtiBxIdStat1"]->Fill(pbti->step());
-										histoMap["histBtiBxHtrgStat1"]->Fill(pbti->step());
-										if(pbti->code() == 8)
+										if(pbti->code() == 8){
 											histoMap["histBtiBxHtrgVtxNotNullStat1"]->Fill(pbti->step());
+											histoMap["histBtiBxHtrgStat1"]->Fill(pbti->step());
+										}
 									}
 									continueBtiLoop = true;
 								}
@@ -727,6 +739,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 	vector<DTBtiTrigData>::const_iterator pbti;
 	int triggCounter = 0;
 	int triggCounterLay1 = 0;
+	int filteredHitsCounter = 0;
 	//Iterate over the DTSimLink collection
 	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
 			detUnit !=dtSimLinks->end();++detUnit) {
@@ -773,22 +786,39 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						else
 							sect = pbti->sector();
 						histoMap["histBtiTrgWhm2Stat4"]->Fill(sect);
+						if(pbti->step() == 16)
+							histoMap["histBtiTrgWhm2Stat4BxFilt"]->Fill(sect);
 					}
 					break;
 				case -1:
 					histoMap["histBtiTrgWhm1"]->Fill(pbti->station(),pbti->sector());
-					if(pbti->station() == 1)
+					if(pbti->station() == 1){
 						histoMap["histBtiTrgWhm1Stat1"]->Fill(pbti->sector());
+						if(pbti->step() == 16){
+							histoMap["histBtiTrgWhm1Stat1BxFilt"]->Fill(pbti->sector());
+							filteredHitsCounter++;
+						}
+					}
 					break;
 				case 0:
 					histoMap["histBtiTrgWh0"]->Fill(pbti->station(),pbti->sector());
-					if(pbti->station() == 1)
+					if(pbti->station() == 1){
 						histoMap["histBtiTrgWh0Stat1"]->Fill(pbti->sector());
+						if(pbti->step() == 16){
+							histoMap["histBtiTrgWh0Stat1BxFilt"]->Fill(pbti->sector());
+							filteredHitsCounter++;
+						}
+					}
 					break;
 				case 1:
 					histoMap["histBtiTrgWhp1"]->Fill(pbti->station(),pbti->sector());
-					if(pbti->station() == 1)
+					if(pbti->station() == 1){
 						histoMap["histBtiTrgWhp1Stat1"]->Fill(pbti->sector());
+						if(pbti->step() == 16){
+							histoMap["histBtiTrgWhp1Stat1BxFilt"]->Fill(pbti->sector());
+							filteredHitsCounter++;
+						}
+					}
 					break;
 				case 2:
 					histoMap["histBtiTrgWhp2"]->Fill(pbti->station(),pbti->sector());
@@ -806,15 +836,37 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						else
 							sect = pbti->sector();
 						histoMap["histBtiTrgWhp2Stat4"]->Fill(sect);
+						if(pbti->step() == 16)
+							histoMap["histBtiTrgWhp2Stat4BxFilt"]->Fill(sect);
 					}
 					break;
 				default:
 					break;
+				}//switch
+				int linkCounter = 0;
+				const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+				DTDigiSimLinkCollection::const_iterator link;
+				for (link=range.first; link!=range.second; ++link){
+					if(link->SimTrackId() == 1 || link->SimTrackId() == 2){
+						linkCounter++;
+					}
 				}
+				std::cout << "Detid : " << layerid.chamberId() << "layer " << layerid.layer()<< " Link Counter  " << linkCounter  << std::endl;
+				histoMap["h1dDtCollBxIdDistHTRG"]->Fill(pbti->step());
+
+			}//If right bti position
+			//Short if for filling the histogram on the BXID distribution without the HTRG filter
+			if(pbti->wheel() == layerid.wheel()
+					&& pbti->sector() == layerid.sector()
+					&& pbti->SLId() == layerid.superlayerId()
+					&& pbti->station() == layerid.station()
+					&& pbti->ChamberId() == layerid.chamberId()){
+				histoMap["h1dDtCollBxIdDist"]->Fill(pbti->step());
 			}
 		}
 		histoMap["histBtiTrgPerSimLink"]->Fill(triggCounter);
 		histoMap["histBtiTrgPerSimLinkLay1"]->Fill(triggCounterLay1);
+		histoMap["h1dFilteredBtiHitsPerEvt"]->Fill(filteredHitsCounter);
 	}
 	return 0;
 }
