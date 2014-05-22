@@ -734,8 +734,9 @@ int DTTrigTest::countSimLinkMatchesPerBti(DTBtiTrigData btiTrigData,edm::Handle<
 
 //FIXME: I am a book mark for count bti trigs per sim muon
 int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks,
-		std::vector<DTBtiTrigData> btiTrigs){
+		std::vector<DTBtiTrigData> btiTrigsOriginal){
 
+	std::vector<DTBtiTrigData> btiTrigs(btiTrigsOriginal);
 	vector<DTBtiTrigData>::const_iterator pbti;
 	int triggCounter = 0;
 	int triggCounterLay1 = 0;
@@ -749,6 +750,26 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 		const DTLayerId& layerid = (*detUnit).first;
 		if(layerid.layer() == 1)
 			triggCounterLay1++;
+		/** This if attempts to use the bti Trigger only once
+		 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
+		 * 	bti trigger
+		 * 	This if should correct for that
+		 */
+		if(layerid.layer() != 1 )
+			continue;
+
+		//Check, whether the simlinks contain links to Simtrack Ids 1 or 2 (the gen muons)
+		//If not, skip DetId
+		bool skipDetId = true;
+		const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+		DTDigiSimLinkCollection::const_iterator link;
+		for (link=range.first; link!=range.second; ++link){
+			if(link->SimTrackId() == 1 || link->SimTrackId() == 2){
+				skipDetId = false;
+			}
+		}
+		if(skipDetId)
+			continue;
 		//Now loop over the bti triggers
 		for ( pbti = btiTrigs.begin(); pbti != btiTrigs.end(); pbti++ ) {
 			/**
@@ -761,13 +782,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 					&& pbti->station() == layerid.station()
 					&& pbti->code() == 8
 					&& pbti->ChamberId() == layerid.chamberId()){
-				/** This if attempts to use the bti Trigger only once
-				 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
-				 * 	bti trigger
-				 * 	This if should correct for that
-				 */
-				if(layerid.layer() != 1 )
-					continue;
+
 				triggCounter++;
 				switch(pbti->wheel()){
 				case -2:
@@ -844,14 +859,16 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 					break;
 				}//switch
 				int linkCounter = 0;
+				int totalCounter = 0;
 				const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
 				DTDigiSimLinkCollection::const_iterator link;
 				for (link=range.first; link!=range.second; ++link){
 					if(link->SimTrackId() == 1 || link->SimTrackId() == 2){
 						linkCounter++;
 					}
+					totalCounter++;
 				}
-				std::cout << "Detid : " << layerid.chamberId() << "layer " << layerid.layer()<< " Link Counter  " << linkCounter  << std::endl;
+	//			std::cout << "Detid : " << layerid.chamberId() << "layer " << layerid.layer()<< " ID Counter  " << linkCounter  << " simlinkcollection" << totalCounter << std::endl;
 				histoMap["h1dDtCollBxIdDistHTRG"]->Fill(pbti->step());
 
 			}//If right bti position
@@ -866,8 +883,8 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 		}
 		histoMap["histBtiTrgPerSimLink"]->Fill(triggCounter);
 		histoMap["histBtiTrgPerSimLinkLay1"]->Fill(triggCounterLay1);
-		histoMap["h1dFilteredBtiHitsPerEvt"]->Fill(filteredHitsCounter);
 	}
+	histoMap["h1dFilteredBtiHitsPerEvt"]->Fill(filteredHitsCounter);
 	return 0;
 }
 
