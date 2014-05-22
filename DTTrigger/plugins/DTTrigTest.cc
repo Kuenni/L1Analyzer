@@ -147,17 +147,17 @@ void DTTrigTest::beginJob(){
 	histoMap["histBtiTrgPerSimLink"] = fs->make<TH1D>("histBtiTrgPerSimLink","# of BTI Trgs per SimLink;# Trgs;#Entries",30,-0.5,29.5);
 	histoMap["histBtiTrgPerSimLinkLay1"] = fs->make<TH1D>("histBtiTrgPerSimLinkLay1","# of BTI Trgs per SimLink in Layer 1;# Trgs;#Entries",30,-0.5,29.5);
 
-	histoMap["histBtiTrgWhm2"] = fs->make<TH2D>("histBtiTrgWhm2","Wh -2",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhm2"] = fs->make<TH2D>("histBtiTrgWhm2","Wh -2",6,-0.5,5.5,16,-0.5,15.5);
 	histoMap["histBtiTrgWhm1"] = fs->make<TH2D>("histBtiTrgWhm1","Wh -1",6,-0.5,5.5,14,-0.5,13.5);
 	histoMap["histBtiTrgWh0"] = fs->make<TH2D>("histBtiTrgWh0","Wh 0",6,-0.5,5.5,14,-0.5,13.5);
 	histoMap["histBtiTrgWhp1"] = fs->make<TH2D>("histBtiTrgWhp1","Wh 1",6,-0.5,5.5,14,-0.5,13.5);
-	histoMap["histBtiTrgWhp2"] = fs->make<TH2D>("histBtiTrgWhp2","Wh 2",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2"] = fs->make<TH2D>("histBtiTrgWhp2","Wh 2",6,-0.5,5.5,16,-0.5,15.5);
 
-	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4",16,-0.5,15.5);
 	histoMap["histBtiTrgWhm1Stat1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1","Wh -1 Stat 1",14,-0.5,13.5);
 	histoMap["histBtiTrgWh0Stat1"] = fs->make<TH1D>("histBtiTrgWh0Stat1","Wh 0 Stat 1",14,-0.5,13.5);
 	histoMap["histBtiTrgWhp1Stat1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1","Wh 1 Stat 1",14,-0.5,13.5);
-	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4",16,-0.5,15.5);
 
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
