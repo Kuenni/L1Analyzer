@@ -3,7 +3,6 @@ from ROOT import gROOT,TCanvas,TFile,TH1D
 import PlotStyle
 
 PlotStyle.setPlotStyle()
-#gROOT.SetStyle("Pub")
 
 canv = TCanvas("Test")
 canv.Draw()
@@ -17,13 +16,16 @@ h1dw1p  = file.Get("dttriganalyzer/histBtiTrgWhp1Stat1")
 h1dw2p  = file.Get("dttriganalyzer/histBtiTrgWhp2Stat4")
 
 
-h1dw2m.Add(h1dw1m)
-h1dw2m.Add(h1dw0)
-h1dw2m.Add(h1dw1p)
-h1dw2m.Add(h1dw2p)
+h1dw1m.Add(h1dw0)
+h1dw1m.Add(h1dw1p)
 
-h1dw2m.SetTitle("Hits per Station")
-h1dw2m.GetXaxis().SetTitle("Sector")
-h1dw2m.GetYaxis().SetTitle("# Entries")
+h1dw1m.SetTitle("Hits per Station")
+h1dw1m.GetXaxis().SetTitle("Sector")
+h1dw1m.GetYaxis().SetTitle("# Entries")
 
-h1dw2m.Draw()
+h1dw1m.SetLineWidth(3)
+h1dw1m.Draw()
+canv.Update()
+
+canv.SaveAs("h1dBtiPerSect.png")
+print h1dw1m.Integral()
