@@ -1,6 +1,9 @@
 from ROOT import gROOT,TCanvas,TFile,TH1D
 
-gROOT.SetStyle("Pub")
+import PlotStyle
+
+PlotStyle.setPlotStyle()
+#gROOT.SetStyle("Pub")
 
 canv = TCanvas("Test")
 canv.Draw()
