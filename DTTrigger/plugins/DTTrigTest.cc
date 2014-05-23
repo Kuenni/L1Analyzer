@@ -884,7 +884,8 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 		histoMap["histBtiTrgPerSimLink"]->Fill(triggCounter);
 		histoMap["histBtiTrgPerSimLinkLay1"]->Fill(triggCounterLay1);
 	}
-	histoMap["h1dFilteredBtiHitsPerEvt"]->Fill(filteredHitsCounter);
+	if(filteredHitsCounter)
+		histoMap["h1dFilteredBtiHitsPerEvt"]->Fill(filteredHitsCounter);
 	return 0;
 }
 
