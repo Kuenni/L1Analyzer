@@ -858,6 +858,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 							sect =10;
 						else
 							sect = pbti->sector();
+						//Now decide,which histogram to fill
 						if(bothIds){
 							histoMap["histBtiTrgWhm2Stat4"]->Fill(sect);
 						}
@@ -867,6 +868,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						else{
 							histoMap["histBtiTrgWhm2Stat4Id2"]->Fill(sect);
 						}
+						//This part fills histograms for BX ID filtered
 						if(pbti->step() == 16){
 							if(bothIds){
 								histoMap["histBtiTrgWhm2Stat4BxFilt"]->Fill(sect);
@@ -900,6 +902,8 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 							}
 							else if(isTrack1){
 								histoMap["histBtiTrgWhm1Stat1BxFiltId1"]->Fill(pbti->sector());
+								//This part is only for wheels -1 to 1 for the MB 1
+								//Fill a histogram for each SL
 								if(pbti->SLId().superlayer() == 1)
 									id1FilteredCounterSl1++;
 								else if(pbti->SLId().superlayer() == 3)
