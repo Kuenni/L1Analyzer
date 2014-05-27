@@ -6,3 +6,5 @@ def setPlotStyle():
     gStyle.SetOptStat(1110)
     gStyle.SetLineWidth(2)
     gStyle.SetHistLineWidth(3)
+    gStyle.SetPadTickX(1)
+    gStyle.SetPadTickY(1)
