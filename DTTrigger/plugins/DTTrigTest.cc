@@ -207,6 +207,9 @@ void DTTrigTest::beginJob(){
 	histoMap["h1dFilteredBtiHitsPerEvtId1Sl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId1Sl2","Number of BX filtered HTRG per Event for SimTrack Id 1 SL 2;# HTRG;#Entries",52,-1.5,50.5);
 	histoMap["h1dFilteredBtiHitsPerEvtId2Sl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId2Sl2","Number of BX filtered HTRG per Event for SimTrack Id 2 SL 2;# HTRG;#Entries",52,-1.5,50.5);
 
+	histoMap["h1dFilteredBtiHitsPerEvtBothIdSl1"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothIdSl1","Number of BX filtered HTRG per Event with both SimTrack IDs SL 1;# HTRG;#Entries",52,-1.5,50.5);
+    histoMap["h1dFilteredBtiHitsPerEvtBothIdSl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothIdSl2","Number of BX filtered HTRG per Event with both SimTrack IDs SL 2;# HTRG;#Entries",52,-1.5,50.5);
+    histoMap["h1dFilteredBtiHitsPerEvtBothId"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothId","Number of BX filtered HTRG per Event with both SimTrack IDs Stat. 1;# HTRG;#Entries",52,-1.5,50.5);
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
 	// iEventSetup.get< DTConfigManagerRcd >().get( confManager ) ;
@@ -781,6 +784,7 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 	int filteredHitsCounter = 0;
 	int id1Counter = 0, id1FilteredCounterSl1 = 0, id1FilteredCounterSl2 = 0;
 	int id2Counter = 0, id2FilteredCounterSl1 = 0, id2FilteredCounterSl2 = 0;
+	int bothIdsFilteredCounterSl1 = 0, bothIdsFilteredCounterSl2 = 0;
 	//Iterate over the DTSimLink collection
 	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
 			detUnit !=dtSimLinks->end();++detUnit) {
@@ -899,6 +903,10 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						if(pbti->step() == 16){
 							if(bothIds){
 								histoMap["histBtiTrgWhm1Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
 							}
 							else if(isTrack1){
 								histoMap["histBtiTrgWhm1Stat1BxFiltId1"]->Fill(pbti->sector());
@@ -936,6 +944,10 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						if(pbti->step() == 16){
 							if(bothIds){
 								histoMap["histBtiTrgWh0Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
 							}
 							else if(isTrack1){
 								histoMap["histBtiTrgWh0Stat1BxFiltId1"]->Fill(pbti->sector());
@@ -971,6 +983,10 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 						if(pbti->step() == 16){
 							if(bothIds){
 								histoMap["histBtiTrgWhp1Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
 							}
 							else if(isTrack1){
 								histoMap["histBtiTrgWhp1Stat1BxFiltId1"]->Fill(pbti->sector());
@@ -1070,7 +1086,12 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 		histoMap["h1dFilteredBtiHitsPerEvtId1Sl2"]->Fill(id1FilteredCounterSl2);
 	if(id2FilteredCounterSl2)
 		histoMap["h1dFilteredBtiHitsPerEvtId2Sl2"]->Fill(id2FilteredCounterSl2);
-
+	if(bothIdsFilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtBothIdSl1"]->Fill(bothIdsFilteredCounterSl1);
+	if(bothIdsFilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtBothIdSl2"]->Fill(bothIdsFilteredCounterSl2);
+	if(bothIdsFilteredCounterSl1 || bothIdsFilteredCounterSl2)
+		histoMap["h1dFilteredBtiHitsPerEvtBothId"]->Fill(bothIdsFilteredCounterSl1 + bothIdsFilteredCounterSl2);
 	if(id1FilteredCounterSl1 > 2 || id2FilteredCounterSl1 > 2)
 		std::cout << "####\nCounter > 2: " << iEvent.id() << "\n#####" <<  std::endl;
 	return 0;
