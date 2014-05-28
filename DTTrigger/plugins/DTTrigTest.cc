@@ -118,8 +118,6 @@ void DTTrigTest::beginJob(){
 
 	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",32,-2.5,29.5);
 	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimTrackSimTrackIds"]	= fs->make<TH1D>("histSimTrackSimTrackIds","SimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimLinkSimTrackIds"]	= fs->make<TH1D>("histSimLinkSimTrackIds","SimLinkSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
 	histoMap["histTracoVtxId"]	= fs->make<TH1D>("histTracoVtxId","histTracoVtxId;SimTrack-ID;# Entries",22,-2.5,19.5);
 	histoMap["histTracoGenPart"]	= fs->make<TH1D>("histTracoGenPart","histTracoGenPart;SimTrack-ID;# Entries",22,-2.5,19.5);
 	histoMap["histSimTrackTracoSimTrackIds"]	= fs->make<TH1D>("histSimTrackTracoSimTrackIds",
@@ -128,19 +126,9 @@ void DTTrigTest::beginJob(){
 			"histSimLinkTracoSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
 
 	//Histograms for station 1
-	histoMap["histBtiBxIdStat1"]		= fs->make<TH1D>("histBtiBxIdStat1",
-			"BX ID of all generated BTI triggers;BX ID;# Entries",30,-0.5,29.5);
-	histoMap["histBtiBxIdGenPartNotNullStat1"]	= fs->make<TH1D>("histBtiBxIdGenPartNotNullStat1",
-			"BX ID of all generated BTI triggers with sim track Id > 0",30,-0.5,29.5);
-	histoMap["histBtiBxIdGenPartNullStat1"]	= fs->make<TH1D>("histBtiBxIdGenPartNullStat1",
-			"BX ID of all generated BTI triggers with sim track id <= 0",30,-0.5,29.5);
-	histoMap["histBtiBxIdVtxNotNullStat1"]	= fs->make<TH1D>("histBtiBxIdVtxNotNullStat1",
-			"BX ID of all generated BTI triggers with Vtx Id #neq 0",30,-0.5,29.5);
-	histoMap["histBtiBxIdVtxNullStat1"]	= fs->make<TH1D>("histBtiBxIdVtxNullStat1",
-			"BX ID of all generated BTI triggers with Vtx Id = 0",30,-0.5,29.5);
+
 	histoMap["histSimLinkMatchesPerBti"] = fs->make<TH1D>("histSimLinkMatchesPerBti",
 			"Number of matching Sim Link IDs per BTI Trig Data;# Matches;# Entries",100,-0.5,99.5);
-	histoMap["histBtiBxHtrgStat1"] = fs->make<TH1D>("histBtiBxHtrgStat1","BXID for BTI HTRG Stat1",30,-0.5,29.5);
 	histoMap["histBtiBxHtrgVtxNotNullStat1"] = fs->make<TH1D>("histBtiBxHtrgVtxNotNullStat1",
 			"BXID for BTI HTRG with Vtx ID #neq 0",30,-0.5,29.5);
 
@@ -498,33 +486,9 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 									//Add all Sim track ids to histo
 									histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
 									histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
-									//Fill some histograms, that only look at the first muon station
-									if(pbti->station() == 1){
-										//Look for the gen particle index
-										if(trackIt->genpartIndex() > 0)
-											histoMap["histBtiBxIdGenPartNotNullStat1"]->Fill(pbti->step());
-										else{
-											histoMap["histBtiBxIdGenPartNullStat1"]->Fill(pbti->step());
-										}
-										//Look for the gen vertex index
-										if(trackIt->vertIndex() == 0){
-											histoMap["histBtiBxIdVtxNotNullStat1"]->Fill(pbti->step());
-										}
-										else{
-											histoMap["histBtiBxIdVtxNullStat1"]->Fill(pbti->step());
-										}
-										histoMap["histBtiBxIdStat1"]->Fill(pbti->step());
-										if(pbti->code() == 8){
-											histoMap["histBtiBxHtrgVtxNotNullStat1"]->Fill(pbti->step());
-											histoMap["histBtiBxHtrgStat1"]->Fill(pbti->step());
-										}
-									}
 									continueBtiLoop = true;
 								}
-								histoMap["histSimTrackSimTrackIds"]->Fill(trackIt->trackId());
 							}
-							histoMap["histSimLinkSimTrackIds"]->Fill(link->SimTrackId());
-
 						}
 					}
 				}
