@@ -144,8 +144,6 @@ void DTTrigTest::beginJob(){
 	histoMap["histBtiBxHtrgVtxNotNullStat1"] = fs->make<TH1D>("histBtiBxHtrgVtxNotNullStat1",
 			"BXID for BTI HTRG with Vtx ID #neq 0",30,-0.5,29.5);
 
-	histoMap["histBtiTrgPerSimLink"] = fs->make<TH1D>("histBtiTrgPerSimLink","# of BTI Trgs per SimLink;# Trgs;#Entries",30,-0.5,29.5);
-	histoMap["histBtiTrgPerSimLinkLay1"] = fs->make<TH1D>("histBtiTrgPerSimLinkLay1","# of BTI Trgs per SimLink in Layer 1;# Trgs;#Entries",30,-0.5,29.5);
 
 	histoMap["histBtiTrgWhm2"] = fs->make<TH2D>("histBtiTrgWhm2","Wh -2",6,-0.5,5.5,14,-0.5,13.5);
 	histoMap["histBtiTrgWhm1"] = fs->make<TH2D>("histBtiTrgWhm1","Wh -1",6,-0.5,5.5,14,-0.5,13.5);
@@ -779,8 +777,6 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 
 	std::vector<DTBtiTrigData> btiTrigs(btiTrigsOriginal);
 	vector<DTBtiTrigData>::const_iterator pbti;
-	int triggCounter = 0;
-	int triggCounterLay1 = 0;
 	int filteredHitsCounter = 0;
 	int id1Counter = 0, id1FilteredCounterSl1 = 0, id1FilteredCounterSl2 = 0;
 	int id2Counter = 0, id2FilteredCounterSl1 = 0, id2FilteredCounterSl2 = 0;
@@ -788,12 +784,8 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 	//Iterate over the DTSimLink collection
 	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
 			detUnit !=dtSimLinks->end();++detUnit) {
-		triggCounter = 0;
-		triggCounterLay1 = 0;
 		//Get the layer id
 		const DTLayerId& layerid = (*detUnit).first;
-		if(layerid.layer() == 1)
-			triggCounterLay1++;
 		/** This if attempts to use the bti Trigger only once
 		 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
 		 * 	bti trigger
@@ -845,7 +837,6 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 					&& pbti->code() == 8
 					&& pbti->ChamberId() == layerid.chamberId()){
 
-				triggCounter++;
 				switch(pbti->wheel()){
 				case -2:
 					histoMap["histBtiTrgWhm2"]->Fill(pbti->station(),pbti->sector());
@@ -1068,8 +1059,6 @@ int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId
 				histoMap["h1dDtCollBxIdDist"]->Fill(pbti->step());
 			}
 		}
-		histoMap["histBtiTrgPerSimLink"]->Fill(triggCounter);
-		histoMap["histBtiTrgPerSimLinkLay1"]->Fill(triggCounterLay1);
 	}
 	filteredHitsCounter = id1FilteredCounterSl1 + id2FilteredCounterSl1;
 	if(filteredHitsCounter)
