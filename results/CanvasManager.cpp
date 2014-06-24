@@ -29,7 +29,7 @@ TCanvas* CanvasManager::showCanvas(std::string canvasName){
 TCanvas* CanvasManager::plotDividedCanvas(std::vector<TH1*> input, std::string name, int nY, bool fillColumns){
 	int nX = 1;
 	if( nY <= 0 )
-		nX = ceil( sqrt( input.size() ) );
+		nX = ceil( sqrt( (float) input.size() ) );
 	else
 		nX = input.size()/nY;
 	TCanvas* canvas = getDividedCanvas( nX , nY );

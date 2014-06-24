@@ -23,6 +23,10 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "SimDataFormats/DigiSimLinks/interface/DTDigiSimLink.h"
+#include "SimDataFormats/DigiSimLinks/interface/DTDigiSimLinkCollection.h"
+#include "SimDataFormats/Track/interface/SimTrackContainer.h"
+
 
 // Trigger related headers
 #include "L1Analyzer/DTTrigger/interface/DTTrig.h"
@@ -54,6 +58,10 @@ public:
   //! Analyze function executed on all the events
   void analyze(const edm::Event & iEvent, const edm::EventSetup& iEventSetup);
   
+  //Helper function to count the number of matching DTSimLinks to a given BTITrigData instance
+  int countSimLinkMatchesPerBti(DTBtiTrigData,edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> >,edm::Handle<std::vector<SimTrack> >);
+  int countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> >,std::vector<DTBtiTrigData>, const edm::Event &);
+
 private:
   //switch used to determine whether analyzer is running on data or MC
   bool runOnData;

@@ -109,15 +109,94 @@ void DTTrigTest::endJob(){
 
 //void DTTrigTest::beginJob(const EventSetup & iEventSetup){
 void DTTrigTest::beginJob(){
+	//TODO: Book mark for the file service
 	edm::Service<TFileService> fs;
+
+	histoMap["h1dGenPartId"]	= fs->make<TH1D>("h1dGenPartId","Gen Particle IDs;Gen Part-ID;# Entries",99,-49.5,49.5);
+	histoMap["h1dVtxId"]	= fs->make<TH1D>("h1dVtxId","Vertex IDs;Vertex-ID;# Entries",102,-0.5,101.5);
+	histoMap["h1dVtxIdMuons"]	= fs->make<TH1D>("h1dVtxIdMuons","Vertex IDs for muon sim tracks;Vertex-ID;# Entries",102,-0.5,101.5);
+
 	histoMap["histBtiVtxId"]	= fs->make<TH1D>("histBtiVtxId","Vertex ID of BTI triggers;Vertex-ID;# Entries",32,-2.5,29.5);
 	histoMap["histBtiGenPart"]	= fs->make<TH1D>("histBtiGenPart","Gen particle ID of BTI triggers;Gen-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimTrackSimTrackIds"]	= fs->make<TH1D>("histSimTrackSimTrackIds","SimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimLinkSimTrackIds"]	= fs->make<TH1D>("histSimLinkSimTrackIds","SimLinkSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
 	histoMap["histTracoVtxId"]	= fs->make<TH1D>("histTracoVtxId","histTracoVtxId;SimTrack-ID;# Entries",22,-2.5,19.5);
 	histoMap["histTracoGenPart"]	= fs->make<TH1D>("histTracoGenPart","histTracoGenPart;SimTrack-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimTrackTracoSimTrackIds"]	= fs->make<TH1D>("histSimTrackTracoSimTrackIds","histSimTrackTracoSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
-	histoMap["histSimLinkTracoSimTrackIds"]	= fs->make<TH1D>("histSimLinkTracoSimTrackIds","histSimLinkTracoSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
+	histoMap["histSimTrackTracoSimTrackIds"]	= fs->make<TH1D>("histSimTrackTracoSimTrackIds",
+			"histSimTrackTracoSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
+	histoMap["histSimLinkTracoSimTrackIds"]	= fs->make<TH1D>("histSimLinkTracoSimTrackIds",
+			"histSimLinkTracoSimTrackIds;SimTrack-ID;# Entries",22,-2.5,19.5);
+
+	//Histograms for station 1
+
+	histoMap["histSimLinkMatchesPerBti"] = fs->make<TH1D>("histSimLinkMatchesPerBti",
+			"Number of matching Sim Link IDs per BTI Trig Data;# Matches;# Entries",100,-0.5,99.5);
+	histoMap["histBtiBxHtrgVtxNotNullStat1"] = fs->make<TH1D>("histBtiBxHtrgVtxNotNullStat1",
+			"BXID for BTI HTRG with Vtx ID #neq 0",30,-0.5,29.5);
+
+
+	histoMap["histBtiTrgWhm2"] = fs->make<TH2D>("histBtiTrgWhm2","Wh -2",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1"] = fs->make<TH2D>("histBtiTrgWhm1","Wh -1",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWh0"] = fs->make<TH2D>("histBtiTrgWh0","Wh 0",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1"] = fs->make<TH2D>("histBtiTrgWhp1","Wh 1",6,-0.5,5.5,14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2"] = fs->make<TH2D>("histBtiTrgWhp2","Wh 2",6,-0.5,5.5,14,-0.5,13.5);
+
+	//Histograms for Track Id 1
+	histoMap["histBtiTrgWhm2Stat4Id1"] = fs->make<TH1D>("histBtiTrgWhm2Stat4Id1","Wh -2 Stat 4 Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1Id1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1Id1","Wh -1 Stat 1 Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1Id1"] = fs->make<TH1D>("histBtiTrgWh0Stat1Id1","Wh 0 Stat 1 Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1Id1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1Id1","Wh 1 Stat 1 Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4Id1"] = fs->make<TH1D>("histBtiTrgWhp2Stat4Id1","Wh 2 Stat 4 Id1;Sector;# Entries",14,-0.5,13.5);
+
+	//Histograms for Track Id 2
+	histoMap["histBtiTrgWhm2Stat4Id2"] = fs->make<TH1D>("histBtiTrgWhm2Stat4Id2","Wh -2 Stat 4 Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1Id2"] = fs->make<TH1D>("histBtiTrgWhm1Stat1Id2","Wh -1 Stat 1 Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1Id2"] = fs->make<TH1D>("histBtiTrgWh0Stat1Id2","Wh 0 Stat 1 Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1Id2"] = fs->make<TH1D>("histBtiTrgWhp1Stat1Id2","Wh 1 Stat 1 Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4Id2"] = fs->make<TH1D>("histBtiTrgWhp2Stat4Id2","Wh 2 Stat 4 Id2;Sector;# Entries",14,-0.5,13.5);
+
+	//Histograms for events, where both Ids triggered a DetId
+	histoMap["histBtiTrgWhm2Stat4"] = fs->make<TH1D>("histBtiTrgWhm2Stat4","Wh -2 Stat 4;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1","Wh -1 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1"] = fs->make<TH1D>("histBtiTrgWh0Stat1","Wh 0 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1","Wh 1 Stat 1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4"] = fs->make<TH1D>("histBtiTrgWhp2Stat4","Wh 2 Stat 4;Sector;# Entries",14,-0.5,13.5);
+
+	//Histograms for Track Id 1
+	histoMap["histBtiTrgWhm2Stat4BxFiltId1"] = fs->make<TH1D>("histBtiTrgWhm2Stat4BxFiltId1","Wh -2 Stat 4 BX Filtered Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1BxFiltId1"] = fs->make<TH1D>("histBtiTrgWhm1Stat1BxFiltId1","Wh -1 Stat 1 BX Filtered Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1BxFiltId1"] = fs->make<TH1D>("histBtiTrgWh0Stat1BxFiltId1","Wh 0 Stat 1 BX Filtered Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1BxFiltId1"] = fs->make<TH1D>("histBtiTrgWhp1Stat1BxFiltId1","Wh 1 Stat 1 BX Filtered Id1;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4BxFiltId1"] = fs->make<TH1D>("histBtiTrgWhp2Stat4BxFiltId1","Wh 2 Stat 4 BX Filtered Id1;Sector;# Entries",14,-0.5,13.5);
+
+	//Histograms for Track Id 2
+	histoMap["histBtiTrgWhm2Stat4BxFiltId2"] = fs->make<TH1D>("histBtiTrgWhm2Stat4BxFiltId2","Wh -2 Stat 4 BX Filtered Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1BxFiltId2"] = fs->make<TH1D>("histBtiTrgWhm1Stat1BxFiltId2","Wh -1 Stat 1 BX Filtered Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1BxFiltId2"] = fs->make<TH1D>("histBtiTrgWh0Stat1BxFiltId2","Wh 0 Stat 1 BX Filtered Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1BxFiltId2"] = fs->make<TH1D>("histBtiTrgWhp1Stat1BxFiltId2","Wh 1 Stat 1 BX Filtered Id2;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4BxFiltId2"] = fs->make<TH1D>("histBtiTrgWhp2Stat4BxFiltId2","Wh 2 Stat 4 BX Filtered Id2;Sector;# Entries",14,-0.5,13.5);
+
+	//Histograms for events, where both Ids triggered a DetId
+	histoMap["histBtiTrgWhm2Stat4BxFilt"] = fs->make<TH1D>("histBtiTrgWhm2Stat4BxFilt","Wh -2 Stat 4 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhm1Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWhm1Stat1BxFilt","Wh -1 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWh0Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWh0Stat1BxFilt","Wh 0 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp1Stat1BxFilt"] = fs->make<TH1D>("histBtiTrgWhp1Stat1BxFilt","Wh 1 Stat 1 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+	histoMap["histBtiTrgWhp2Stat4BxFilt"] = fs->make<TH1D>("histBtiTrgWhp2Stat4BxFilt","Wh 2 Stat 4 BX Filtered;Sector;# Entries",14,-0.5,13.5);
+
+	histoMap["h1dDtCollBxIdDist"] = fs->make<TH1D>("h1dDtCollBxIdDist","Distribution of BX ID for DTDigiColl. Loop;BX ID;# Entries",52,-0.5,51.5);
+	histoMap["h1dDtCollBxIdDistHTRG"] = fs->make<TH1D>("h1dDtCollBxIdDistHTRG","Distribution of BX ID for DTDigiColl. Loop for HTRG;BX ID;# Entries",52,-0.5,51.5);
+
+	histoMap["h1dFilteredBtiHitsPerEvtSl1"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtSl1","Number of BX filtered HTRG per Event in Phi SL for stat 1;# HTRG;#Entries",52,-1.5,50.5);
+
+	histoMap["h1dBtiHitsPerEvtId1Sl1"] = fs->make<TH1D>("h1dBtiHitsPerEvtId1Sl1","Number of HTRG per Event for SimTrack Id 1 in SL1;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dBtiHitsPerEvtId2Sl1"] = fs->make<TH1D>("h1dBtiHitsPerEvtId2Sl1","Number of HTRG per Event for SimTrack Id 2 in SL1;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dBtiHitsPerEvtBothIdSl1"] = fs->make<TH1D>("h1dBtiHitsPerEvtBothIdSl1","Number of HTRG per Event for both SimTrack Ids in SL1;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dFilteredBtiHitsPerEvtId1Sl1"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId1Sl1","Number of BX filtered HTRG per Event for SimTrack Id 1 SL 1;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dFilteredBtiHitsPerEvtId2Sl1"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId2Sl1","Number of BX filtered HTRG per Event for SimTrack Id 2 SL 1;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dFilteredBtiHitsPerEvtId1Sl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId1Sl2","Number of BX filtered HTRG per Event for SimTrack Id 1 SL 2;# HTRG;#Entries",52,-1.5,50.5);
+	histoMap["h1dFilteredBtiHitsPerEvtId2Sl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtId2Sl2","Number of BX filtered HTRG per Event for SimTrack Id 2 SL 2;# HTRG;#Entries",52,-1.5,50.5);
+
+	histoMap["h1dFilteredBtiHitsPerEvtBothIdSl1"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothIdSl1","Number of BX filtered HTRG per Event with both SimTrack IDs SL 1;# HTRG;#Entries",52,-1.5,50.5);
+    histoMap["h1dFilteredBtiHitsPerEvtBothIdSl2"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothIdSl2","Number of BX filtered HTRG per Event with both SimTrack IDs SL 2;# HTRG;#Entries",52,-1.5,50.5);
+    histoMap["h1dFilteredBtiHitsPerEvtBothId"] = fs->make<TH1D>("h1dFilteredBtiHitsPerEvtBothId","Number of BX filtered HTRG per Event with both SimTrack IDs Stat. 1;# HTRG;#Entries",52,-1.5,50.5);
 	// get DTConfigManager
 	// ESHandle< DTConfigManager > confManager ;
 	// iEventSetup.get< DTConfigManagerRcd >().get( confManager ) ;
@@ -259,8 +338,8 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	//	const float etacut = 2.4;
 
 	// GEANT Block
-	Handle<vector<SimTrack> > MyTracks;
-	Handle<vector<SimVertex> > MyVertexes;
+	Handle<vector<SimTrack> > simTracks;
+	Handle<vector<SimVertex> > simVertices;
 
 	if(!runOnData){
 		//	std::cout << "###################" << std::endl;
@@ -288,24 +367,26 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 			}
 			if( iterGenParticleCollection->status() == 1 )
 				genParticleId.push_back(iterGenParticleCollection->pdgId());
+			histoMap["h1dGenPartId"]->Fill(iterGenParticleCollection->pdgId());
 		}
 		if(my_debug)
 			cout << "[DTTrigTest] Found " << genMuonCounter << " gen muons in this event." << endl;
 		nGenParticles = genMuonCounter;
 
 
-		iEvent.getByLabel("g4SimHits",MyTracks);
-		iEvent.getByLabel("g4SimHits",MyVertexes);
+		iEvent.getByLabel("g4SimHits",simTracks);
+		iEvent.getByLabel("g4SimHits",simVertices);
 		vector<SimTrack>::const_iterator itrack;
 
 
 		ngen=0;
 		if (my_debug)
-			cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << MyTracks->size() <<endl;
+			cout  << "[DTTrigTest] Tracks found in the detector (not only muons) " << simTracks->size() <<endl;
 
-		for (itrack=MyTracks->begin(); itrack!=MyTracks->end(); itrack++){
+		for (itrack=simTracks->begin(); itrack!=simTracks->end(); itrack++){
 			//TODO: Keep in mind the filter on muons with certain eta range
 			if ( abs(itrack->type())==13){
+				histoMap["h1dVtxIdMuons"]->Fill(itrack->vertIndex());
 				math::XYZTLorentzVectorD momentum = itrack->momentum();
 				float pt  = momentum.Pt();
 				float eta = momentum.eta();
@@ -319,9 +400,9 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 				int vtxindex = itrack->vertIndex();
 				float gvx=0,gvy=0,gvz=0;
 				if (vtxindex >-1){
-					gvx = MyVertexes->at( vtxindex ).position().x();
-					gvy = MyVertexes->at( vtxindex ).position().y();
-					gvz = MyVertexes->at( vtxindex ).position().z();
+					gvx = simVertices->at( vtxindex ).position().x();
+					gvy = simVertices->at( vtxindex ).position().y();
+					gvz = simVertices->at( vtxindex ).position().z();
 				}
 				if ( ngen < MAXGEN ) {
 					pxgen.push_back( 	momentum.x() );
@@ -338,6 +419,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 				}
 				//}
 			}
+			histoMap["h1dVtxId"]->Fill(itrack->vertIndex());
 		}
 	}// runOnData
 
@@ -354,8 +436,7 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	// GENERAL Block
 	runn   = iEvent.id().run();
 	eventn = iEvent.id().event();
-	weight = 1; // FIXME what to do with this variable?
-
+	weight = 1;
 
 
 	// L1 Local Trigger Block
@@ -368,13 +449,24 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	if (my_debug)
 		cout << "[DTTrigTest] " << btitrigs.size() << " BTI triggers found" << endl;
 
+	edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
+	iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+
+	//Call method for creating histograms with the number of BTI triggers linked to a gen muon
+	countBtiTrigsPerSimMuon(dtSimLinks,btitrigs, iEvent);
+
 	for ( pbti = btitrigs.begin(); pbti != btitrigs.end(); pbti++ ) {
+
+		histoMap["histSimLinkMatchesPerBti"]->Fill(
+				(double) countSimLinkMatchesPerBti(*pbti,dtSimLinks,simTracks)
+		);
+
+		bool continueBtiLoop = false;
 		if(!runOnData){
 			//### The DTDigiSimLink
-			edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks;
-			iEvent.getByLabel("simMuonDTDigis",dtSimLinks);
+
 			for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
-					detUnit !=dtSimLinks->end();
+					detUnit !=dtSimLinks->end() && !continueBtiLoop;
 					++detUnit) {
 
 				const DTLayerId& layerid = (*detUnit).first;
@@ -385,24 +477,19 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 						DTDigiSimLinkCollection::const_iterator link;
 						/*
 						 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
-						 * and then look for the same TrackId im the sim tracks.
+						 * and then look for the same TrackId in the sim tracks.
 						 * On match fill the vertex index and genParticle index of the track
 						 */
-						for (link=range.first; link!=range.second; ++link){
-							//	std::cout << "Begin SimLink loop\n";
-							for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
-									trackIt != MyTracks->end(); trackIt++){
-								//						std::cout << "trackIT " << trackIt->trackId() << "\tlink " << (*link).SimTrackId() << std::endl;
+						for (link=range.first; link!=range.second && !continueBtiLoop; ++link){
+							for(std::vector<SimTrack>::const_iterator trackIt = simTracks->begin();
+									trackIt != simTracks->end() && !continueBtiLoop; trackIt++){
 								if((*link).SimTrackId() == trackIt->trackId() ){
 									//Add all Sim track ids to histo
-									//								std::cout << "MATCH!" << std::endl;
 									histoMap["histBtiVtxId"]->Fill(trackIt->vertIndex());
 									histoMap["histBtiGenPart"]->Fill(trackIt->genpartIndex());
+									continueBtiLoop = true;
 								}
-								histoMap["histSimTrackSimTrackIds"]->Fill(trackIt->trackId());
 							}
-							histoMap["histSimLinkSimTrackIds"]->Fill(link->SimTrackId());
-
 						}
 					}
 				}
@@ -459,8 +546,8 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 					bool nextChamber = false;
 					for (link=range.first; link!=range.second && !nextChamber ; ++link){
 						//	std::cout << "Begin SimLink loop\n";
-						for(std::vector<SimTrack>::const_iterator trackIt = MyTracks->begin();
-								trackIt != MyTracks->end() && !nextChamber; trackIt++){
+						for(std::vector<SimTrack>::const_iterator trackIt = simTracks->begin();
+								trackIt != simTracks->end() && !nextChamber; trackIt++){
 							if((*link).SimTrackId() == trackIt->trackId() ){
 								//Add all Sim track ids to histo
 								histoMap["histTracoVtxId"]->Fill(trackIt->vertIndex());
@@ -609,6 +696,373 @@ void DTTrigTest::analyze(const Event & iEvent, const EventSetup& iEventSetup){
 	//Fill the tree
 	my_tree->Fill();
 
+}
+
+int DTTrigTest::countSimLinkMatchesPerBti(DTBtiTrigData btiTrigData,edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks
+		,edm::Handle<std::vector<SimTrack> > simTracks){
+	int nMatches = 0;
+	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
+			detUnit !=dtSimLinks->end();
+			++detUnit) {
+
+		const DTLayerId& layerid = (*detUnit).first;
+
+		/**
+		 * Check for same station, sector, wheel, superlayer, station
+		 */
+		if(btiTrigData.wheel() == layerid.wheel()
+				&& btiTrigData.sector() == layerid.sector()
+				&& btiTrigData.SLId() == layerid.superlayerId()
+				&& btiTrigData.station() == layerid.station()){
+			const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+			DTDigiSimLinkCollection::const_iterator link;
+			/*
+			 * Now loop over all Digis ( i.e. Wire hits in that layer (Not Superlayer!!))
+			 * and then look for the same TrackId in the sim tracks.
+			 * On match fill the vertex index and genParticle index of the track
+			 */
+			for (link=range.first; link!=range.second; ++link){
+				for(std::vector<SimTrack>::const_iterator trackIt = simTracks->begin();
+						trackIt != simTracks->end(); trackIt++){
+					if((*link).SimTrackId() == trackIt->trackId() ){
+						//Count the number of matches
+						nMatches++;
+					}
+				}
+			}
+
+		}
+	}
+	return nMatches;
+}
+
+//FIXME: I am a book mark for count bti trigs per sim muon
+int DTTrigTest::countBtiTrigsPerSimMuon(edm::Handle<MuonDigiCollection<DTLayerId,DTDigiSimLink> > dtSimLinks,
+		std::vector<DTBtiTrigData> btiTrigsOriginal, const edm::Event & iEvent){
+
+	std::vector<DTBtiTrigData> btiTrigs(btiTrigsOriginal);
+	vector<DTBtiTrigData>::const_iterator pbti;
+	int filteredHitsCounter = 0;
+	int id1CounterSl1 = 0, id1FilteredCounterSl1 = 0, id1FilteredCounterSl2 = 0;
+	int id2CounterSl1 = 0, id2FilteredCounterSl1 = 0, id2FilteredCounterSl2 = 0;
+	int bothIdCounterSl1 = 0, bothIdsFilteredCounterSl1 = 0, bothIdsFilteredCounterSl2 = 0;
+	//Iterate over the DTSimLink collection
+	for (DTDigiSimLinkCollection::DigiRangeIterator detUnit=dtSimLinks->begin();
+			detUnit !=dtSimLinks->end();++detUnit) {
+		//Get the layer id
+		const DTLayerId& layerid = (*detUnit).first;
+		/** This if attempts to use the bti Trigger only once
+		 * 	A HTRG should trigger all 4 layers -> There are 4 DTDigis pointing to the same
+		 * 	bti trigger
+		 * 	This if should correct for that
+		 */
+		if(layerid.layer() != 1 )
+			continue;
+
+		//Check, whether the simlinks contain links to Simtrack Ids 1 or 2 (the gen muons)
+		//If not, skip DetId
+		bool skipDetId = true;
+		bool isTrack1 = false;
+		bool isTrack2 = false;
+		bool bothIds = false;
+
+		const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+		DTDigiSimLinkCollection::const_iterator link;
+		for (link=range.first; link!=range.second; ++link){
+			if(link->SimTrackId() == 1)
+				isTrack1 = true;
+			else if(link->SimTrackId() == 2)
+				isTrack2 = true;
+		}
+		//Has this DetId a Link to the gen muons?
+		if( isTrack1 || isTrack2 ){
+			if (isTrack1 && isTrack2){
+				//Same DetId has SimLinks for both gen Muons
+				bothIds = true;
+			}
+			skipDetId = false;
+		}
+		if(skipDetId){
+		//	if(my_debug){
+		//		std::cout << "Found event with zero sim links to Track Id 1 or 2." << std::endl;
+		//		std::cout << iEvent.id() << std::endl;
+		//	}
+			continue;
+		}
+		//Now loop over the bti triggers
+		for ( pbti = btiTrigs.begin(); pbti != btiTrigs.end(); pbti++ ) {
+			/**
+			 * Check for same station, sector, wheel, superlayer, station
+			 * And the HTRG code
+			 */
+			if(pbti->wheel() == layerid.wheel()
+					&& pbti->sector() == layerid.sector()
+					&& pbti->SLId() == layerid.superlayerId()
+					&& pbti->station() == layerid.station()
+					&& pbti->code() == 8
+					&& pbti->ChamberId() == layerid.chamberId()){
+
+				switch(pbti->wheel()){
+				case -2:
+					histoMap["histBtiTrgWhm2"]->Fill(pbti->station(),pbti->sector());
+					/**
+					 * Sector counting in Station 4 is different. Top and bottom sectors are divided.
+					 * sector 13 is the second half of sector 4
+					 * sector 14 is the second half of sector 10
+					 */
+					if(pbti->station() == 4){
+						int sect = 0;
+						if(pbti->sector() == 13)
+							sect = 4;
+						else if(pbti->sector() == 14 )
+							sect =10;
+						else
+							sect = pbti->sector();
+						//Now decide,which histogram to fill
+						if(bothIds){
+							histoMap["histBtiTrgWhm2Stat4"]->Fill(sect);
+						}
+						else if(isTrack1){
+							histoMap["histBtiTrgWhm2Stat4Id1"]->Fill(sect);
+						}
+						else{
+							histoMap["histBtiTrgWhm2Stat4Id2"]->Fill(sect);
+						}
+						//This part fills histograms for BX ID filtered
+						if(pbti->step() == 16){
+							if(bothIds){
+								histoMap["histBtiTrgWhm2Stat4BxFilt"]->Fill(sect);
+							}
+							else if(isTrack1){
+								histoMap["histBtiTrgWhm2Stat4BxFiltId1"]->Fill(sect);
+							}
+							else{
+								histoMap["histBtiTrgWhm2Stat4BxFiltId2"]->Fill(sect);
+							}
+						}
+					}
+					break;
+				case -1:
+					histoMap["histBtiTrgWhm1"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1){
+						if(bothIds){
+							histoMap["histBtiTrgWhm1Stat1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								bothIdCounterSl1++;
+						}
+						else if(isTrack1){
+							histoMap["histBtiTrgWhm1Stat1Id1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id1CounterSl1++;
+						}
+						else{
+							histoMap["histBtiTrgWhm1Stat1Id2"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id2CounterSl1++;
+						}
+						if(pbti->step() == 16){
+							if(bothIds){
+								histoMap["histBtiTrgWhm1Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
+							}
+							else if(isTrack1){
+								histoMap["histBtiTrgWhm1Stat1BxFiltId1"]->Fill(pbti->sector());
+								//This part is only for wheels -1 to 1 for the MB 1
+								//Fill a histogram for each SL
+								if(pbti->SLId().superlayer() == 1)
+									id1FilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									id1FilteredCounterSl2++;
+							}
+							else{
+								histoMap["histBtiTrgWhm1Stat1BxFiltId2"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									id2FilteredCounterSl1++;
+								else if (pbti->SLId().superlayer() == 3)
+									id2FilteredCounterSl2++;
+							}
+						}
+					}
+					break;
+				case 0:
+					histoMap["histBtiTrgWh0"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1){
+						if(bothIds){
+							histoMap["histBtiTrgWh0Stat1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								bothIdCounterSl1++;
+						}
+						else if(isTrack1){
+							histoMap["histBtiTrgWh0Stat1Id1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id1CounterSl1++;
+						}
+						else{
+							histoMap["histBtiTrgWh0Stat1Id2"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id2CounterSl1++;
+						}
+						if(pbti->step() == 16){
+							if(bothIds){
+								histoMap["histBtiTrgWh0Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
+							}
+							else if(isTrack1){
+								histoMap["histBtiTrgWh0Stat1BxFiltId1"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									id1FilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									id1FilteredCounterSl2++;
+							}
+							else{
+								histoMap["histBtiTrgWh0Stat1BxFiltId2"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									id2FilteredCounterSl1++;
+								else if (pbti->SLId().superlayer() == 3)
+									id2FilteredCounterSl2++;
+							}
+						}
+					}
+					break;
+				case 1:
+					histoMap["histBtiTrgWhp1"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 1){
+						if(bothIds){
+							histoMap["histBtiTrgWhp1Stat1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								bothIdCounterSl1++;
+						}
+						else if(isTrack1){
+							histoMap["histBtiTrgWhp1Stat1Id1"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id1CounterSl1++;
+						}
+						else{
+							histoMap["histBtiTrgWhp1Stat1Id2"]->Fill(pbti->sector());
+							if(pbti->SLId().superLayer() == 1)
+								id2CounterSl1++;
+						}
+						if(pbti->step() == 16){
+							if(bothIds){
+								histoMap["histBtiTrgWhp1Stat1BxFilt"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									bothIdsFilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									bothIdsFilteredCounterSl2++;
+							}
+							else if(isTrack1){
+								histoMap["histBtiTrgWhp1Stat1BxFiltId1"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									id1FilteredCounterSl1++;
+								else if(pbti->SLId().superlayer() == 3)
+									id1FilteredCounterSl2++;
+							}
+							else{
+								histoMap["histBtiTrgWhp1Stat1BxFiltId2"]->Fill(pbti->sector());
+								if(pbti->SLId().superlayer() == 1)
+									id2FilteredCounterSl1++;
+								else if (pbti->SLId().superlayer() == 3)
+									id2FilteredCounterSl2++;
+							}
+						}
+					}
+					break;
+				case 2:
+					histoMap["histBtiTrgWhp2"]->Fill(pbti->station(),pbti->sector());
+					if(pbti->station() == 4){
+						/**
+						 * Sector counting in Station 4 is different. Top and bottom sectors are divided.
+						 * sector 13 is the second half of sector 4
+						 * sector 14 is the second half of sector 10
+						 */
+						int sect = 0;
+						if(pbti->sector() == 13)
+							sect = 4;
+						else if(pbti->sector() == 14 )
+							sect =10;
+						else
+							sect = pbti->sector();
+						if(bothIds){
+							histoMap["histBtiTrgWhp2Stat4"]->Fill(sect);
+						}
+						else if(isTrack1){
+							histoMap["histBtiTrgWhp2Stat4Id1"]->Fill(sect);
+						}
+						else{
+							histoMap["histBtiTrgWhp2Stat4Id2"]->Fill(sect);
+						}
+						if(pbti->step() == 16){
+							if(bothIds){
+								histoMap["histBtiTrgWhp2Stat4BxFilt"]->Fill(sect);
+							}
+							else if(isTrack1){
+								histoMap["histBtiTrgWhp2Stat4BxFiltId1"]->Fill(sect);
+							}
+							else{
+								histoMap["histBtiTrgWhp2Stat4BxFiltId2"]->Fill(sect);
+							}
+						}
+					}
+					break;
+				default:
+					break;
+				}//switch
+				int linkCounter = 0;
+				int totalCounter = 0;
+				const DTDigiSimLinkCollection::Range& range = (*detUnit).second;
+				DTDigiSimLinkCollection::const_iterator link;
+				for (link=range.first; link!=range.second; ++link){
+					if(link->SimTrackId() == 1 || link->SimTrackId() == 2){
+						linkCounter++;
+					}
+					totalCounter++;
+				}
+				//			std::cout << "Detid : " << layerid.chamberId() << "layer " << layerid.layer()<< " ID Counter  " << linkCounter  << " simlinkcollection" << totalCounter << std::endl;
+				histoMap["h1dDtCollBxIdDistHTRG"]->Fill(pbti->step());
+
+			}//If right bti position
+			//Short if for filling the histogram on the BXID distribution without the HTRG filter
+			if(pbti->wheel() == layerid.wheel()
+					&& pbti->sector() == layerid.sector()
+					&& pbti->SLId() == layerid.superlayerId()
+					&& pbti->station() == layerid.station()
+					&& pbti->ChamberId() == layerid.chamberId()){
+				histoMap["h1dDtCollBxIdDist"]->Fill(pbti->step());
+			}
+		}
+	}
+	filteredHitsCounter = id1FilteredCounterSl1 + id2FilteredCounterSl1;
+	if(filteredHitsCounter)
+		histoMap["h1dFilteredBtiHitsPerEvtSl1"]->Fill(filteredHitsCounter);
+	if(id1CounterSl1)
+		histoMap["h1dBtiHitsPerEvtId1Sl1"]->Fill(id1CounterSl1);
+	if(id2CounterSl1)
+		histoMap["h1dBtiHitsPerEvtId2Sl1"]->Fill(id2CounterSl1);
+	if(bothIdCounterSl1)
+		histoMap["h1dBtiHitsPerEvtBothIdSl1"]->Fill(bothIdCounterSl1);
+	if(id1FilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtId1Sl1"]->Fill(id1FilteredCounterSl1);
+	if(id2FilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtId2Sl1"]->Fill(id2FilteredCounterSl1);
+	if(id1FilteredCounterSl2)
+		histoMap["h1dFilteredBtiHitsPerEvtId1Sl2"]->Fill(id1FilteredCounterSl2);
+	if(id2FilteredCounterSl2)
+		histoMap["h1dFilteredBtiHitsPerEvtId2Sl2"]->Fill(id2FilteredCounterSl2);
+	if(bothIdsFilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtBothIdSl1"]->Fill(bothIdsFilteredCounterSl1);
+	if(bothIdsFilteredCounterSl1)
+		histoMap["h1dFilteredBtiHitsPerEvtBothIdSl2"]->Fill(bothIdsFilteredCounterSl2);
+	if(bothIdsFilteredCounterSl1 || bothIdsFilteredCounterSl2)
+		histoMap["h1dFilteredBtiHitsPerEvtBothId"]->Fill(bothIdsFilteredCounterSl1 + bothIdsFilteredCounterSl2);
+	if(id1FilteredCounterSl1 > 2 || id2FilteredCounterSl1 > 2)
+		std::cout << "####\nCounter > 2: " << iEvent.id() << "\n#####" <<  std::endl;
+	return 0;
 }
 
 /**

@@ -10,6 +10,8 @@
 
 #include "Analyse.h"
 
+#include "TH2.h"
+
 class BTIAnalysis : public Analyse{
 public:
 	BTIAnalysis(std::string treeName, std::string sampleName , double ptCut, bool debug) : Analyse(treeName , sampleName , ptCut , debug){};
